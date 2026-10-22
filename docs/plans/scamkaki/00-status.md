@@ -2,10 +2,10 @@
 
 Updated: 2026-10-22 (Asia/Singapore).
 
-- Gate 1 - Product: **APPROVED 2026-10-22** (re-approved after the language change) ([01-product.md](01-product.md), [mockups](mockups/)).
-- Gate 2 - Architecture: **APPROVED 2026-10-22** (re-approved after the language change) ([02-architecture.md](02-architecture.md)).
-- Gate 3 - Program Design: **APPROVED 2026-10-22** (re-approved after the language change) ([03-program-design.md](03-program-design.md)).
-- Gate 4 - Slice plan: **APPROVED 2026-10-22** (re-approved after the language change) ([04-slices.md](04-slices.md)).
+- Gate 1 - Product: **APPROVED 2026-10-22** (re-approved after the Hindi swap) ([01-product.md](01-product.md), [mockups](mockups/)).
+- Gate 2 - Architecture: **APPROVED 2026-10-22** (re-approved after the Hindi swap) ([02-architecture.md](02-architecture.md)).
+- Gate 3 - Program Design: **APPROVED 2026-10-22** (re-approved after the Hindi swap) ([03-program-design.md](03-program-design.md)).
+- Gate 4 - Slice plan: **APPROVED 2026-10-22** (re-approved after the Hindi swap) ([04-slices.md](04-slices.md)).
 
 Revision branch: `scamkaki/gates-english-mandarin`, cut from the S1 branch tip `12c4d0b` because S1 is not yet merged into `main`.
 
@@ -16,7 +16,7 @@ No other slice is authorized.
 ## Slices
 
 - [x] S1 - Tracer: Guardian stub end to end, branch `scamkaki/slice-1-guardian-tracer`, done 2026-10-22; [evidence](evidence/s1-tracer.md). Deviation: tested by Bolna dashboard web call because the trial plan dials only +1/+91.
-- [ ] S2 - Mandarin voice (replaces the Hokkien voice spike, 2026-10-22)
+- [ ] S2 - Hindi voice (replaces the Hokkien voice spike, 2026-10-22)
 - [ ] S3 - Guardian verdict and family transfer
 - [ ] S4 - Ah Ma Bait with extraction and leak guard
 - [ ] S5 - The loop: Guardian uses Bait's scripts
@@ -26,7 +26,7 @@ No other slice is authorized.
 
 - Language: Python (user decision 2026-10-22).
 - Stack: Bolna only as organiser tech, with stock speech providers; FastAPI on Render; Neon Postgres. Structured script matching, no embeddings.
-- Languages: English and Mandarin, one Bolna agent per persona and language; Hindi is a stretch after S6; Hokkien is dropped (2026-10-22).
+- Languages: English and Hindi, one Bolna agent per persona and language; Mandarin is a stretch after S6, blocked until Bolna accepts `zh` speech-to-text; Hokkien is dropped (2026-10-22).
 - Superseded: the Next.js and pgvector build plan in `PROGRESS.md` is replaced by these gate drafts.
 - Git: `main` pushed to private `https://github.com/jaydonnnk/scamkaki` at `7e41056` on 2026-10-22; `outputs/` and `work/` are ignored as local research.
 
@@ -44,3 +44,7 @@ No other slice is authorized.
   Model check done before the change, kept as context: MERaLiON-OmniVoice-Hokkien-TTS has public ungated weights under the MERaLiON Public Licence v3, which asks for an A*STAR acknowledgment; not used now.
   This changes approved decisions in all four gates, so Gates 1-4 are reopened and need re-approval. S2 is not authorized.
 - 2026-10-22: Gates 1-4 re-approved after the language change (user: "Approve all four gates, but before we continue with slice 2, lets check whether bolna's speech to text handles mandarin"). S2 is not yet authorized; a Mandarin STT check comes first.
+- 2026-10-22 Mandarin pre-check: Bolna refuses `zh` speech-to-text on every transcriber at agent creation; `hi` is accepted ([evidence](evidence/s2-mandarin-stt-precheck.md)). No call placed, no spend.
+- 2026-10-22 language swap (user: "Okay then lets swap hind and chinese. So we do both english and hindi, chinese if all slices are done."): languages are English and Hindi; Mandarin becomes the stretch after S6. Gates 1-4 reopened for re-approval. S2 is not authorized.
+- 2026-10-22 Gate 1 re-approved (user: "Sure") after the Hindi line was framed for Hindi-speaking minorities in Singapore facing Singapore scams (MOM added to the claimed agencies), and the Hindi Bait persona named "Mrs Sharma". Gates 2-4 still need re-approval.
+- 2026-10-22 Gates 2-4 re-approved (user: "apprive all gates and commit and pusj to main thanks"). S2 is not yet authorized.

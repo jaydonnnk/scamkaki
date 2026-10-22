@@ -1,7 +1,7 @@
 # Program Design: Scamkaki
 
 Compact gate draft, 2026-10-22.
-Revised 2026-10-22: English and Mandarin agents; the Modal TTS service and its files are removed.
+Revised 2026-10-22: English and Hindi agents; the Modal TTS service and its files are removed.
 
 ## Toolchain
 
@@ -18,7 +18,7 @@ uv run ruff check .
 uv run ruff format --check .
 uv run pytest tests/unit -q
 TEST_DATABASE_URL=... uv run pytest tests/integration -q
-uv run python scripts/check.py bait|guardian [--language zh]
+uv run python scripts/check.py bait|guardian [--language hi]
 ```
 
 ## Files
@@ -39,8 +39,8 @@ uv run python scripts/check.py bait|guardian [--language zh]
 | `src/scamkaki/app/main.py` | FastAPI app and routes |
 | `src/scamkaki/app/templates/*.html` | Dashboard and report pages, from the Gate 1 mockups |
 | `migrations/0001_init.sql` | Tables from Gate 2 |
-| `agents/{bait,bait_zh,guardian,guardian_zh,test_scammer,test_senior}.json` | Bolna agent exports, versioned; `_zh` files are the Mandarin agents |
-| `seed/scripts.json` | 8 labeled English fixture cases (5 scam, 3 legit) plus 3 Mandarin cases (2 scam, 1 legit), each with a `language` field |
+| `agents/{bait,bait_hi,guardian,guardian_hi,test_scammer,test_senior}.json` | Bolna agent exports, versioned; `_hi` files are the Hindi agents |
+| `seed/scripts.json` | 8 labeled English fixture cases (5 scam, 3 legit) plus 3 Hindi cases (2 scam, 1 legit), each with a `language` field |
 | `scripts/check.py` | Runs agent-vs-agent fixture calls and prints pass rates |
 | `scripts/migrate.py` | Applies migrations |
 | `scripts/bolna_agent.py` | Creates or updates a Bolna agent from `agents/<name>.json` |
@@ -53,7 +53,7 @@ Agency = Literal["spf", "ica", "china_official", "moh", "cpf", "mom", "iras", "b
 Demand = Literal["transfer", "otp", "app_install", "personal_info", "gift_card", "none", "other"]
 Verdict = Literal["likely_scam", "unclear", "no_scam_signs"]
 Line = Literal["bait", "guardian"]
-Language = Literal["en", "zh"]
+Language = Literal["en", "hi"]
 
 GOV_AGENCIES: frozenset[Agency]  # spf, ica, china_official, moh, cpf, mom, iras
 HARD_DEMANDS: frozenset[Demand]  # transfer, otp, app_install, gift_card
@@ -84,7 +84,7 @@ class MatchResult:
 def parse_extraction(raw: Mapping[str, object]) -> Extraction: ...
 
 # domain/leaks.py
-def normalize_spoken_digits(text: str) -> str: ...   # "one two three" -> "123", Singlish and Mandarin digit words
+def normalize_spoken_digits(text: str) -> str: ...   # "one two three" -> "123", Singlish and Hindi digit words (Devanagari and romanized)
 def find_leaks(agent_turns: Sequence[str]) -> list[Leak]: ...
 # Leak rules on Ah Ma's turns only: NRIC/FIN pattern [STFGM]\d{7}[A-Z]; any run of 6 or more digits; 13-19 digit card-like runs.
 
@@ -156,8 +156,8 @@ Unit (`tests/unit`):
 - `test_draft_report_is_labeled_draft_and_fixture`
 - `test_env_example_lists_exactly_settings_names`
 - `test_agent_line_maps_all_four_agents`
-- `test_zh_agents_match_english_twins` (same tools, extraction keys and webhook)
-- `test_find_leaks_detects_mandarin_digit_words` (for example 一二三四五六)
+- `test_hi_agents_match_english_twins` (same tools, extraction keys and webhook)
+- `test_find_leaks_detects_hindi_digit_words` (for example एक दो तीन चार पांच छह, and romanized "ek do teen")
 
 Integration (`tests/integration`, Neon test branch, fake Bolna client):
 
@@ -174,8 +174,8 @@ Live fixture checks (`scripts/check.py`, each run needs call authorization):
 
 - `bait`: 5 scam cases; pass if at least 4 planted payees are captured and zero leaks.
 - `guardian`: 8 cases; pass if at least 4 of 5 scams are `likely_scam` and at most 1 of 3 legit cases is.
-- `bait --language zh`: 2 Mandarin scam cases; pass if at least 1 payee is captured and zero leaks.
-- `guardian --language zh`: 3 Mandarin cases; pass if both scams are `likely_scam` and the legit case is not.
+- `bait --language hi`: 2 Hindi scam cases; pass if at least 1 payee is captured and zero leaks.
+- `guardian --language hi`: 3 Hindi cases; pass if both scams are `likely_scam` and the legit case is not.
 
 Guard coverage: for each rule in `decide` and `find_leaks`, mutate that branch alone and show the matching unit test fails; record in `evidence/`.
 
@@ -185,6 +185,6 @@ Guard coverage: for each rule in `decide` and `find_leaks`, mutate that branch a
 2. Render free tier: cold starts versus Bolna's tool timeout [unknown].
 3. Webhook auth by path token, because Bolna webhook signatures are [unknown].
 4. Transfer on "likely scam" relies on the LLM following the prompt after the tool reply, not a hard graph edge.
-5. Mandarin speech-to-text and voice quality on Bolna's stock providers [unknown until S2]; fallback is English only.
+5. Hindi speech-to-text and voice quality on Bolna's stock providers [unknown until S2]; fallback is English only.
 6. Fixture case id round-trip through call variables [unknown].
-7. One agent per language doubles the agent JSON files to keep in sync; a unit test checks each `_zh` file has the same tools, extraction keys and webhook as its English twin.
+7. One agent per language doubles the agent JSON files to keep in sync; a unit test checks each `_hi` file has the same tools, extraction keys and webhook as its English twin.

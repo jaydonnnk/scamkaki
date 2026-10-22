@@ -9,7 +9,7 @@ The general agentic workflow (tiers, loop, escalation levers) lives in [docs/age
 ## Project map
 
 Scamkaki is a Bolna voice-agent project with two phone agents that feed each other.
-Both run in English and in Mandarin, one Bolna agent per language.
+Both run in English and in Hindi, one Bolna agent per language.
 Ah Ma Bait answers scam calls as a Singapore auntie, stalls, and extracts the claimed agency, demand and payee details.
 Ah Ma Guardian takes calls from seniors, compares what they heard with the scam scripts Bait collected, and hands risky cases to a family member.
 
@@ -24,7 +24,7 @@ Ah Ma Guardian takes calls from seniors, compares what they heard with the scam 
 | `src/scamkaki/domain/` | Pure logic: script matching, verdicts, extraction validation, leak guard, report drafts |
 | `src/scamkaki/integrations/` | Bolna API client |
 | `src/scamkaki/lib/` | Env loading, DB access, logging, ids, time |
-| `agents/` | Bolna graph agent JSON exports (Bait and Guardian in English and Mandarin, test Scammer, test Senior), versioned |
+| `agents/` | Bolna graph agent JSON exports (Bait and Guardian in English and Hindi, test Scammer, test Senior), versioned |
 | `migrations/` | Ordered SQL migrations for Neon Postgres |
 | `seed/` | Labeled demo fixtures, including `seed/scripts.json` test cases |
 | `scripts/` | Operator and check scripts, for example `scripts/check.py` for agent-vs-agent call results |
