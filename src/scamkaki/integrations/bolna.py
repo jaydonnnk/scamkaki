@@ -17,3 +17,9 @@ class BolnaClient:
         response = self._http.get(f"/executions/{execution_id}")
         response.raise_for_status()
         return response.json()
+
+    def mint_web_call_session(self, agent_id: str) -> dict[str, Any]:
+        """Short-lived, single-use browser call session (Web Call SDK docs)."""
+        response = self._http.post("/web-call/session", json={"agent_id": agent_id})
+        response.raise_for_status()
+        return response.json()

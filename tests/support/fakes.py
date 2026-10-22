@@ -26,3 +26,13 @@ def execution(execution_id: str, agent_id: str, **fields: Any) -> dict[str, Any]
         "context_details": {},
         **fields,
     }
+
+
+class FakeBolnaWithSessions(FakeBolna):
+    def __init__(self) -> None:
+        super().__init__()
+        self.sessions: list[str] = []
+
+    def mint_web_call_session(self, agent_id: str) -> dict[str, Any]:
+        self.sessions.append(agent_id)
+        return {"session": "fake"}

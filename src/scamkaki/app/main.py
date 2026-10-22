@@ -129,6 +129,15 @@ def _log_check(database_url: str, agency, demand, result) -> None:
         store.log_guardian_check(conn, agency, demand, result)
 
 
+@app.post("/web-call/session")
+def web_call_session(
+    settings: SettingsDep, bolna: Annotated[BolnaClient, Depends(get_bolna)]
+) -> dict[str, Any]:
+    if not settings.bolna_guardian_agent_id:
+        raise HTTPException(status_code=503, detail="Guardian agent not configured")
+    return bolna.mint_web_call_session(settings.bolna_guardian_agent_id)
+
+
 @app.get("/", response_class=HTMLResponse)
 def dashboard(request: Request, settings: SettingsDep) -> HTMLResponse:
     with connect(settings.database_url) as conn:
