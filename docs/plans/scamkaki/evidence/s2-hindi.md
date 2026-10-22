@@ -45,13 +45,25 @@ Changes before these calls: Guardian HI must repeat back who and what it underst
 - Limits: synthetic Lekha caller reading fixed scripts, two scripts, five valid calls; not a real senior, not real scammers. The English Guardian still has the old prompt; S3 ports the confirm-first steps.
 - The dashboard's Hindi Talk button was tested by integration test only (`test_web_call_session_mints_for_hindi_guardian`), not by a signed-in browser call, because the agent may not enter the real admin password.
 
-## Listener check (2026-10-22): not accepted
+## Listener verdict (2026-10-22)
 
-- Bolna's recordings of calls 4-6 are truncated: 12.9 s, 13.3 s and 9.8 s (FLAC STREAMINFO and full decode), against call lengths of 39-58 s. Calls 2-3 recorded in full (43.7 s and 43.8 s). Calls 4-6 were hung up by the test page and calls 2-3 by Bolna; whether that causes the truncation is [unknown]. The truncated files were sent to the user without a length check.
-- A review of "hindi4.mp4", "hindi5.mp4" and "hindi6.mp4" returned "Understandable with problems".
-  It was not recorded as the listener verdict because it does not match the calls: none of the Guardian phrases it quotes (for example "गोपनीय विवरण", "सत्यापित", "लेन-देन", "ओटीपी, पिन या पासवर्ड न दें") appear in the Bolna transcripts, which hold the exact text the voice read; its timestamps (00:23-00:54) lie beyond the 10-13 s files; and it reports no barge-ins where the transcripts show Guardian cut off.
+Listener: Pravesh, a Hindi speaker named by the user, heard the files the user downloaded for calls 4, 5 and 6.
+In his words: "Its understandable but definitely with problems."
+He found the Hindi simple but the voice "robotic" and lacking warmth; call 5 the clearest; calls 4 and 6 with overlapping speech and clipped phrases; suggested "कहा कि वे पुलिस हैं" over "दावा किया"; flagged that call 4 seemed to say "हाँ, पुलिस सही है", that "ठीक है" in call 6 could sound like agreement, and that explicit warnings ("पैसे मत भेजिए", "ओटीपी किसी को मत बताइए") were not evident.
 
-## Open
+Checked against the evidence:
 
-- Listener verdict: needed from a person who listens to the full recordings of calls 2 and 3 (same voice and model as calls 4-6) or to a live call; [unknown].
-- Go/no-go: extraction criterion met after the fix (calls 4-6); listener criterion not met; S2 stays open.
+- Bolna's recordings of calls 4-6 are truncated at the source: 12.9 s, 13.3 s and 9.7 s for calls of 39 s, 58 s and 39 s (calls 2 and 3 are complete at 43.7 s and 43.8 s). Calls 4-6 were ended by the test page, calls 2-3 by Bolna; the link is a [hypothesis]. The listener heard fragments.
+- "हाँ, सही है" in call 4 is the synthetic caller's confirmation clip, not Guardian: Guardian's transcript line is "उसने खुद को सिंगापुर…" and Guardian never says "सही है" in any transcript. Both voices are female Hindi, so the speakers are hard to tell apart; the recordings are stereo with the caller on the left and Guardian on the right (call 2).
+- The warnings were spoken in calls 5 and 6 per the transcripts ("कृपया पैसा ट्रांसफर मत कीजिए और कोई कोड मत दीजिए", "कोई कोड मत बताइए"), but were cut from the recordings.
+- "ठीक है" was Guardian's pre-check line "ठीक है, मैं आपके लिए देखती हूँ।"; a real risk.
+
+Fixes after the verdict (no call yet):
+
+- The Hindi tool sentence now carries the warnings itself: "पक्का नहीं कह सकती। पैसे मत भेजिए। ओटीपी किसी को मत बताइए। कुछ भी करने से पहले अपने परिवार को फ़ोन कीजिए।" (needs Render to deploy); `test_match_script_answers_in_hindi_for_hindi_line` asserts each warning, and deleting the OTP warning fails it.
+- Pre-check line is now "एक मिनट रुकिए, मैं जाँच करती हूँ।"; the prompt bans "ठीक है"/"सही है" right after the senior describes the caller, prefers "कहा कि", and the repeat-back ends "क्या मैंने ठीक समझा?".
+- Voice speed 0.9 to 0.8. The voice's robotic tone is not fixed; only `bulbul:v3` voices are offered on this account.
+
+## Decision
+
+Pending the user: the exit check's listener condition ("understandable") is met with problems; the extraction condition is met on the post-fix sample.

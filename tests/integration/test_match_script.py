@@ -40,4 +40,8 @@ def test_match_script_answers_in_hindi_for_hindi_line(client, db):
 
     assert response.status_code == 200
     assert response.json()["verdict"] == "unclear"
-    assert response.json()["say"] == "पक्का नहीं कह सकती। कुछ भी करने से पहले अपने परिवार को फ़ोन कीजिए।"
+    say = response.json()["say"]
+    # Listener feedback (S2): the warnings must be explicit, not left to the LLM.
+    assert "पैसे मत भेजिए" in say
+    assert "ओटीपी किसी को मत बताइए" in say
+    assert "परिवार को फ़ोन कीजिए" in say
