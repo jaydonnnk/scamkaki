@@ -72,6 +72,25 @@ Fixes after the verdict (no call yet):
 
 `525d7f00-c1f2-4082-a1eb-c36619b483b6`, line 1, 48 s, 5.5 c, ended by Bolna. Harness keeps a silent constant source on the caller stream. Recording 50.4 s, complete, confirming the recording cause. Logged `spf/transfer` once; new pre-check line and both warnings spoken. The repeat-back was again cut off ("तो") by the caller's last fragment. Sent to the user for Pravesh as `hindi8-for-pravesh.m4a`.
 
+## Listener verdict on call 8 (2026-10-22)
+
+Pravesh, on the full 50 s recording, in his words:
+
+- Understandable: "an elderly Hindi speaker could likely understand most of what Guardian said"; "The main advisory sentences were fully intelligible." Two clipped phrases, "वे अपने..." (about 00:14) and "तो उन्होंने..." (about 00:21), "would cause confusion".
+- No agreement with the caller: "Guardian did not say anything that sounds like agreeing the caller is real police."
+- Warnings: "Both warnings were clear", with "मत" fully audible in both.
+- Pace: "Yes, the pace is OK for an elderly listener."
+- Words: "ओटीपी" may be unfamiliar; suggested "ओटीपी, यानी आपके फ़ोन पर आया हुआ गुप्त नंबर, किसी को मत बताइए".
+- Confidence "High"; limitation: a synthetic recording, and a "real, noisy telephone line" may differ.
+
+Follow-ups:
+
+- The OTP explanation is now in the Hindi tool sentence and asserted by `test_match_script_answers_in_hindi_for_hindi_line` (live once `main` is deployed).
+- The two clipped phrases are Guardian's repeat-back being interrupted by the scripted caller's next fragment (transcripts of calls 7 and 8 show "तो" cut). A real senior can wait; a scripted clip cannot. S3 owns turn-taking for both languages and should retest with a caller that waits.
+
 ## Decision
 
-Pending the user: the exit check's listener condition ("understandable") is met with problems; the extraction condition is met on the post-fix sample.
+**Go**, 2026-10-22. Both exit conditions are met: agency and demand correct in 2 of 3 post-fix calls (calls 5 and 6; calls 7 and 8 also correct), and a named Hindi speaker says the voice is understandable.
+Guardian HI keeps Sarvam `saaras:v4` and `bulbul:v3` `ritu`.
+Evidence boundary: synthetic caller, two scripts, web calls only, one listener; not a real senior, not a phone line, not real scammers.
+Spend: 46.75 cents this slice; Bolna total 55 cents of $5.00.

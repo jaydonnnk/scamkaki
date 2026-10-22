@@ -5,7 +5,8 @@ from scamkaki.domain.types import Language, MatchResult
 UNCLEAR_SAY: dict[Language, str] = {
     "en": "Not sure. Please call your family before doing anything.",
     "hi": (
-        "पक्का नहीं कह सकती। पैसे मत भेजिए। ओटीपी किसी को मत बताइए।"
+        "पक्का नहीं कह सकती। पैसे मत भेजिए।"
+        " ओटीपी, यानी आपके फ़ोन पर आया हुआ गुप्त नंबर, किसी को मत बताइए।"
         " कुछ भी करने से पहले अपने परिवार को फ़ोन कीजिए।"
     ),
 }
