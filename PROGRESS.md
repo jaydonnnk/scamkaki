@@ -112,3 +112,4 @@ Test runner `scripts/check.mjs`: pulls executions over the Bolna API and prints 
 - 2026-10-22 git init on `main` (no commits; `outputs/`, `work/` ignored). Compact Gates 1-4 drafted in `docs/plans/scamkaki/` with two HTML mockups; awaiting approval. Next.js/pgvector plan above is superseded by the gate drafts (FastAPI, structured matching).
 - 2026-10-22 Gates 1-4 APPROVED by user; no slice authorized yet.
 - 2026-10-22 skeleton committed (7e41056) and pushed to private origin jaydonnnk/no-scamkaki main, verified with git ls-remote.
+- 2026-10-22 S1: Render live at https://scamkaki.onrender.com (/healthz ok). Guardian agent created a2cf7af2-1902-4abd-8bac-71b5a4d75d2a; GET /v2/agent confirms webhook_url, match_script tool (POST, bearer set), gpt-5.4-mini.

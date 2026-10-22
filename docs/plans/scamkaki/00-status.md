@@ -13,7 +13,7 @@ No other slice is authorized.
 
 ## Slices
 
-- [ ] S1 - Tracer: Guardian stub end to end (in progress, branch `scamkaki/slice-1-guardian-tracer`)
+- [x] S1 - Tracer: Guardian stub end to end, branch `scamkaki/slice-1-guardian-tracer`, done 2026-10-22; [evidence](evidence/s1-tracer.md). Deviation: tested by Bolna dashboard web call because the trial plan dials only +1/+91.
 - [ ] S2 - Hokkien voice spike
 - [ ] S3 - Guardian verdict and family transfer
 - [ ] S4 - Ah Ma Bait with extraction and leak guard
