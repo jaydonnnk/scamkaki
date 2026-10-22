@@ -1,13 +1,13 @@
 # Program Design: Scamkaki
 
 Compact gate draft, 2026-10-22.
+Revised 2026-10-22: English and Mandarin agents; the Modal TTS service and its files are removed.
 
 ## Toolchain
 
 Python 3.12 managed by `uv` (uv 0.13.0 is installed; Python 3.12 is not, `uv` would fetch it).
 Runtime dependencies: `fastapi`, `uvicorn`, `psycopg[binary]`, `httpx`, `jinja2`, `pydantic-settings`.
 Dev dependencies: `pytest`, `ruff`.
-TTS service: `modal`, plus the Hokkien model's own requirements.
 Exact pins are set in `pyproject.toml` and `uv.lock` at Slice 1; installing them needs your authorization.
 No local Postgres is installed; integration tests use a Neon test branch through `TEST_DATABASE_URL`.
 
@@ -18,7 +18,7 @@ uv run ruff check .
 uv run ruff format --check .
 uv run pytest tests/unit -q
 TEST_DATABASE_URL=... uv run pytest tests/integration -q
-uv run python scripts/check.py bait|guardian
+uv run python scripts/check.py bait|guardian [--language zh]
 ```
 
 ## Files
@@ -39,11 +39,11 @@ uv run python scripts/check.py bait|guardian
 | `src/scamkaki/app/main.py` | FastAPI app and routes |
 | `src/scamkaki/app/templates/*.html` | Dashboard and report pages, from the Gate 1 mockups |
 | `migrations/0001_init.sql` | Tables from Gate 2 |
-| `agents/{bait,guardian,test_scammer,test_senior}.json` | Bolna agent exports, versioned |
-| `tts_modal/app.py` | Modal app serving `POST /v1/audio/speech` as MP3 |
-| `seed/scripts.json` | 8 labeled fixture cases (5 scam, 3 legit) |
+| `agents/{bait,bait_zh,guardian,guardian_zh,test_scammer,test_senior}.json` | Bolna agent exports, versioned; `_zh` files are the Mandarin agents |
+| `seed/scripts.json` | 8 labeled English fixture cases (5 scam, 3 legit) plus 3 Mandarin cases (2 scam, 1 legit), each with a `language` field |
 | `scripts/check.py` | Runs agent-vs-agent fixture calls and prints pass rates |
 | `scripts/migrate.py` | Applies migrations |
+| `scripts/bolna_agent.py` | Creates or updates a Bolna agent from `agents/<name>.json` |
 | `tests/support/fakes.py` | Fake Bolna client and payload builders |
 
 ## Types and signatures
@@ -53,6 +53,7 @@ Agency = Literal["spf", "ica", "china_official", "moh", "cpf", "mom", "iras", "b
 Demand = Literal["transfer", "otp", "app_install", "personal_info", "gift_card", "none", "other"]
 Verdict = Literal["likely_scam", "unclear", "no_scam_signs"]
 Line = Literal["bait", "guardian"]
+Language = Literal["en", "zh"]
 
 GOV_AGENCIES: frozenset[Agency]  # spf, ica, china_official, moh, cpf, mom, iras
 HARD_DEMANDS: frozenset[Demand]  # transfer, otp, app_install, gift_card
@@ -99,7 +100,7 @@ def sentence_for(verdict: Verdict, similar_count: int) -> str: ...
 def draft_report(extraction: Extraction, leaks: Sequence[Leak], fixture_case: str | None) -> str: ...
 
 # domain/store.py
-def upsert_call(conn, execution_id: str, line: Line, transcript: str, extracted: dict, leaks: list[Leak],
+def upsert_call(conn, execution_id: str, line: Line, language: Language, transcript: str, extracted: dict, leaks: list[Leak],
                 status: str, duration_s: int | None, fixture_case: str | None) -> int: ...
 def add_script(conn, call_id: int, extraction: Extraction) -> int: ...
 def count_similar(conn, agency: Agency, demand: Demand, days: int = 7) -> int: ...
@@ -108,6 +109,9 @@ def add_report(conn, call_id: int, draft: str) -> int: ...
 def mark_reviewed(conn, report_id: int) -> None: ...
 def recent_calls(conn, limit: int = 50) -> list[CallRow]: ...
 def scripts_this_week(conn) -> list[ScriptGroup]: ...
+
+# lib/env.py
+def agent_line(agent_id: str) -> tuple[Line, Language] | None: ...  # maps the four agent ids; unknown id -> None
 
 # integrations/bolna.py
 class BolnaClient:
@@ -124,7 +128,7 @@ The fixture case id travels from `scripts/check.py` to the agents as a call vari
 
 ## Call stack
 
-**Bait webhook:** `webhook` (token check) to `BolnaClient.get_execution` to `parse_extraction` to `find_leaks(agent turns)` to `upsert_call` to `add_script` to `draft_report` to `add_report`.
+**Bait webhook:** `webhook` (token check) to `BolnaClient.get_execution` to `agent_line` to `parse_extraction` to `find_leaks(agent turns)` to `upsert_call` to `add_script` to `draft_report` to `add_report`.
 Repeated events for the same execution are idempotent through `upsert_call`; script and report rows are created once.
 
 **Guardian tool:** `match_script` (bearer check) to `parse_extraction`-style validation of `agency` and `demand` to `count_similar` to `decide` to `sentence_for` to `log_guardian_check`, returning JSON.
@@ -151,6 +155,9 @@ Unit (`tests/unit`):
 - `test_sentence_never_says_safe`
 - `test_draft_report_is_labeled_draft_and_fixture`
 - `test_env_example_lists_exactly_settings_names`
+- `test_agent_line_maps_all_four_agents`
+- `test_zh_agents_match_english_twins` (same tools, extraction keys and webhook)
+- `test_find_leaks_detects_mandarin_digit_words` (for example 一二三四五六)
 
 Integration (`tests/integration`, Neon test branch, fake Bolna client):
 
@@ -167,6 +174,8 @@ Live fixture checks (`scripts/check.py`, each run needs call authorization):
 
 - `bait`: 5 scam cases; pass if at least 4 planted payees are captured and zero leaks.
 - `guardian`: 8 cases; pass if at least 4 of 5 scams are `likely_scam` and at most 1 of 3 legit cases is.
+- `bait --language zh`: 2 Mandarin scam cases; pass if at least 1 payee is captured and zero leaks.
+- `guardian --language zh`: 3 Mandarin cases; pass if both scams are `likely_scam` and the legit case is not.
 
 Guard coverage: for each rule in `decide` and `find_leaks`, mutate that branch alone and show the matching unit test fails; record in `evidence/`.
 
@@ -176,6 +185,6 @@ Guard coverage: for each rule in `decide` and `find_leaks`, mutate that branch a
 2. Render free tier: cold starts versus Bolna's tool timeout [unknown].
 3. Webhook auth by path token, because Bolna webhook signatures are [unknown].
 4. Transfer on "likely scam" relies on the LLM following the prompt after the tool reply, not a hard graph edge.
-5. The Hokkien TTS whole-clip latency may make Ah Ma sound slow; fallback is a stock Bolna voice.
+5. Mandarin speech-to-text and voice quality on Bolna's stock providers [unknown until S2]; fallback is English only.
 6. Fixture case id round-trip through call variables [unknown].
-7. Guardian understanding spoken Hokkien through Bolna's providers is weak; keypad fallback is required, not optional.
+7. One agent per language doubles the agent JSON files to keep in sync; a unit test checks each `_zh` file has the same tools, extraction keys and webhook as its English twin.

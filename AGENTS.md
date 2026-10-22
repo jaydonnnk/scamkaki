@@ -9,6 +9,7 @@ The general agentic workflow (tiers, loop, escalation levers) lives in [docs/age
 ## Project map
 
 Scamkaki is a Bolna voice-agent project with two phone agents that feed each other.
+Both run in English and in Mandarin, one Bolna agent per language.
 Ah Ma Bait answers scam calls as a Singapore auntie, stalls, and extracts the claimed agency, demand and payee details.
 Ah Ma Guardian takes calls from seniors, compares what they heard with the scam scripts Bait collected, and hands risky cases to a family member.
 
@@ -23,8 +24,7 @@ Ah Ma Guardian takes calls from seniors, compares what they heard with the scam 
 | `src/scamkaki/domain/` | Pure logic: script matching, verdicts, extraction validation, leak guard, report drafts |
 | `src/scamkaki/integrations/` | Bolna API client |
 | `src/scamkaki/lib/` | Env loading, DB access, logging, ids, time |
-| `agents/` | Bolna graph agent JSON exports (Bait, Guardian, test Scammer, test Senior), versioned |
-| `tts_modal/` | Modal deployment of the Hokkien TTS behind an OpenAI-compatible `/v1/audio/speech` |
+| `agents/` | Bolna graph agent JSON exports (Bait and Guardian in English and Mandarin, test Scammer, test Senior), versioned |
 | `migrations/` | Ordered SQL migrations for Neon Postgres |
 | `seed/` | Labeled demo fixtures, including `seed/scripts.json` test cases |
 | `scripts/` | Operator and check scripts, for example `scripts/check.py` for agent-vs-agent call results |
@@ -105,7 +105,7 @@ Workflow files live in `docs/plans/scamkaki/`; a supporting brief does not repla
   Recording approval or correcting wording without changing a decision does not itself reopen the gate.
 - No application implementation begins before Gate 4 approval.
   Research, direction selection, context updates and evidence plans are not implementation approval.
-  Time-boxed technical spikes (for example the Hokkien TTS spike) run only when the user authorizes them by name, live outside `src/`, and are recorded as evidence, not product code.
+  Time-boxed technical spikes (for example a voice provider spike) run only when the user authorizes them by name, live outside `src/`, and are recorded as evidence, not product code.
 - Record approvals with dates and their limits in `00-status.md`.
   Update the gate line, applicable checklist, approval history and existing mirrors consistently.
   A stale or missing required mirror is a blocking finding.
@@ -143,7 +143,7 @@ Workflow files live in `docs/plans/scamkaki/`; a supporting brief does not repla
   Architecture documents list environment variable names only.
   `.env.example` lists names only, never values.
   Deleting a published secret does not remove it from Git history; report the exposure and arrange authorized rotation.
-- Placing real phone calls, buying numbers, spending Bolna or Modal credit, and changing Bolna agents on a shared account are external actions.
+- Placing real phone calls, buying numbers, spending Bolna or other cloud credit, and changing Bolna agents on a shared account are external actions.
   Request each by name unless the current slice authorization already covers it.
 
 ## Git discipline
@@ -254,7 +254,7 @@ It contains, in order:
 2. **Where this slice sits.** The whole build order by slice ID, which slices are done according to `00-status.md`, which are never cut, the cut order, and why this slice matters to the product goal.
 3. **This slice's contract.** The slice's section from the slice plan, copied rather than paraphrased: visible result, builds, assigned tests, evidence, falsifiers, exit decision and the authorizations to request.
 4. **Out of scope.** What the slice must not build because a later slice owns it, and cut or superseded scope that must not come back.
-5. **Current state.** The branch to create or continue, the `main` SHA, which tools, accounts and credentials exist or are missing (Bolna, Modal, Neon, hosting), pending access checks and open user decisions, each labeled [verified] or [unknown] with its date.
+5. **Current state.** The branch to create or continue, the `main` SHA, which tools, accounts and credentials exist or are missing (Bolna, Neon, hosting), pending access checks and open user decisions, each labeled [verified] or [unknown] with its date.
 6. **Authority.** The user's own words authorizing this slice, with the date, and every external action that must still be requested by name.
 7. **Read first.** This file, the software-factory skill, `00-status.md`, the slice plan and the cited gate sections.
 8. **Done means.** The slice's exit checks, the evidence to record in `00-status.md`, and the closing question `Continue to slice N+1, or re-steer?` naming the next slice by ID.
