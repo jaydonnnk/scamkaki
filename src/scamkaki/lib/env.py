@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     bolna_tool_token: str
     database_url: str
     app_base_url: str = ""
+    family_transfer_number: str = ""
     admin_username: str = "admin"
     admin_password: str = ""
     log_level: str = "info"

@@ -20,10 +20,10 @@ ROOT = Path(__file__).resolve().parents[1]
 def render(name: str) -> dict:
     settings = get_settings()
     values = {field.upper(): str(value) for field, value in settings.model_dump().items()}
-    missing = [v for v in ("APP_BASE_URL",) if not values.get(v)]
+    template = string.Template((ROOT / "agents" / f"{name}.json").read_text())
+    missing = [v for v in template.get_identifiers() if not values.get(v)]
     if missing:
         sys.exit(f"missing settings: {', '.join(missing)}")
-    template = string.Template((ROOT / "agents" / f"{name}.json").read_text())
     return json.loads(template.substitute(values))
 
 

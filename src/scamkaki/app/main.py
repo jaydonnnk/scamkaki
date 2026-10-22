@@ -13,9 +13,8 @@ from fastapi.responses import HTMLResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.templating import Jinja2Templates
 
-from scamkaki.domain import store
+from scamkaki.domain import store, verdict
 from scamkaki.domain.types import as_agency, as_demand, as_language
-from scamkaki.domain.verdict import stub_match
 from scamkaki.integrations.bolna import BolnaClient
 from scamkaki.lib.db import connect
 from scamkaki.lib.env import Settings, get_settings
@@ -127,8 +126,13 @@ async def match_script(request: Request, settings: SettingsDep) -> dict[str, Any
         body = {}
     params = {**request.query_params, **body}
     agency, demand = as_agency(params.get("agency")), as_demand(params.get("demand"))
+    language = as_language(params.get("language"))
 
-    result = stub_match(as_language(params.get("language")))
+    try:
+        result = verdict.match(agency, demand, language)
+    except Exception:
+        log.exception("verdict failed; answering unclear")
+        result = verdict.unclear(language)
     try:
         await run_in_threadpool(_log_check, settings.database_url, agency, demand, result)
     except Exception:

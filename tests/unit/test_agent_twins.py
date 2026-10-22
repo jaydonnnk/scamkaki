@@ -38,4 +38,17 @@ def test_hi_agents_match_english_twins(hi_path):
 def test_hi_agents_send_language_hi_to_tools(hi_path):
     tools = json.loads(hi_path.read_text())["agent_config"]["tasks"][0]["tools_config"]
     for spec in tools["api_tools"]["tools_params"].values():
-        assert json.loads(spec["param"])["language"] == "hi"
+        if spec["url"]:  # Our endpoints; Bolna's own transfer tool has no url.
+            assert json.loads(spec["param"])["language"] == "hi"
+
+
+@pytest.mark.parametrize("name", ["guardian", "guardian_hi"])
+def test_guardian_transfers_to_family_number_from_settings(name):
+    tools = json.loads((ROOT / "agents" / f"{name}.json").read_text())["agent_config"]
+    api = tools["tasks"][0]["tools_config"]["api_tools"]
+    transfer = [tool for tool in api["tools"] if tool["key"] == "transfer_call"]
+
+    assert [tool["name"] for tool in transfer] == ["transfer_to_family"]
+    param = json.loads(api["tools_params"]["transfer_to_family"]["param"])
+    # The real number lives in settings only, never in the committed file.
+    assert param["call_transfer_number"] == "${FAMILY_TRANSFER_NUMBER}"
