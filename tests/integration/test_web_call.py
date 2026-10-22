@@ -7,7 +7,7 @@ def test_web_call_session_mints_for_guardian_agent(client):
     bolna = FakeBolnaWithSessions()
     app.dependency_overrides[get_bolna] = lambda: bolna
 
-    response = client.post("/web-call/session", json={})
+    response = client.post("/web-call/session", json={}, auth=("admin", "admin-pass"))
 
     assert response.status_code == 200
     assert response.json() == {"session": "fake"}

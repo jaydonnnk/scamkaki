@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     tts_base_url: str = ""
     tts_api_key: str = ""
     app_base_url: str = ""
+    admin_username: str = "admin"
+    admin_password: str = ""
     log_level: str = "info"
 
 

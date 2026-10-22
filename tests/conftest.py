@@ -34,4 +34,5 @@ def test_settings() -> Settings:
         bolna_webhook_token="hook-token",
         bolna_tool_token="tool-token",
         database_url=url,
+        admin_password="admin-pass",
     )

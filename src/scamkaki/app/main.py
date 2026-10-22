@@ -10,6 +10,7 @@ from zoneinfo import ZoneInfo
 from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import HTMLResponse
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.templating import Jinja2Templates
 
 from scamkaki.domain import store
@@ -39,6 +40,24 @@ templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
 templates.env.filters["sgt"] = lambda ts: ts.astimezone(SGT).strftime("%d %b %H:%M")
 
 SettingsDep = Annotated[Settings, Depends(get_settings)]
+
+
+basic = HTTPBasic(realm="Scamkaki admin")
+
+
+def require_admin(
+    credentials: Annotated[HTTPBasicCredentials, Depends(basic)], settings: SettingsDep
+) -> None:
+    """Browser sign-in for the dashboard and web calls. Fails closed if no password is set."""
+    ok_user = compare_digest(credentials.username.encode(), settings.admin_username.encode())
+    ok_password = compare_digest(credentials.password.encode(), settings.admin_password.encode())
+    if not settings.admin_password or not (ok_user and ok_password):
+        raise HTTPException(
+            status_code=401, headers={"WWW-Authenticate": 'Basic realm="Scamkaki admin"'}
+        )
+
+
+AdminDep = Depends(require_admin)
 
 
 def get_bolna(settings: SettingsDep) -> BolnaClient:
@@ -129,7 +148,7 @@ def _log_check(database_url: str, agency, demand, result) -> None:
         store.log_guardian_check(conn, agency, demand, result)
 
 
-@app.post("/web-call/session")
+@app.post("/web-call/session", dependencies=[AdminDep])
 def web_call_session(
     settings: SettingsDep, bolna: Annotated[BolnaClient, Depends(get_bolna)]
 ) -> dict[str, Any]:
@@ -138,7 +157,7 @@ def web_call_session(
     return bolna.mint_web_call_session(settings.bolna_guardian_agent_id)
 
 
-@app.get("/", response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse, dependencies=[AdminDep])
 def dashboard(request: Request, settings: SettingsDep) -> HTMLResponse:
     with connect(settings.database_url) as conn:
         calls = store.recent_calls(conn)
