@@ -16,7 +16,7 @@ No other slice is authorized.
 ## Slices
 
 - [x] S1 - Tracer: Guardian stub end to end, branch `scamkaki/slice-1-guardian-tracer`, done 2026-10-22; [evidence](evidence/s1-tracer.md). Deviation: tested by Bolna dashboard web call because the trial plan dials only +1/+91.
-- [ ] S2 - Hindi voice (replaces the Hokkien voice spike, 2026-10-22)
+- [ ] S2 - Hindi voice (replaces the Hokkien voice spike, 2026-10-22), branch `scamkaki/slice-2-hindi-voice`, in progress; [evidence](evidence/s2-hindi.md). Extraction criterion met after the confirm-first fix (2 of 3 clean); waiting for the Hindi listener's verdict before go/no-go.
 - [ ] S3 - Guardian verdict and family transfer
 - [ ] S4 - Ah Ma Bait with extraction and leak guard
 - [ ] S5 - The loop: Guardian uses Bait's scripts
@@ -48,3 +48,4 @@ No other slice is authorized.
 - 2026-10-22 language swap (user: "Okay then lets swap hind and chinese. So we do both english and hindi, chinese if all slices are done."): languages are English and Hindi; Mandarin becomes the stretch after S6. Gates 1-4 reopened for re-approval. S2 is not authorized.
 - 2026-10-22 Gate 1 re-approved (user: "Sure") after the Hindi line was framed for Hindi-speaking minorities in Singapore facing Singapore scams (MOM added to the claimed agencies), and the Hindi Bait persona named "Mrs Sharma". Gates 2-4 still need re-approval.
 - 2026-10-22 Gates 2-4 re-approved (user: "apprive all gates and commit and pusj to main thanks"). S2 is not yet authorized.
+- 2026-10-22 S2 authorized (user: "Yea i authorize s2. Plese start on a new branch and i authroize the creation o the guardian agent, and up to 3 web calls."), then 3 more calls ("Yep i authorize go ahead"). S2 code fast-forwarded to `main` at `1fdfa21` on the user's instruction so Render could deploy it ("Yep u can push to main").
