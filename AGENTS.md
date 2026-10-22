@@ -8,7 +8,7 @@ The general agentic workflow (tiers, loop, escalation levers) lives in [docs/age
 
 ## Project map
 
-Scam Ah Ma is a Bolna voice-agent project with two phone agents that feed each other.
+Scamkaki is a Bolna voice-agent project with two phone agents that feed each other.
 Ah Ma Bait answers scam calls as a Singapore auntie, stalls, and extracts the claimed agency, demand and payee details.
 Ah Ma Guardian takes calls from seniors, compares what they heard with the scam scripts Bait collected, and hands risky cases to a family member.
 
@@ -16,13 +16,13 @@ Ah Ma Guardian takes calls from seniors, compares what they heard with the scam 
 |---|---|
 | `AGENTS.md` | These rules |
 | `PROGRESS.md` | Operational memory for long runs; never records a gate approval |
-| `docs/plans/scam-ah-ma/` | Gate folder: `00-status.md` (authority), `01-product.md`, `02-architecture.md`, `03-program-design.md`, `04-slices.md`, plus `checks/`, `evidence/`, `mockups/` |
+| `docs/plans/scamkaki/` | Gate folder: `00-status.md` (authority), `01-product.md`, `02-architecture.md`, `03-program-design.md`, `04-slices.md`, plus `checks/`, `evidence/`, `mockups/` |
 | `docs/agentic-workflow.md` | Jaydon's Agentic Workflow (tiers, loop, ship ladder) |
 | `outputs/`, `work/` | Pre-project research; historical context, not current scope |
-| `src/scam_ah_ma/app/` | HTTP surface: Bolna webhook, Bolna custom-function tool, dashboard |
-| `src/scam_ah_ma/domain/` | Pure logic: script matching, verdicts, extraction validation, leak guard, report drafts |
-| `src/scam_ah_ma/integrations/` | Bolna API client |
-| `src/scam_ah_ma/lib/` | Env loading, DB access, logging, ids, time |
+| `src/scamkaki/app/` | HTTP surface: Bolna webhook, Bolna custom-function tool, dashboard |
+| `src/scamkaki/domain/` | Pure logic: script matching, verdicts, extraction validation, leak guard, report drafts |
+| `src/scamkaki/integrations/` | Bolna API client |
+| `src/scamkaki/lib/` | Env loading, DB access, logging, ids, time |
 | `agents/` | Bolna graph agent JSON exports (Bait, Guardian, test Scammer, test Senior), versioned |
 | `tts_modal/` | Modal deployment of the Hokkien TTS behind an OpenAI-compatible `/v1/audio/speech` |
 | `migrations/` | Ordered SQL migrations for Neon Postgres |
@@ -71,7 +71,7 @@ Before working, inspect the repository and read the existing task-relevant files
 
 1. Applicable `AGENTS.md` instructions and official buildathon requirements, if present.
 2. The current supporting brief, including scope, evidence and unresolved risks.
-3. `docs/plans/scam-ah-ma/00-status.md` and every existing document in that gate folder.
+3. `docs/plans/scamkaki/00-status.md` and every existing document in that gate folder.
 4. Relevant research and decision records, including `outputs/` reports for background.
 5. `tasks/lessons.md`, if present, for corrections relevant to this task.
 6. Applicable skills.
@@ -91,7 +91,7 @@ Before working, inspect the repository and read the existing task-relevant files
 ## Software-factory workflow
 
 Run the four gates separately: Product, Architecture, Program Design, then Vertical Slice Plan.
-Workflow files live in `docs/plans/scam-ah-ma/`; a supporting brief does not replace the gate documents.
+Workflow files live in `docs/plans/scamkaki/`; a supporting brief does not replace the gate documents.
 
 - Obtain explicit approval at every gate.
   Resume from the first unapproved gate in `00-status.md`; do not redo an approved gate unless requested or invalidated by later evidence.
@@ -154,13 +154,13 @@ Workflow files live in `docs/plans/scam-ah-ma/`; a supporting brief does not rep
 - Each implementation slice gets its own branch before its first edit, from the current tip of `main`.
   Confirm it with `git branch --show-current`.
   Do not begin slice work on `main` or continue on the previous slice's branch unless explicitly instructed otherwise.
-- Use `scam-ah-ma/slice-<N>-<slug>` by default, with a short descriptive slug (for example `scam-ah-ma/slice-1-guardian-tracer`).
+- Use `scamkaki/slice-<N>-<slug>` by default, with a short descriptive slug (for example `scamkaki/slice-1-guardian-tracer`).
   When a branch covers only part of a slice, name the slug after the fixture or feature that part is about.
   Keep the name stable and record it in the slice's section of `00-status.md`.
 - Authorization to implement a slice includes creating its required branch.
   It does not include pushing it.
   Do not create a branch for an unauthorized slice.
-- Gate revisions and substantial reviews use descriptive `scam-ah-ma/` branches under the same authorization rules.
+- Gate revisions and substantial reviews use descriptive `scamkaki/` branches under the same authorization rules.
   Small documentation maintenance does not require a new branch.
   Follow an explicit user request to work directly on `main`.
 - Commit coherent concerns with messages stating what changed and why.

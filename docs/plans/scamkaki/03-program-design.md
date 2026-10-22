@@ -1,4 +1,4 @@
-# Program Design: Scam Ah Ma
+# Program Design: Scamkaki
 
 Compact gate draft, 2026-10-22.
 
@@ -26,18 +26,18 @@ uv run python scripts/check.py bait|guardian
 | File | Why it lives there |
 |---|---|
 | `pyproject.toml`, `uv.lock` | Project, pins, ruff and pytest config |
-| `src/scam_ah_ma/lib/env.py` | Settings loaded from env; the only reader of env vars |
-| `src/scam_ah_ma/lib/db.py` | Connection helper and the small migration runner |
-| `src/scam_ah_ma/lib/log.py` | Structured logging without secrets |
-| `src/scam_ah_ma/domain/types.py` | `Agency`, `Demand`, `Verdict`, `Extraction`, `Leak`, `MatchResult` |
-| `src/scam_ah_ma/domain/extraction.py` | Parse Bolna extracted values into `Extraction`, unknown values to `other` or `None` |
-| `src/scam_ah_ma/domain/leaks.py` | Leak guard over Ah Ma's turns |
-| `src/scam_ah_ma/domain/verdict.py` | Verdict rule and the sentence Ah Ma says |
-| `src/scam_ah_ma/domain/reports.py` | Report draft text |
-| `src/scam_ah_ma/domain/store.py` | SQL for calls, scripts, checks, reports |
-| `src/scam_ah_ma/integrations/bolna.py` | Bolna REST client: get execution, start test call |
-| `src/scam_ah_ma/app/main.py` | FastAPI app and routes |
-| `src/scam_ah_ma/app/templates/*.html` | Dashboard and report pages, from the Gate 1 mockups |
+| `src/scamkaki/lib/env.py` | Settings loaded from env; the only reader of env vars |
+| `src/scamkaki/lib/db.py` | Connection helper and the small migration runner |
+| `src/scamkaki/lib/log.py` | Structured logging without secrets |
+| `src/scamkaki/domain/types.py` | `Agency`, `Demand`, `Verdict`, `Extraction`, `Leak`, `MatchResult` |
+| `src/scamkaki/domain/extraction.py` | Parse Bolna extracted values into `Extraction`, unknown values to `other` or `None` |
+| `src/scamkaki/domain/leaks.py` | Leak guard over Ah Ma's turns |
+| `src/scamkaki/domain/verdict.py` | Verdict rule and the sentence Ah Ma says |
+| `src/scamkaki/domain/reports.py` | Report draft text |
+| `src/scamkaki/domain/store.py` | SQL for calls, scripts, checks, reports |
+| `src/scamkaki/integrations/bolna.py` | Bolna REST client: get execution, start test call |
+| `src/scamkaki/app/main.py` | FastAPI app and routes |
+| `src/scamkaki/app/templates/*.html` | Dashboard and report pages, from the Gate 1 mockups |
 | `migrations/0001_init.sql` | Tables from Gate 2 |
 | `agents/{bait,guardian,test_scammer,test_senior}.json` | Bolna agent exports, versioned |
 | `tts_modal/app.py` | Modal app serving `POST /v1/audio/speech` as MP3 |
@@ -45,7 +45,6 @@ uv run python scripts/check.py bait|guardian
 | `scripts/check.py` | Runs agent-vs-agent fixture calls and prints pass rates |
 | `scripts/migrate.py` | Applies migrations |
 | `tests/support/fakes.py` | Fake Bolna client and payload builders |
-| `render.yaml` | Render web service definition |
 
 ## Types and signatures
 

@@ -1,4 +1,4 @@
-# Scam Ah Ma
+# Scamkaki
 
 Two Bolna voice agents for Singapore seniors.
 Ah Ma Bait answers scam calls as a Singapore auntie, stalls, and extracts the claimed agency, demand and payee details.
@@ -13,6 +13,6 @@ Ah Ma Guardian takes calls from seniors, compares what they heard with the scam 
 ## Status
 
 Planning.
-Gate state lives in [docs/plans/scam-ah-ma/00-status.md](docs/plans/scam-ah-ma/00-status.md).
+Gate state lives in [docs/plans/scamkaki/00-status.md](docs/plans/scamkaki/00-status.md).
 Agent rules live in [AGENTS.md](AGENTS.md).
 Setup and check commands are added when Slice 1 lands.

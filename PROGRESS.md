@@ -72,7 +72,7 @@ Verification/result: saved `outputs/Singapore infrastructure voice ideas.md`, by
 
 - [x] Re-check Bolna Oct changelog for fresh unlocks (custom TTS 12 Oct, SIP trunks 15 Oct, SIP headers 18 Oct, debug API 21 Oct, Sarvam keywords 2 Oct).
 - [x] Find SG speech tech: MERaLiON-3-3B-ASR (Hokkien/Cantonese/Singlish, OpenAI-compatible serve), MERaLiON-OmniVoice-Hokkien-TTS (Reddit claim, ATxSummit 2026, card not opened), SEA-LION v4.8 (~mid Sep, date inferred).
-- [x] Shortlist voice-first ideas: Ah Ma Line (Hokkien calls), Scam Ah Ma (forwarded scam-call honeypot), Singlish Stress Test (Bolna agent QA).
+- [x] Shortlist voice-first ideas: Ah Ma Line (Hokkien calls), Scamkaki (forwarded scam-call honeypot), Singlish Stress Test (Bolna agent QA).
 
 Limits: Bolna has no custom STT, so Hokkien listening relies on listed STT providers plus post-call MERaLiON re-transcription. Custom TTS is whole-clip MP3, 20 s timeout, refused on multilingual agents. Carrier passing of `Diversion` on SG forwarded calls unverified. Hokkien TTS weights/licence unverified. O2 Daisy (2024) is prior art for the honeypot. No calls, installs or account actions.
 
@@ -83,7 +83,7 @@ Limits: Bolna has no custom STT, so Hokkien listening relies on listed STT provi
 - [x] Prior art: Lions Befrienders + Seasalt.ai NANA (30 Apr 2026, companion check-ins, Singlish/Mandarin/Malay/Tamil/Cantonese, no Hokkien, 1,000+ seniors). Pivot: critical-message delivery with proof of understanding, Hokkien first.
 - Plivo SG numbers need Enterprise plan; SG blocks non-local caller ID on domestic calls.
 
-## Scam Ah Ma deep dive, 2026-10-22
+## Scamkaki deep dive, 2026-10-22
 
 - [x] Prior art: Apate.ai (TechCrunch 14 Oct 2026) runs AI victim personas at scale for TPG/CBA; no SG/Asia customer named. Honeypot alone is not novel.
 - [x] SG context: SPF H1 2026 16,821 cases, S$410.6M losses; 1799 ScamShield Helpline has no dialect support, 4-language IVR only planned for 2026; Protection from Scams Act ROs (12 issued by 15 Feb 2026); Bill 16 of 2026 adds account disabling orders (passage unconfirmed).
@@ -93,7 +93,7 @@ Unverified: Diversion header on SG conditional forwarding, Plivo SG number KYC, 
 - 2026-10-22 decision: Bolna-only stack. Deepgram/Plivo/Exotel dropped as named sponsors; STT/telephony via Bolna defaults. Forwarding-detection (Diversion header) becomes stretch since it needs own carrier trunk.
 - 2026-10-22 test corpus: no public Singapore scam-call audio found. Usable: BothBosu/scam-dialogue (EN text, synthetic, 1,600 rows, Apache-2.0); TeleAntiFraud-28k (ZH audio, 12.7 GB, gated, Apache-2.0); MultiFraudAlign (synthetic multilingual, licence unchecked). SG scripts must be built from SPF advisories/scamalert.sg stories, then generated as synthetic dialogues and Bolna-vs-Bolna test calls.
 
-## Build: Scam Ah Ma (Bolna-only), plan 2026-10-22
+## Build: Scamkaki (Bolna-only), plan 2026-10-22
 
 Goal: demo-ready Ah Ma Bait + Guardian on Bolna, with minimal sample testing gating each step.
 Stack: Bolna graph agents (gpt-5.4-mini), Next.js on Vercel (webhook, `match_script` tool, dashboard, Web Call SDK), Neon Postgres + pgvector, Modal GPU for Hokkien TTS behind `/v1/audio/speech`.
@@ -108,6 +108,7 @@ Test runner `scripts/check.mjs`: pulls executions over the Bolna API and prints 
 - [ ] 5. Dashboard: live feed, script clusters, report drafts, Web Call "play scammer" button.
 - [ ] 6. Rehearse 3-min demo x3, record backup video.
 - [ ] Stretch: BothBosu offline check of `match_script`; MERaLiON ASR post-call re-check; SIP trunk Diversion detection.
-- 2026-10-22 repo structured after Envoi: new `AGENTS.md` (Envoi rules adapted to Python/macOS/Bolna, plus product hard rules), old workflow preserved at `docs/agentic-workflow.md`, gate folder `docs/plans/scam-ah-ma/` with `00-status.md` (all gates NOT STARTED), `src/scam_ah_ma/{app,domain,integrations,lib}`, `agents/`, `tts_modal/`, `migrations/`, `seed/`, `scripts/`, `tests/{unit,integration,e2e,support}`, `config/`, `README.md`, `.env.example`, `.gitignore`. Assumption: Python. Not a git repo yet.
-- 2026-10-22 git init on `main` (no commits; `outputs/`, `work/` ignored). Compact Gates 1-4 drafted in `docs/plans/scam-ah-ma/` with two HTML mockups; awaiting approval. Next.js/pgvector plan above is superseded by the gate drafts (FastAPI, structured matching).
+- 2026-10-22 repo structured after Envoi: new `AGENTS.md` (Envoi rules adapted to Python/macOS/Bolna, plus product hard rules), old workflow preserved at `docs/agentic-workflow.md`, gate folder `docs/plans/scamkaki/` with `00-status.md` (all gates NOT STARTED), `src/scamkaki/{app,domain,integrations,lib}`, `agents/`, `tts_modal/`, `migrations/`, `seed/`, `scripts/`, `tests/{unit,integration,e2e,support}`, `config/`, `README.md`, `.env.example`, `.gitignore`. Assumption: Python. Not a git repo yet.
+- 2026-10-22 git init on `main` (no commits; `outputs/`, `work/` ignored). Compact Gates 1-4 drafted in `docs/plans/scamkaki/` with two HTML mockups; awaiting approval. Next.js/pgvector plan above is superseded by the gate drafts (FastAPI, structured matching).
 - 2026-10-22 Gates 1-4 APPROVED by user; no slice authorized yet.
+- 2026-10-22 skeleton committed (7e41056) and pushed to private origin jaydonnnk/no-scamkaki main, verified with git ls-remote.

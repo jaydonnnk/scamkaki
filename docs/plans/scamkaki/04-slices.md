@@ -1,9 +1,9 @@
-# Slice plan: Scam Ah Ma
+# Slice plan: Scamkaki
 
 Compact gate draft, 2026-10-22.
 Riskiest first.
 Each slice ends with a visible, working result and evidence in `evidence/`.
-Branch per slice: `scam-ah-ma/slice-<N>-<slug>`.
+Branch per slice: `scamkaki/slice-<N>-<slug>`.
 
 ## Build order
 

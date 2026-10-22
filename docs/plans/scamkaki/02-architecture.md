@@ -1,4 +1,4 @@
-# Architecture: Scam Ah Ma
+# Architecture: Scamkaki
 
 Compact gate draft, 2026-10-22.
 Greenfield repo; no existing code to fit.

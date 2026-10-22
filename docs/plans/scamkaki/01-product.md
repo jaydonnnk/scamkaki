@@ -1,4 +1,4 @@
-# Product: Scam Ah Ma
+# Product: Scamkaki
 
 Compact gate draft, 2026-10-22.
 
@@ -36,7 +36,7 @@ These are fixture results, never performance against real scammers.
 ## Announcement
 
 Ah Ma doesn't need to know if it's a scam. She just needs one number to call.
-Scam Ah Ma gives Singapore seniors a phone line that listens in Hokkien, Singlish or Mandarin, checks what they heard against scam scripts caught this week, and brings in family before money moves.
+Scamkaki gives Singapore seniors a phone line that listens in Hokkien, Singlish or Mandarin, checks what they heard against scam scripts caught this week, and brings in family before money moves.
 Behind it, Ah Ma Bait picks up scam calls herself, plays along, and learns the newest scripts so Guardian is never a week behind.
 Every report is a draft that a person checks; nothing is filed automatically.
 
