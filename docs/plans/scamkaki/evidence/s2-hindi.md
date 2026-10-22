@@ -94,3 +94,4 @@ Follow-ups:
 Guardian HI keeps Sarvam `saaras:v4` and `bulbul:v3` `ritu`.
 Evidence boundary: synthetic caller, two scripts, web calls only, one listener; not a real senior, not a phone line, not real scammers.
 Spend: 46.75 cents this slice; Bolna total 55 cents of $5.00.
+Cleanup (user: "Yep do these"): the 7 tool-probe rows in production `guardian_checks` (ids 2-5 and 13-15, no call attached) were deleted; every remaining row matches a call.
