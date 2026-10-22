@@ -68,6 +68,10 @@ Fixes after the verdict (no call yet):
 
 `4c666a59-be0e-408b-87c3-f579ebd4d055`, line 1, 50 s, 5.5 c, ended by Bolna. Logged `spf/transfer` once. Guardian used the new pre-check line "एक मिनट रुकिए, मैं जाँच करती हूँ।" and the new sentence with both warnings. Its repeat-back was cut off ("तो") by the caller's last fragment, so no explicit yes was heard. Recording again 13.1 s (harness cause above), so it is not usable for the listener.
 
+## Call 8 (authorized 2026-10-22: "sure make that one call")
+
+`525d7f00-c1f2-4082-a1eb-c36619b483b6`, line 1, 48 s, 5.5 c, ended by Bolna. Harness keeps a silent constant source on the caller stream. Recording 50.4 s, complete, confirming the recording cause. Logged `spf/transfer` once; new pre-check line and both warnings spoken. The repeat-back was again cut off ("तो") by the caller's last fragment. Sent to the user for Pravesh as `hindi8-for-pravesh.m4a`.
+
 ## Decision
 
 Pending the user: the exit check's listener condition ("understandable") is met with problems; the extraction condition is met on the post-fix sample.
