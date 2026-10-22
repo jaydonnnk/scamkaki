@@ -11,13 +11,13 @@ The gate revision branch `scamkaki/gates-english-mandarin` was fast-forwarded in
 
 The user asked for compact versions of all four gates in one pass because of hackathon time (2026-10-22: "draft compact versions of all four in one pass as we dont have much time").
 S1 authorized 2026-10-22 by the user ("You have my authorization to start slice 1"), with the installs ("I give authroizeation for 7") and a Bolna budget of $5 for today and tomorrow.
-S2 was authorized and closed 2026-10-22 (see approval history). S3 to S6 are not yet authorized.
+S2 was authorized and closed 2026-10-22 (see approval history). S3 authorized 2026-10-23; S4 to S6 are not yet authorized.
 
 ## Slices
 
 - [x] S1 - Tracer: Guardian stub end to end, branch `scamkaki/slice-1-guardian-tracer`, done 2026-10-22; [evidence](evidence/s1-tracer.md). Deviation: tested by Bolna dashboard web call because the trial plan dials only +1/+91.
 - [x] S2 - Hindi voice, branch `scamkaki/slice-2-hindi-voice`, done 2026-10-22, **go**; [evidence](evidence/s2-hindi.md). Guardian HI (Sarvam `saaras:v4` + `bulbul:v3` `ritu`) extracted agency and demand in 2 of 3 post-fix synthetic calls; Hindi listener Pravesh: understandable, warnings clear, pace OK. Open for S3: repeat-back gets clipped when the caller keeps talking; English Guardian lacks the confirm-first steps.
-- [ ] S3 - Guardian verdict and family transfer
+- [ ] S3 - Guardian verdict and family transfer, branch `scamkaki/slice-3-guardian-verdict`, in progress.
 - [ ] S4 - Ah Ma Bait with extraction and leak guard
 - [ ] S5 - The loop: Guardian uses Bait's scripts
 - [ ] S6 - Dashboard, report review and demo
@@ -50,3 +50,6 @@ S2 was authorized and closed 2026-10-22 (see approval history). S3 to S6 are not
 - 2026-10-22 Gates 2-4 re-approved (user: "apprive all gates and commit and pusj to main thanks"). S2 is not yet authorized.
 - 2026-10-22 S2 authorized (user: "Yea i authorize s2. Plese start on a new branch and i authroize the creation o the guardian agent, and up to 3 web calls."), then 3 more calls ("Yep i authorize go ahead"). S2 code fast-forwarded to `main` at `1fdfa21` on the user's instruction so Render could deploy it ("Yep u can push to main").
 - 2026-10-22 S2 extra calls authorized ("okay sure", "sure make that one call"); `main` pushed to `ea020a9` on the user's instruction. S2 recorded as go after the listener verdict.
+- 2026-10-23 S3 authorized (user, answering "Do you authorize S3 ...": "Yes, authorize S3"), covering the branch, the code and Bolna updates to both Guardian agents including a transfer tool; calls and pushes are asked separately.
+  The user chose one probe call first to learn whether a web call can transfer, and the family number lives only in settings (`FAMILY_TRANSFER_NUMBER`), with a placeholder in `agents/*.json`.
+- 2026-10-23 Gate 3 wording amendment (user: "Approve amendment"): `sentence_for(verdict, similar_count, language)` and a `language` field on `POST /tools/match-script`, recording what S2 already built for the Hindi line. No gate reopens.

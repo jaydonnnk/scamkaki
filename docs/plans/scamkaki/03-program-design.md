@@ -94,7 +94,8 @@ def decide(agency: Agency, demand: Demand, similar_count: int) -> Verdict: ...
 #  agency in GOV_AGENCIES and demand == personal_info -> likely_scam
 #  similar_count >= 1 -> unclear
 #  else -> no_scam_signs
-def sentence_for(verdict: Verdict, similar_count: int) -> str: ...
+def sentence_for(verdict: Verdict, similar_count: int, language: Language) -> str: ...
+# The sentence is in the line's language; Hindi sentences carry explicit money and OTP warnings.
 
 # domain/reports.py
 def draft_report(extraction: Extraction, leaks: Sequence[Leak], fixture_case: str | None) -> str: ...
@@ -120,7 +121,7 @@ class BolnaClient:
 
 # app/main.py
 POST /bolna/webhook/{token}   body: Bolna event -> 204
-POST /tools/match-script      body: {"agency": str, "demand": str} -> {"verdict", "similar_count", "say"}
+POST /tools/match-script      body: {"agency": str, "demand": str, "language": "en"|"hi"} -> {"verdict", "similar_count", "say"}
 GET  /, GET /reports/{id}, POST /reports/{id}/review, GET /healthz
 ```
 
