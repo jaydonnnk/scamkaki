@@ -45,7 +45,13 @@ Changes before these calls: Guardian HI must repeat back who and what it underst
 - Limits: synthetic Lekha caller reading fixed scripts, two scripts, five valid calls; not a real senior, not real scammers. The English Guardian still has the old prompt; S3 ports the confirm-first steps.
 - The dashboard's Hindi Talk button was tested by integration test only (`test_web_call_session_mints_for_hindi_guardian`), not by a signed-in browser call, because the agent may not enter the real admin password.
 
+## Listener check (2026-10-22): not accepted
+
+- Bolna's recordings of calls 4-6 are truncated: 12.9 s, 13.3 s and 9.8 s (FLAC STREAMINFO and full decode), against call lengths of 39-58 s. Calls 2-3 recorded in full (43.7 s and 43.8 s). Calls 4-6 were hung up by the test page and calls 2-3 by Bolna; whether that causes the truncation is [unknown]. The truncated files were sent to the user without a length check.
+- A review of "hindi4.mp4", "hindi5.mp4" and "hindi6.mp4" returned "Understandable with problems".
+  It was not recorded as the listener verdict because it does not match the calls: none of the Guardian phrases it quotes (for example "गोपनीय विवरण", "सत्यापित", "लेन-देन", "ओटीपी, पिन या पासवर्ड न दें") appear in the Bolna transcripts, which hold the exact text the voice read; its timestamps (00:23-00:54) lie beyond the 10-13 s files; and it reports no barge-ins where the transcripts show Guardian cut off.
+
 ## Open
 
-- Listener verdict: recordings of calls 2-6 handed to the user for a Hindi speaker; verdict [unknown].
-- Go/no-go: technical criterion met after the fix; the decision waits for the listener verdict.
+- Listener verdict: needed from a person who listens to the full recordings of calls 2 and 3 (same voice and model as calls 4-6) or to a live call; [unknown].
+- Go/no-go: extraction criterion met after the fix (calls 4-6); listener criterion not met; S2 stays open.
