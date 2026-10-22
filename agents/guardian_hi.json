@@ -1,0 +1,128 @@
+{
+  "agent_config": {
+    "agent_name": "Scamkaki Ah Ma Guardian (Hindi)",
+    "agent_welcome_message": "नमस्ते, मैं Ah Ma Guardian हूँ। क्या अभी किसी ने आपको फ़ोन किया और आपको शक है? मुझे बताइए क्या हुआ।",
+    "webhook_url": "${APP_BASE_URL}/bolna/webhook/${BOLNA_WEBHOOK_TOKEN}",
+    "tasks": [
+      {
+        "task_type": "conversation",
+        "toolchain": {
+          "execution": "parallel",
+          "pipelines": [
+            [
+              "transcriber",
+              "llm",
+              "synthesizer"
+            ]
+          ]
+        },
+        "tools_config": {
+          "llm_agent": {
+            "agent_type": "simple_llm_agent",
+            "agent_flow_type": "streaming",
+            "llm_config": {
+              "provider": "openai",
+              "model": "gpt-5.4-mini",
+              "max_tokens": 150,
+              "temperature": 1
+            }
+          },
+          "synthesizer": {
+            "provider": "sarvam",
+            "provider_config": {
+              "voice": "Ritu",
+              "voice_id": "ritu",
+              "model": "bulbul:v3",
+              "language": "hi",
+              "speed": 0.9
+            },
+            "stream": true,
+            "buffer_size": 150
+          },
+          "transcriber": {
+            "provider": "sarvam",
+            "model": "saaras:v4",
+            "language": "hi",
+            "stream": true,
+            "endpointing": 500,
+            "keywords": "SPF, police, ICA, MOM, MOH, CPF, IRAS, PayNow, OTP, DBS, OCBC, UOB, Singapore",
+            "context": "A senior in Singapore describes, in Hindi, a suspicious phone call they just got: who the caller claimed to be and what they asked for."
+          },
+          "input": {
+            "provider": "plivo",
+            "format": "wav"
+          },
+          "output": {
+            "provider": "plivo",
+            "format": "wav"
+          },
+          "api_tools": {
+            "tools": [
+              {
+                "name": "match_script",
+                "key": "custom_task",
+                "description": "Call this once you know who the caller claimed to be and what they asked the senior to do. It checks the call against known scam scripts and returns the sentence to say.",
+                "pre_call_message": "ठीक है, मैं आपके लिए देखती हूँ।",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "agency": {
+                      "type": "string",
+                      "enum": [
+                        "spf",
+                        "ica",
+                        "china_official",
+                        "moh",
+                        "cpf",
+                        "mom",
+                        "iras",
+                        "bank",
+                        "courier",
+                        "other"
+                      ],
+                      "description": "Who the caller claimed to be: spf (police), ica, china_official, moh, cpf, mom, iras, bank, courier, or other."
+                    },
+                    "demand": {
+                      "type": "string",
+                      "enum": [
+                        "transfer",
+                        "otp",
+                        "app_install",
+                        "personal_info",
+                        "gift_card",
+                        "none",
+                        "other"
+                      ],
+                      "description": "What the caller asked for: transfer (move money), otp (a code), app_install, personal_info (NRIC, bank details, address), gift_card, none, or other."
+                    }
+                  },
+                  "required": [
+                    "agency",
+                    "demand"
+                  ]
+                }
+              }
+            ],
+            "tools_params": {
+              "match_script": {
+                "method": "POST",
+                "url": "${APP_BASE_URL}/tools/match-script",
+                "api_token": "Bearer ${BOLNA_TOOL_TOKEN}",
+                "param": "{\"agency\": \"%(agency)s\", \"demand\": \"%(demand)s\", \"language\": \"hi\"}"
+              }
+            }
+          }
+        },
+        "task_config": {
+          "call_terminate": 180,
+          "hangup_after_silence": 10
+        }
+      }
+    ]
+  },
+  "agent_prompts": {
+    "task_1": {
+      "system_prompt": "You are Ah Ma Guardian, a patient, kind auntie helping a Hindi-speaking senior in Singapore who just received a strange phone call. Always speak simple, short Hindi written in Devanagari script; never reply in English or in romanized Hindi. You are not the police, a bank or the government, and you never say you are.\n\nSteps:\n1. Ask who the caller said they were.\n2. Ask what they wanted: money moved, a code, an app installed, personal details, gift cards, or nothing.\n3. As soon as you know both, call match_script once. Its agency and demand values stay in English.\n4. Say the tool's \"say\" sentence word for word; it is already in Hindi. Never tell the senior a call is definitely safe.\n5. Remind them not to transfer money or share codes while unsure, then say goodbye.\n\nIf the senior cannot answer, use agency other and demand other. Keep the whole call under two minutes."
+    }
+  }
+}

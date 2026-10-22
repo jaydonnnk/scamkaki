@@ -7,7 +7,9 @@ from scamkaki.lib.env import Settings
 
 ROOT = Path(__file__).resolve().parents[1]
 GUARDIAN_AGENT = "agent-guardian-test"
+GUARDIAN_HI_AGENT = "agent-guardian-hi-test"
 BAIT_AGENT = "agent-bait-test"
+BAIT_HI_AGENT = "agent-bait-hi-test"
 
 
 def _test_database_url() -> str | None:
@@ -30,7 +32,9 @@ def test_settings() -> Settings:
         _env_file=None,
         bolna_api_key="test-key",
         bolna_guardian_agent_id=GUARDIAN_AGENT,
+        bolna_guardian_hi_agent_id=GUARDIAN_HI_AGENT,
         bolna_bait_agent_id=BAIT_AGENT,
+        bolna_bait_hi_agent_id=BAIT_HI_AGENT,
         bolna_webhook_token="hook-token",
         bolna_tool_token="tool-token",
         database_url=url,

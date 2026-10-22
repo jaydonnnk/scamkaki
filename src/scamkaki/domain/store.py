@@ -5,7 +5,7 @@ from typing import Any
 import psycopg
 from psycopg.types.json import Jsonb
 
-from scamkaki.domain.types import Agency, Demand, Line, MatchResult
+from scamkaki.domain.types import Agency, Demand, Language, Line, MatchResult
 
 
 def upsert_call(
@@ -13,6 +13,7 @@ def upsert_call(
     *,
     execution_id: str,
     line: Line,
+    language: Language,
     transcript: str,
     extracted: dict[str, Any],
     status: str,
@@ -21,9 +22,9 @@ def upsert_call(
 ) -> int:
     row = conn.execute(
         """
-        insert into calls (execution_id, line, transcript, extracted, status, duration_s,
-                           fixture_case)
-        values (%s, %s, %s, %s, %s, %s, %s)
+        insert into calls (execution_id, line, language, transcript, extracted, status,
+                           duration_s, fixture_case)
+        values (%s, %s, %s, %s, %s, %s, %s, %s)
         on conflict (execution_id) do update set
             transcript = excluded.transcript,
             extracted = excluded.extracted,
@@ -32,7 +33,16 @@ def upsert_call(
             fixture_case = coalesce(excluded.fixture_case, calls.fixture_case)
         returning id
         """,
-        (execution_id, line, transcript, Jsonb(extracted), status, duration_s, fixture_case),
+        (
+            execution_id,
+            line,
+            language,
+            transcript,
+            Jsonb(extracted),
+            status,
+            duration_s,
+            fixture_case,
+        ),
     ).fetchone()
     return row["id"]
 

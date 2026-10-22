@@ -9,9 +9,11 @@ Agency = Literal[
 Demand = Literal["transfer", "otp", "app_install", "personal_info", "gift_card", "none", "other"]
 Verdict = Literal["likely_scam", "unclear", "no_scam_signs"]
 Line = Literal["bait", "guardian"]
+Language = Literal["en", "hi"]
 
 AGENCIES: tuple[str, ...] = get_args(Agency)
 DEMANDS: tuple[str, ...] = get_args(Demand)
+LANGUAGES: tuple[str, ...] = get_args(Language)
 
 
 @dataclass(frozen=True)
@@ -29,3 +31,8 @@ def as_agency(value: object) -> Agency:
 def as_demand(value: object) -> Demand:
     text = str(value or "").strip().lower()
     return text if text in DEMANDS else "other"  # type: ignore[return-value]
+
+
+def as_language(value: object) -> Language:
+    text = str(value or "").strip().lower()
+    return text if text in LANGUAGES else "en"  # type: ignore[return-value]

@@ -11,23 +11,26 @@ h1{font-size:22px;margin:12px 0}h2{font-size:16px;margin:20px 0 8px}
 .scroll{overflow-x:auto}
 table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
 th{font-size:12px;color:var(--muted);font-weight:600}
+td:first-child{white-space:nowrap}
 .empty{color:var(--muted)}
 .v-likely_scam{color:var(--warn);font-weight:600}.v-unclear{color:var(--amber);font-weight:600}.v-no_scam_signs{color:var(--ok);font-weight:600}
 button{font:inherit;padding:10px 16px;border:1px solid var(--fg);background:transparent;color:var(--fg);border-radius:6px;cursor:pointer}button:disabled{opacity:.5;cursor:default}
-#call-state{color:var(--muted);margin-left:10px}
+.talk{display:flex;flex-wrap:wrap;align-items:center;gap:10px}#call-state{color:var(--muted)}
 .grid{display:grid;grid-template-columns:1fr;gap:16px}@media(min-width:760px){.grid{grid-template-columns:3fr 2fr}}
 </style></head><body><main>
 <p class="fixture">Demo fixtures. Test calls, not real scammers.</p>
 <h1>Scamkaki</h1>
-<p><button type="button" id="talk">Talk to Guardian</button><span id="call-state" aria-live="polite"></span></p>
+<p class="talk"><button type="button" data-language="en" data-label="Talk to Guardian">Talk to Guardian</button>
+<button type="button" data-language="hi" data-label="Guardian से हिंदी में बात करें" lang="hi">Guardian से हिंदी में बात करें</button>
+<span id="call-state" aria-live="polite"></span></p>
 <div class="grid">
 <section><h2>Calls</h2><div class="scroll">
-<table><tr><th>Time</th><th>Line</th><th>Status</th><th>Length</th><th>Case</th></tr>
+<table><tr><th>Time</th><th>Line</th><th>Lang</th><th>Status</th><th>Length</th><th>Case</th></tr>
 {% for c in calls %}
-<tr><td>{{ c.created_at | sgt }}</td><td>{{ c.line | capitalize }}</td><td>{{ c.status }}</td>
+<tr><td>{{ c.created_at | sgt }}</td><td>{{ c.line | capitalize }}</td><td>{{ {"en": "EN", "hi": "हिंदी"}[c.language] }}</td><td>{{ c.status }}</td>
 <td>{% if c.duration_s is not none %}{{ c.duration_s }} s{% endif %}</td><td>{{ c.fixture_case or "" }}</td></tr>
 {% else %}
-<tr><td colspan="5" class="empty">No calls yet.</td></tr>
+<tr><td colspan="6" class="empty">No calls yet.</td></tr>
 {% endfor %}
 </table></div></section>
 <section><h2>Guardian checks</h2><div class="scroll">
@@ -42,17 +45,20 @@ button{font:inherit;padding:10px 16px;border:1px solid var(--fg);background:tran
 </div></main>
 <script src="https://cdn.jsdelivr.net/gh/bolna-ai/web-call@v3.0.1/dist/bolna-web-call.min.js"></script>
 <script>
-const btn = document.getElementById("talk"), state = document.getElementById("call-state");
+const buttons = document.querySelectorAll("button[data-language]"), state = document.getElementById("call-state");
 let inCall = false, call = null;
-btn.onclick = () => {
+// One call at a time: the active button becomes "Hang up", the other is disabled.
+const reset = () => { inCall = false; buttons.forEach((b) => { b.disabled = false; b.textContent = b.dataset.label; }); };
+buttons.forEach((btn) => btn.onclick = () => {
   if (inCall) { call.stop(); return; }
-  call = new BolnaWebCall({ sessionUrl: "/web-call/session" });
+  call = new BolnaWebCall({ sessionUrl: "/web-call/session?language=" + btn.dataset.language });
   call.on("call-start", () => { btn.textContent = "Hang up"; state.textContent = "Connected. Speak now."; });
-  call.on("call-end", () => { inCall = false; btn.textContent = "Talk to Guardian"; state.textContent = "Call ended. Results appear in a few seconds."; setTimeout(() => location.reload(), 15000); });
-  call.on("error", (e) => { inCall = false; btn.textContent = "Talk to Guardian"; state.textContent = "Could not connect: " + (e.message || e.code); });
+  call.on("call-end", () => { reset(); state.textContent = "Call ended. Results appear in a few seconds."; setTimeout(() => location.reload(), 15000); });
+  call.on("error", (e) => { reset(); state.textContent = "Could not connect: " + (e.message || e.code); });
   inCall = true; state.textContent = "Connecting...";
+  buttons.forEach((b) => { if (b !== btn) b.disabled = true; });
   call.start();
-};
+});
 // Refresh results every 15 s, but never during a call.
 setInterval(() => { if (!inCall) location.reload(); }, 15000);
 </script></body></html>

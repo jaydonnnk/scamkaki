@@ -14,7 +14,7 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.templating import Jinja2Templates
 
 from scamkaki.domain import store
-from scamkaki.domain.types import Line, as_agency, as_demand
+from scamkaki.domain.types import as_agency, as_demand, as_language
 from scamkaki.domain.verdict import stub_match
 from scamkaki.integrations.bolna import BolnaClient
 from scamkaki.lib.db import connect
@@ -64,14 +64,6 @@ def get_bolna(settings: SettingsDep) -> BolnaClient:
     return BolnaClient(settings.bolna_api_key)
 
 
-def line_for(agent_id: str | None, settings: Settings) -> Line | None:
-    if agent_id and agent_id == settings.bolna_guardian_agent_id:
-        return "guardian"
-    if agent_id and agent_id == settings.bolna_bait_agent_id:
-        return "bait"
-    return None
-
-
 def fixture_case_of(execution: dict[str, Any]) -> str | None:
     context = execution.get("context_details") or {}
     recipient = context.get("recipient_data") or {}
@@ -101,16 +93,18 @@ def bolna_webhook(
 
     # Re-read the execution from Bolna rather than trusting the posted body.
     execution = bolna.get_execution(str(execution_id))
-    line = line_for(execution.get("agent_id"), settings)
-    if line is None:
+    agent = settings.agent_line(execution.get("agent_id"))
+    if agent is None:
         log.info("webhook for unknown agent ignored: %s", execution.get("agent_id"))
         return Response(status_code=204)
+    line, language = agent
 
     with connect(settings.database_url) as conn:
         store.upsert_call(
             conn,
             execution_id=str(execution["id"]),
             line=line,
+            language=language,
             transcript=execution.get("transcript") or "",
             extracted=execution.get("node_extracted_data") or execution.get("extracted_data") or {},
             status=str(execution.get("status")),
@@ -134,7 +128,7 @@ async def match_script(request: Request, settings: SettingsDep) -> dict[str, Any
     params = {**request.query_params, **body}
     agency, demand = as_agency(params.get("agency")), as_demand(params.get("demand"))
 
-    result = stub_match()
+    result = stub_match(as_language(params.get("language")))
     try:
         await run_in_threadpool(_log_check, settings.database_url, agency, demand, result)
     except Exception:
@@ -150,11 +144,14 @@ def _log_check(database_url: str, agency, demand, result) -> None:
 
 @app.post("/web-call/session", dependencies=[AdminDep])
 def web_call_session(
-    settings: SettingsDep, bolna: Annotated[BolnaClient, Depends(get_bolna)]
+    settings: SettingsDep,
+    bolna: Annotated[BolnaClient, Depends(get_bolna)],
+    language: str = "en",
 ) -> dict[str, Any]:
-    if not settings.bolna_guardian_agent_id:
+    agent_id = settings.guardian_agent_id(as_language(language))
+    if not agent_id:
         raise HTTPException(status_code=503, detail="Guardian agent not configured")
-    return bolna.mint_web_call_session(settings.bolna_guardian_agent_id)
+    return bolna.mint_web_call_session(agent_id)
 
 
 @app.get("/", response_class=HTMLResponse, dependencies=[AdminDep])
