@@ -53,7 +53,7 @@ He found the Hindi simple but the voice "robotic" and lacking warmth; call 5 the
 
 Checked against the evidence:
 
-- Bolna's recordings of calls 4-6 are truncated at the source: 12.9 s, 13.3 s and 9.7 s for calls of 39 s, 58 s and 39 s (calls 2 and 3 are complete at 43.7 s and 43.8 s). Calls 4-6 were ended by the test page, calls 2-3 by Bolna; the link is a [hypothesis]. The listener heard fragments.
+- Bolna's recordings of calls 4-6 are truncated at the source: 12.9 s, 13.3 s and 9.7 s for calls of 39 s, 58 s and 39 s (calls 2 and 3 are complete at 43.7 s and 43.8 s). The cause is the test harness, not the product: each recording's length matches the seconds of caller audio played (call 5: 11.1 s + 1.1 s clips, 13.3 s recording; call 6: 7.9 s + 1.1 s, 9.7 s), so Bolna appears to record only while caller audio packets arrive [hypothesis]. Calls 2-3 kept a silent constant source on the caller stream and recorded in full; calls 4-7 did not. Call 7 disproved the earlier guess that a local hang-up caused it. The listener heard fragments.
 - "हाँ, सही है" in call 4 is the synthetic caller's confirmation clip, not Guardian: Guardian's transcript line is "उसने खुद को सिंगापुर…" and Guardian never says "सही है" in any transcript. Both voices are female Hindi, so the speakers are hard to tell apart; the recordings are stereo with the caller on the left and Guardian on the right (call 2).
 - The warnings were spoken in calls 5 and 6 per the transcripts ("कृपया पैसा ट्रांसफर मत कीजिए और कोई कोड मत दीजिए", "कोई कोड मत बताइए"), but were cut from the recordings.
 - "ठीक है" was Guardian's pre-check line "ठीक है, मैं आपके लिए देखती हूँ।"; a real risk.
@@ -63,6 +63,10 @@ Fixes after the verdict (no call yet):
 - The Hindi tool sentence now carries the warnings itself: "पक्का नहीं कह सकती। पैसे मत भेजिए। ओटीपी किसी को मत बताइए। कुछ भी करने से पहले अपने परिवार को फ़ोन कीजिए।" (needs Render to deploy); `test_match_script_answers_in_hindi_for_hindi_line` asserts each warning, and deleting the OTP warning fails it.
 - Pre-check line is now "एक मिनट रुकिए, मैं जाँच करती हूँ।"; the prompt bans "ठीक है"/"सही है" right after the senior describes the caller, prefers "कहा कि", and the repeat-back ends "क्या मैंने ठीक समझा?".
 - Voice speed 0.9 to 0.8. The voice's robotic tone is not fixed; only `bulbul:v3` voices are offered on this account.
+
+## Call 7 (authorized 2026-10-22: "okay sure")
+
+`4c666a59-be0e-408b-87c3-f579ebd4d055`, line 1, 50 s, 5.5 c, ended by Bolna. Logged `spf/transfer` once. Guardian used the new pre-check line "एक मिनट रुकिए, मैं जाँच करती हूँ।" and the new sentence with both warnings. Its repeat-back was cut off ("तो") by the caller's last fragment, so no explicit yes was heard. Recording again 13.1 s (harness cause above), so it is not usable for the listener.
 
 ## Decision
 
