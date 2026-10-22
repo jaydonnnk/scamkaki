@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Report draft</title>
+<style>
+:root{--bg:#fbfaf7;--fg:#1d1d1b;--muted:#6b6a65;--line:#e4e2dc;--warn:#b3261e}
+@media (prefers-color-scheme:dark){:root{--bg:#161614;--fg:#ecebe6;--muted:#a3a29c;--line:#2e2d2a;--warn:#f2b8b5}}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,sans-serif}
+main{max-width:720px;margin:0 auto;padding:16px}
+.fixture{border:1px dashed var(--muted);padding:6px 10px;font-size:13px;color:var(--muted)}
+dl{display:grid;grid-template-columns:140px 1fr;gap:6px 12px}dt{color:var(--muted)}
+.draft{color:var(--warn);font-weight:600}
+blockquote{margin:12px 0;padding:8px 12px;border-left:3px solid var(--line);color:var(--muted)}
+button{font:inherit;padding:8px 14px;border:1px solid var(--fg);background:transparent;color:var(--fg);border-radius:6px}
+</style></head><body><main>
+<p class="fixture">Demo fixture. Draft only; nothing is sent automatically.</p>
+<p><a href="dashboard.html">Back</a></p>
+<h1>Bait call, 13:58</h1>
+<p class="draft">DRAFT, not reviewed</p>
+<dl>
+<dt>Claimed agency</dt><dd>SPF</dd>
+<dt>Demand</dt><dd>Transfer to a "safe account"</dd>
+<dt>Payee bank</dt><dd>Fixture Bank</dd>
+<dt>Payee account</dt><dd>FIXTURE-001-2345</dd>
+<dt>Call length</dt><dd>6 min 40 s</dd>
+<dt>Ah Ma leaks</dt><dd>None found</dd>
+</dl>
+<blockquote>Caller said Ah Ma's account was linked to money laundering and asked her to move savings to a "safe account" today.</blockquote>
+<button type="button">Mark reviewed</button>
+</main></body></html>

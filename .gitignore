@@ -1,0 +1,18 @@
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.modal/
+*.wav
+*.mp3
+
+# Pre-project research, kept local
+outputs/
+work/
+.DS_Store
