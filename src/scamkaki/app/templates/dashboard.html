@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="refresh" content="15">
+<title>Scamkaki dashboard</title>
+<style>
+:root{--bg:#fbfaf7;--fg:#1d1d1b;--muted:#6b6a65;--line:#e4e2dc;--warn:#b3261e;--ok:#2e6b3a;--amber:#8a5a00}
+@media (prefers-color-scheme:dark){:root{--bg:#161614;--fg:#ecebe6;--muted:#a3a29c;--line:#2e2d2a;--warn:#f2b8b5;--ok:#9fd5a8;--amber:#f0c36a}}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,sans-serif}
+main{max-width:960px;margin:0 auto;padding:16px}
+.fixture{border:1px dashed var(--muted);padding:6px 10px;font-size:13px;color:var(--muted)}
+h1{font-size:22px;margin:12px 0}h2{font-size:16px;margin:20px 0 8px}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted);font-weight:600}
+.empty{color:var(--muted)}
+.v-likely_scam{color:var(--warn);font-weight:600}.v-unclear{color:var(--amber);font-weight:600}.v-no_scam_signs{color:var(--ok);font-weight:600}
+.grid{display:grid;grid-template-columns:1fr;gap:16px}@media(min-width:760px){.grid{grid-template-columns:3fr 2fr}}
+</style></head><body><main>
+<p class="fixture">Demo fixtures. Test calls, not real scammers.</p>
+<h1>Scamkaki</h1>
+<div class="grid">
+<section><h2>Calls</h2><div class="scroll">
+<table><tr><th>Time</th><th>Line</th><th>Status</th><th>Length</th><th>Case</th></tr>
+{% for c in calls %}
+<tr><td>{{ c.created_at | sgt }}</td><td>{{ c.line | capitalize }}</td><td>{{ c.status }}</td>
+<td>{% if c.duration_s is not none %}{{ c.duration_s }} s{% endif %}</td><td>{{ c.fixture_case or "" }}</td></tr>
+{% else %}
+<tr><td colspan="5" class="empty">No calls yet.</td></tr>
+{% endfor %}
+</table></div></section>
+<section><h2>Guardian checks</h2><div class="scroll">
+<table><tr><th>Time</th><th>Claimed</th><th>Wants</th><th>Result</th></tr>
+{% for k in checks %}
+<tr><td>{{ k.created_at | sgt }}</td><td>{{ k.agency }}</td><td>{{ k.demand }}</td>
+<td class="v-{{ k.verdict }}">{{ {"likely_scam": "Likely scam", "unclear": "Unclear, talk to family", "no_scam_signs": "No scam signs found"}[k.verdict] }}</td></tr>
+{% else %}
+<tr><td colspan="4" class="empty">No checks yet.</td></tr>
+{% endfor %}
+</table></div></section>
+</div></main></body></html>

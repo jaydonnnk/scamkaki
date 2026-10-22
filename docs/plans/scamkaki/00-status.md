@@ -8,12 +8,12 @@ Updated: 2026-10-22 (Asia/Singapore).
 - Gate 4 - Slice plan: **APPROVED 2026-10-22** ([04-slices.md](04-slices.md)).
 
 The user asked for compact versions of all four gates in one pass because of hackathon time (2026-10-22: "draft compact versions of all four in one pass as we dont have much time").
-No slice is authorized or started.
-No implementation, install, provisioning, deployment, spending or phone call is authorized.
+S1 authorized 2026-10-22 by the user ("You have my authorization to start slice 1"), with the installs ("I give authroizeation for 7") and a Bolna budget of $5 for today and tomorrow.
+No other slice is authorized.
 
 ## Slices
 
-- [ ] S1 - Tracer: Guardian stub end to end
+- [ ] S1 - Tracer: Guardian stub end to end (in progress, branch `scamkaki/slice-1-guardian-tracer`)
 - [ ] S2 - Hokkien voice spike
 - [ ] S3 - Guardian verdict and family transfer
 - [ ] S4 - Ah Ma Bait with extraction and leak guard
@@ -25,7 +25,7 @@ No implementation, install, provisioning, deployment, spending or phone call is 
 - Language: Python (user decision 2026-10-22).
 - Stack: Bolna only as organiser tech; FastAPI on Render; Neon Postgres; Modal for Hokkien TTS. Structured script matching, no embeddings.
 - Superseded: the Next.js and pgvector build plan in `PROGRESS.md` is replaced by these gate drafts.
-- Git: `main` pushed to private `https://github.com/jaydonnnk/no-scamkaki` at `7e41056` on 2026-10-22; `outputs/` and `work/` are ignored as local research.
+- Git: `main` pushed to private `https://github.com/jaydonnnk/scamkaki` at `7e41056` on 2026-10-22; `outputs/` and `work/` are ignored as local research.
 
 ## Approval history
 
