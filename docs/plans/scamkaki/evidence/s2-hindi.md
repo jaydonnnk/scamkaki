@@ -45,7 +45,7 @@ Changes before these calls: Guardian HI must repeat back who and what it underst
 - Limits: synthetic Lekha caller reading fixed scripts, two scripts, five valid calls; not a real senior, not real scammers. The English Guardian still has the old prompt; S3 ports the confirm-first steps.
 - The dashboard's Hindi Talk button was tested by integration test only (`test_web_call_session_mints_for_hindi_guardian`), not by a signed-in browser call, because the agent may not enter the real admin password.
 
-## Listener verdict (2026-10-22)
+## First listener review, of the call 4-6 fragments (not used as the verdict)
 
 Listener: Pravesh, a Hindi speaker named by the user, heard the files the user downloaded for calls 4, 5 and 6.
 In his words: "Its understandable but definitely with problems."
@@ -58,7 +58,14 @@ Checked against the evidence:
 - The warnings were spoken in calls 5 and 6 per the transcripts ("कृपया पैसा ट्रांसफर मत कीजिए और कोई कोड मत दीजिए", "कोई कोड मत बताइए"), but were cut from the recordings.
 - "ठीक है" was Guardian's pre-check line "ठीक है, मैं आपके लिए देखती हूँ।"; a real risk.
 
-Fixes after the verdict (no call yet):
+Commit `9923bd3` (2026-10-22 23:00) recorded this review as not accepted, for this reason, restored here after `ea020a9` overwrote it:
+
+- A review of "hindi4.mp4", "hindi5.mp4" and "hindi6.mp4" returned "Understandable with problems".
+  It was not recorded as the listener verdict because it does not match the calls: none of the Guardian phrases it quotes (for example "गोपनीय विवरण", "सत्यापित", "लेन-देन", "ओटीपी, पिन या पासवर्ड न दें") appear in the Bolna transcripts, which hold the exact text the voice read; its timestamps (00:23-00:54) lie beyond the 10-13 s files; and it reports no barge-ins where the transcripts show Guardian cut off.
+
+Its safety points were still acted on, because they were cheap and plausible.
+
+Fixes after the first review (no call yet):
 
 - The Hindi tool sentence now carries the warnings itself: "पक्का नहीं कह सकती। पैसे मत भेजिए। ओटीपी किसी को मत बताइए। कुछ भी करने से पहले अपने परिवार को फ़ोन कीजिए।" (needs Render to deploy); `test_match_script_answers_in_hindi_for_hindi_line` asserts each warning, and deleting the OTP warning fails it.
 - Pre-check line is now "एक मिनट रुकिए, मैं जाँच करती हूँ।"; the prompt bans "ठीक है"/"सही है" right after the senior describes the caller, prefers "कहा कि", and the repeat-back ends "क्या मैंने ठीक समझा?".
@@ -90,7 +97,7 @@ Follow-ups:
 
 ## Decision
 
-**Go**, 2026-10-22. Both exit conditions are met: agency and demand correct in 2 of 3 post-fix calls (calls 5 and 6; calls 7 and 8 also correct), and a named Hindi speaker says the voice is understandable.
+**Go**, 2026-10-22. Both exit conditions are met: agency and demand correct in 2 of 3 post-fix calls (calls 5 and 6; calls 7 and 8 also correct), and a named Hindi speaker says the voice is understandable. The listener condition rests only on the call 8 review: its timestamps match the call 8 recording (Guardian alone 0-8 s, caller 10-24 s with Guardian clipped at 14 s and 21 s, Guardian's verdict 25-36 s).
 Guardian HI keeps Sarvam `saaras:v4` and `bulbul:v3` `ritu`.
 Evidence boundary: synthetic caller, two scripts, web calls only, one listener; not a real senior, not a phone line, not real scammers.
 Spend: 46.75 cents this slice; Bolna total 55 cents of $5.00.

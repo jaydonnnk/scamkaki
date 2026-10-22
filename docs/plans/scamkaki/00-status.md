@@ -7,11 +7,11 @@ Updated: 2026-10-22 (Asia/Singapore).
 - Gate 3 - Program Design: **APPROVED 2026-10-22** (re-approved after the Hindi swap) ([03-program-design.md](03-program-design.md)).
 - Gate 4 - Slice plan: **APPROVED 2026-10-22** (re-approved after the Hindi swap) ([04-slices.md](04-slices.md)).
 
-Revision branch: `scamkaki/gates-english-mandarin`, cut from the S1 branch tip `12c4d0b` because S1 is not yet merged into `main`.
+The gate revision branch `scamkaki/gates-english-mandarin` was fast-forwarded into `main` (with S1) and deleted on 2026-10-22.
 
 The user asked for compact versions of all four gates in one pass because of hackathon time (2026-10-22: "draft compact versions of all four in one pass as we dont have much time").
 S1 authorized 2026-10-22 by the user ("You have my authorization to start slice 1"), with the installs ("I give authroizeation for 7") and a Bolna budget of $5 for today and tomorrow.
-No other slice is authorized.
+S2 was authorized and closed 2026-10-22 (see approval history). S3 to S6 are not yet authorized.
 
 ## Slices
 
