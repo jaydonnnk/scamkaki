@@ -24,10 +24,10 @@ Ah Ma Guardian takes calls from seniors, compares what they heard with the scam 
 | `src/scamkaki/domain/` | Pure logic: script matching, verdicts, extraction validation, leak guard, report drafts |
 | `src/scamkaki/integrations/` | Bolna API client |
 | `src/scamkaki/lib/` | Env loading, DB access, logging, ids, time |
-| `agents/` | Bolna graph agent JSON exports (Bait and Guardian in English and Hindi, test Scammer, test Senior), versioned |
+| `agents/` | Bolna graph agent JSON exports (Bait and Guardian in English and Hindi), versioned |
 | `migrations/` | Ordered SQL migrations for Neon Postgres |
 | `seed/` | Labeled demo fixtures, including `seed/scripts.json` test cases |
-| `scripts/` | Operator and check scripts, for example `scripts/check.py` for agent-vs-agent call results |
+| `scripts/` | Operator and check scripts, for example `scripts/check.py` for synthetic-caller fixture call results |
 | `tests/unit/`, `tests/integration/`, `tests/e2e/`, `tests/support/` | Test tiers and shared fakes |
 | `config/` | Tool configuration |
 
@@ -61,7 +61,7 @@ Ah Ma Guardian takes calls from seniors, compares what they heard with the scam 
 - Scam reports are drafts.
   A human reviews every report before anything is sent to ScamShield, SPF or a bank; the code never files automatically.
 - Seeded scripts, test callers and demo data are labeled fixtures in responses, the dashboard, evidence and videos.
-  Never present agent-vs-agent results as performance against real scammers.
+  Never present synthetic-caller results as performance against real scammers.
 - Seed scripts paraphrase public SPF advisories and stories; never copy victim names or identifying details.
 - Guardian never tells a senior a call is safe as a certainty; its outputs are "likely scam", "unclear, talk to family" or "no scam signs found".
 

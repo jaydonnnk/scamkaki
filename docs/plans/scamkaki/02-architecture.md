@@ -58,7 +58,8 @@ Migrations are ordered SQL files applied by a small runner; no ORM.
 On "likely scam" the app also marks the check as an alert, and after answering it sends the Telegram message and records `alert_status`; the family page shows the alert on its next check.
 Then the webhook stores the call as above, without a script row.
 
-**Tests:** a Bolna "Scammer" test agent and a "Senior" test agent, each prompted from one `seed/scripts.json` case, call the real agents; `scripts/check.py` reads the stored results and prints pass rates.
+**Tests:** a local synthetic-caller page plays one `seed/scripts.json` case's scripted caller lines (macOS `say`) into a Bolna web call to the real agent, passing the case id as web call `user_data`; `scripts/check.py` reads the stored results and prints pass rates.
+Bolna has no agent-to-agent test feature and our trial account dials only +1/+91 with no number for Bait, so test agents cannot call our agents (amendment 2026-10-24).
 
 ## External
 

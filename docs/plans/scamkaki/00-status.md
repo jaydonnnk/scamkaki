@@ -11,14 +11,14 @@ The gate revision branch `scamkaki/gates-english-mandarin` was fast-forwarded in
 
 The user asked for compact versions of all four gates in one pass because of hackathon time (2026-10-22: "draft compact versions of all four in one pass as we dont have much time").
 S1 authorized 2026-10-22 by the user ("You have my authorization to start slice 1"), with the installs ("I give authroizeation for 7") and a Bolna budget of $5 for today and tomorrow.
-S2 was authorized and closed 2026-10-22 (see approval history). S3 authorized 2026-10-23 and closed 2026-10-24; S4 to S6 are not yet authorized.
+S2 was authorized and closed 2026-10-22 (see approval history). S3 authorized 2026-10-23 and closed 2026-10-24; S4 authorized 2026-10-24; S5 and S6 are not yet authorized.
 
 ## Slices
 
 - [x] S1 - Tracer: Guardian stub end to end, branch `scamkaki/slice-1-guardian-tracer`, done 2026-10-22; [evidence](evidence/s1-tracer.md). Deviation: tested by Bolna dashboard web call because the trial plan dials only +1/+91.
 - [x] S2 - Hindi voice, branch `scamkaki/slice-2-hindi-voice`, done 2026-10-22, **go**; [evidence](evidence/s2-hindi.md). Guardian HI (Sarvam `saaras:v4` + `bulbul:v3` `ritu`) extracted agency and demand in 2 of 3 post-fix synthetic calls; Hindi listener Pravesh: understandable, warnings clear, pace OK. Open for S3: repeat-back gets clipped when the caller keeps talking; English Guardian lacks the confirm-first steps.
 - [x] S3 - Guardian verdict and family alert, branch `scamkaki/slice-3-guardian-verdict`, done 2026-10-24; [evidence](evidence/s3-guardian-verdict.md). Bolna call transfer was blocked on our account, so the app alerts the family by Telegram and a family page (gates re-approved 2026-10-24). Live: English scam and Hindi scam alerted (`sent`), English legit did not; 6 calls (one over plan, a cut-off attempt), 33 cents. Limits: smoke test only, alert seconds not measured, Hindi likely-scam ending awaiting Pravesh's re-check.
-- [ ] S4 - Ah Ma Bait with extraction and leak guard
+- [ ] S4 - Ah Ma Bait with extraction and leak guard, branch `scamkaki/slice-4-bait`, in progress.
 - [ ] S5 - The loop: Guardian uses Bait's scripts
 - [ ] S6 - Dashboard, report review and demo
 
@@ -59,3 +59,9 @@ S2 was authorized and closed 2026-10-22 (see approval history). S3 authorized 20
   This changes approved decisions in all four gates, so Gates 1-4 are reopened and need re-approval before the S3 alert work continues.
 - 2026-10-24 Gates 1-4 re-approved after the family alert change (user: "yes i approve all four gates"). S3 continues under its 2026-10-23 authorization; calls beyond the 5 and pushes are still asked separately.
 - 2026-10-24 S3 deploy and calls authorized (user: "I approve A B and C"): migration 0003 on production, push and fast-forward `main`, Bolna Guardian agent updates, and the 3 remaining S3 calls (2 English, 1 Hindi).
+- 2026-10-24 S4 authorized (user, answering "Do you authorize S4 ...": "Yes, authorize S4"), covering the branch `scamkaki/slice-4-bait`, the code, migration 0004 on the Neon test branch and Bait EN and Bait HI agent creation on Bolna; calls, pushes, the production migration and Render settings are asked separately.
+  Same answers: push and fast-forward the S3 close-out `c8658ff` into `main` ("Yes, push and ff main"), and an S4 Bolna budget of $0.75 ("Up to $0.75").
+- 2026-10-24 amendment, Gates 1-4 test method (user chose "Synthetic caller (Recommended)"): Bolna documents no agent-to-agent test feature, its test calls need a phone number a person answers, the trial plan dials only +1/+91, and Bait has no number, so the planned test Scammer and Senior agents cannot call our agents.
+  Live fixture calls instead use a synthetic caller: a local page plays each case's scripted caller lines (macOS `say`) into a Bolna web call and passes the case id as web call `user_data`; `scripts/check.py` reads the stored results.
+  `agents/test_scammer.json`, `agents/test_senior.json` and `BolnaClient.start_call` are dropped; S4 runs 7 calls (5 English, 2 Hindi) within $0.75.
+  Limit: the scripted caller cannot react to Ah Ma's replies. S5 inherits this method. Decision wording only in Gates 1-3; no gate reopens.

@@ -28,7 +28,7 @@ Government-impersonation scams remain a top-five scam type in Singapore [verifie
 ## Success metric
 
 Real-world target [hypothesis]: when a senior who calls Guardian about a scam call hears "likely scam", the family is alerted within 1 minute and calls the senior back before any money moves.
-Hackathon measure, on labeled fixtures only, tested by agent-vs-agent calls:
+Hackathon measure, on labeled fixtures only, tested by synthetic-caller web calls (scripted caller clips, not live people):
 
 - Guardian flags at least 4 of 5 scam fixtures as "likely scam" and at most 1 of 3 legit look-alike fixtures.
 - Every "likely scam" verdict in a test call produces a family alert, and no other verdict does.

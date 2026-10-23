@@ -42,9 +42,10 @@ uv run python scripts/check.py bait|guardian [--language hi]
 | `src/scamkaki/app/templates/*.html` | Dashboard, report and family alert pages, from the Gate 1 mockups |
 | `migrations/0001_init.sql` | Tables from Gate 2 |
 | `migrations/0003_family_alerts.sql` | `guardian_checks.language` and `guardian_checks.alert_status` |
-| `agents/{bait,bait_hi,guardian,guardian_hi,test_scammer,test_senior}.json` | Bolna agent exports, versioned; `_hi` files are the Hindi agents |
+| `agents/{bait,bait_hi,guardian,guardian_hi}.json` | Bolna agent exports, versioned; `_hi` files are the Hindi agents; Bait files also carry their Bolna extraction (disposition) definitions |
 | `seed/scripts.json` | 8 labeled English fixture cases (5 scam, 3 legit) plus 3 Hindi cases (2 scam, 1 legit), each with a `language` field |
-| `scripts/check.py` | Runs agent-vs-agent fixture calls and prints pass rates |
+| `scripts/check.py` | Reads the stored fixture calls, compares them with each case and prints pass rates |
+| `scripts/caller/` | Synthetic caller: renders each case's caller lines with macOS `say` and serves a local page that plays them into a Bolna web call |
 | `scripts/migrate.py` | Applies migrations |
 | `scripts/bolna_agent.py` | Creates or updates a Bolna agent from `agents/<name>.json` |
 | `tests/support/fakes.py` | Fake Bolna client and payload builders |
@@ -126,7 +127,7 @@ def agent_line(agent_id: str) -> tuple[Line, Language] | None: ...  # maps the f
 # integrations/bolna.py
 class BolnaClient:
     def get_execution(self, execution_id: str) -> dict: ...
-    def start_call(self, agent_id: str, to_number: str, variables: dict[str, str]) -> str: ...
+    def mint_web_call_session(self, agent_id: str, user_data: dict[str, str] | None = None) -> dict: ...
 
 # integrations/telegram.py
 def send_message(bot_token: str, chat_id: str, text: str) -> bool: ...  # 5 s timeout; False on any error
@@ -139,7 +140,7 @@ GET  /family/{link_token}/alerts  -> [{"id", "agency", "demand", "language", "si
 GET  /, GET /reports/{id}, POST /reports/{id}/review, GET /healthz
 ```
 
-The fixture case id travels from `scripts/check.py` to the agents as a call variable and back on the execution, so results are tied to a case without parsing transcripts [hypothesis: Bolna returns call variables on the execution; verify in Slice 1].
+The fixture case id travels from the synthetic caller to the agents as web call `user_data` and back on the execution, so results are tied to a case without parsing transcripts [hypothesis: Bolna returns call variables on the execution; verify in Slice 1].
 
 ## Call stack
 
@@ -151,7 +152,7 @@ On `likely_scam`, a FastAPI background task runs after the response: `alert_text
 A Telegram failure is logged and never changes what Ah Ma says.
 Any internal error returns `unclear` with "Not sure. Please call your family before doing anything." so the call never goes silent.
 
-**Fixture check:** `scripts/check.py` loads `seed/scripts.json`, starts one test call per case, waits for the stored calls, compares results with each case's expectations, prints a table and exits non-zero below threshold.
+**Fixture check:** the synthetic caller places one web call per case; `scripts/check.py` loads `seed/scripts.json`, reads the stored calls, compares results with each case's expectations, prints a table and exits non-zero below threshold.
 
 ## Test plan
 
