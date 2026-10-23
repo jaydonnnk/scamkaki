@@ -11,13 +11,13 @@ The gate revision branch `scamkaki/gates-english-mandarin` was fast-forwarded in
 
 The user asked for compact versions of all four gates in one pass because of hackathon time (2026-10-22: "draft compact versions of all four in one pass as we dont have much time").
 S1 authorized 2026-10-22 by the user ("You have my authorization to start slice 1"), with the installs ("I give authroizeation for 7") and a Bolna budget of $5 for today and tomorrow.
-S2 was authorized and closed 2026-10-22 (see approval history). S3 authorized 2026-10-23; S4 to S6 are not yet authorized.
+S2 was authorized and closed 2026-10-22 (see approval history). S3 authorized 2026-10-23 and closed 2026-10-24; S4 to S6 are not yet authorized.
 
 ## Slices
 
 - [x] S1 - Tracer: Guardian stub end to end, branch `scamkaki/slice-1-guardian-tracer`, done 2026-10-22; [evidence](evidence/s1-tracer.md). Deviation: tested by Bolna dashboard web call because the trial plan dials only +1/+91.
 - [x] S2 - Hindi voice, branch `scamkaki/slice-2-hindi-voice`, done 2026-10-22, **go**; [evidence](evidence/s2-hindi.md). Guardian HI (Sarvam `saaras:v4` + `bulbul:v3` `ritu`) extracted agency and demand in 2 of 3 post-fix synthetic calls; Hindi listener Pravesh: understandable, warnings clear, pace OK. Open for S3: repeat-back gets clipped when the caller keeps talking; English Guardian lacks the confirm-first steps.
-- [ ] S3 - Guardian verdict and family alert, branch `scamkaki/slice-3-guardian-verdict`, in progress; resumed after the Gates 1-4 re-approval on 2026-10-24. Verdict code is built and deployed; 2 of 5 calls used ([evidence](evidence/s3-guardian-verdict.md)).
+- [x] S3 - Guardian verdict and family alert, branch `scamkaki/slice-3-guardian-verdict`, done 2026-10-24; [evidence](evidence/s3-guardian-verdict.md). Bolna call transfer was blocked on our account, so the app alerts the family by Telegram and a family page (gates re-approved 2026-10-24). Live: English scam and Hindi scam alerted (`sent`), English legit did not; 6 calls (one over plan, a cut-off attempt), 33 cents. Limits: smoke test only, alert seconds not measured, Hindi likely-scam ending awaiting Pravesh's re-check.
 - [ ] S4 - Ah Ma Bait with extraction and leak guard
 - [ ] S5 - The loop: Guardian uses Bait's scripts
 - [ ] S6 - Dashboard, report review and demo
