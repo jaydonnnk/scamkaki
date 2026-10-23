@@ -55,7 +55,7 @@
       "source": "Paraphrase of public SPF and ScamShield advisories on bank impersonation phishing scams; no victim names or identifying details.",
       "expect": {
         "agency": "bank",
-        "demand": "otp"
+        "demand": "transfer"
       },
       "planted": {
         "payee_bank": "UOB",

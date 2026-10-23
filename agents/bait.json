@@ -120,7 +120,7 @@
     },
     {
       "name": "demand",
-      "question": "What did the caller mainly ask for?",
+      "question": "What did the caller mainly ask for? If they asked for money to be moved at any point, answer transfer, even if they also asked for a code or details.",
       "is_objective": true,
       "objective_options": [
         {
@@ -129,7 +129,7 @@
         },
         {
           "value": "otp",
-          "condition": "The caller asked for an OTP, a one-time code, or a code sent by SMS."
+          "condition": "The caller asked for an OTP, a one-time code or an SMS code, and never asked for money to be moved."
         },
         {
           "value": "app_install",

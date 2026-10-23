@@ -36,8 +36,10 @@ def checked(response: httpx.Response) -> httpx.Response:
 
 def sync_dispositions(http: httpx.Client, agent_id: str, wanted: list[dict]) -> None:
     """Create missing dispositions and update existing ones, matched by name."""
-    existing = checked(http.get("/dispositions/", params={"agent_id": agent_id})).json()
-    by_name = {item["name"]: item["id"] for item in existing}
+    listed = checked(http.get("/dispositions/", params={"agent_id": agent_id})).json()
+    # With agent_id, Bolna answers {"agent_dispositions": [...], "global_dispositions": [...]},
+    # not the documented list; only the agent's own ones are ours to update.
+    by_name = {item["name"]: item["id"] for item in listed["agent_dispositions"]}
     for spec in wanted:
         if spec["name"] in by_name:
             checked(http.put(f"/dispositions/{by_name[spec['name']]}", json=spec))
