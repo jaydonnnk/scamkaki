@@ -16,3 +16,7 @@ htmlcov/
 outputs/
 work/
 .DS_Store
+
+# Synthetic caller output (rendered clips, placed-call log)
+scripts/caller/clips/
+scripts/caller/runs.jsonl

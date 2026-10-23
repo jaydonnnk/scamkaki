@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Scamkaki synthetic caller</title>
+<style>
+:root{--bg:#fbfaf7;--fg:#1d1d1b;--muted:#6b6a65;--line:#e4e2dc}
+@media (prefers-color-scheme:dark){:root{--bg:#161614;--fg:#ecebe6;--muted:#a3a29c;--line:#2e2d2a}}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,sans-serif}
+main{max-width:720px;margin:0 auto;padding:16px}
+.fixture{border:1px dashed var(--muted);padding:6px 10px;font-size:13px;color:var(--muted)}
+select,button{font:inherit;padding:8px 12px;border:1px solid var(--fg);background:transparent;color:var(--fg);border-radius:6px}button:disabled{opacity:.4}
+#log{font:13px/1.5 ui-monospace,monospace;white-space:pre-wrap;border-top:1px solid var(--line);margin-top:16px;padding-top:8px}
+</style></head><body><main>
+<p class="fixture">Test harness. Plays scripted fixture caller lines into a Bolna web call to Ah Ma Bait. Every call costs credit.</p>
+<h1>Synthetic caller</h1>
+<p><select id="case"></select> <button id="start" type="button">Place call</button> <button id="stop" type="button" disabled>Hang up</button></p>
+<div id="log" aria-live="polite"></div>
+</main>
+<script src="https://cdn.jsdelivr.net/gh/bolna-ai/web-call@v3.0.1/dist/bolna-web-call.min.js"></script>
+<script>
+const LOUD = 0.02, QUIET_MS = 1000, MAX_CALL_MS = 80000;
+const $ = (id) => document.getElementById(id);
+const log = (msg) => { $("log").textContent += new Date().toISOString().slice(11, 19) + " " + msg + "\n"; };
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+let cases = [], call = null, agentLoudAt = 0, agentSpoke = false;
+
+fetch("/cases").then((r) => r.json()).then((list) => {
+  cases = list;
+  for (const c of list) $("case").add(new Option(`${c.id} (${c.language}, ${c.clips.length} lines)`, c.id));
+});
+
+// Waits until Ah Ma has said something and then been quiet for QUIET_MS, or until maxMs.
+async function agentTurnDone(maxMs) {
+  const until = Date.now() + maxMs;
+  while (Date.now() < until) {
+    if (agentSpoke && Date.now() - agentLoudAt > QUIET_MS) return true;
+    await sleep(100);
+  }
+  return false;
+}
+
+$("start").onclick = async () => {
+  const c = cases.find((x) => x.id === $("case").value);
+  $("start").disabled = true; $("stop").disabled = false;
+  const ctx = new AudioContext();
+  await ctx.resume();
+  const buffers = await Promise.all(c.clips.map((u) => fetch(u).then((r) => r.arrayBuffer()).then((b) => ctx.decodeAudioData(b))));
+  const dest = ctx.createMediaStreamDestination();
+  // A near-silent constant keeps caller packets flowing, so Bolna records the whole call.
+  const keep = ctx.createConstantSource(); keep.offset.value = 0.001; keep.connect(dest); keep.start();
+  // The SDK's microphone preflight stops the tracks it gets, so hand out a fresh clone each time.
+  navigator.mediaDevices.getUserMedia = async () => new MediaStream(dest.stream.getAudioTracks().map((t) => t.clone()));
+  const play = (buf) => new Promise((resolve) => {
+    const src = ctx.createBufferSource(); src.buffer = buf; src.connect(dest); src.connect(ctx.destination);
+    src.onended = resolve; src.start();
+  });
+
+  const record = { case: c.id, language: c.language, started_at: new Date().toISOString(), clips_played: 0 };
+  call = new BolnaWebCall({ sessionUrl: "/session?case=" + encodeURIComponent(c.id) });
+  const cap = setTimeout(() => { log("time cap reached, hanging up"); call.stop(); }, MAX_CALL_MS);
+  call.on("volume-level", (v) => { if (v > LOUD) { agentLoudAt = Date.now(); agentSpoke = true; } });
+  call.on("error", (e) => log("error: " + (e.code || "") + " " + (e.message || "")));
+  call.on("call-end", async (e) => {
+    clearTimeout(cap); keep.stop();
+    record.ended_at = new Date().toISOString(); record.reason = e.reason; record.run_id = call.getRunId();
+    log(`call ended (${e.reason}), execution ${record.run_id}`);
+    await fetch("/log", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(record) });
+    $("start").disabled = false; $("stop").disabled = true;
+  });
+  call.on("call-start", async () => {
+    log(`connected: ${c.id}, execution ${call.getRunId()}`);
+    agentSpoke = false;
+    log(await agentTurnDone(15000) ? "greeting done" : "no greeting heard");
+    for (const [i, buf] of buffers.entries()) {
+      if (call.getState() !== "active") return;
+      log(`caller line ${i + 1}`);
+      await play(buf); record.clips_played = i + 1;
+      agentSpoke = false;
+      log(await agentTurnDone(20000) ? "Ah Ma answered" : "Ah Ma silent");
+    }
+    await sleep(1500);
+    log("script done, hanging up"); call.stop();
+  });
+  log("connecting " + c.id);
+  call.start();
+};
+$("stop").onclick = () => call && call.stop();
+</script></body></html>
