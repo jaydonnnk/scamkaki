@@ -3,14 +3,17 @@
 Compact gate draft, 2026-10-22.
 Greenfield repo; no existing code to fit.
 Revised 2026-10-22: English and Hindi through Bolna's stock providers; the Modal Hokkien TTS is removed; Mandarin is a stretch.
+Revised 2026-10-24: family alerts by Telegram and a family alert page replace Bolna call transfer.
 
 ## Shape
 
 - **Bolna** runs four phone agents end to end, one per persona and language: Guardian EN, Guardian HI, Bait EN, Bait HI.
   Each has a fixed speech-to-text language and a stock voice.
-  Bolna handles telephony, speech-to-text, LLM (Bolna-hosted `gpt-5.4-mini`), voice, graph routing, per-value extraction and call transfer.
+  Bolna handles telephony, speech-to-text, LLM (Bolna-hosted `gpt-5.4-mini`), voice, graph routing and per-value extraction.
 - **One Python web app** (FastAPI) receives Bolna webhooks, serves the Guardian `match_script` custom function, and renders the dashboard with server-side HTML.
 - **Neon Postgres** stores calls, scripts, Guardian checks and report drafts.
+- **Family alerts** come from the app, not the agent: when `match_script` decides `likely_scam`, the app records the alert on the Guardian check and sends a Telegram message after it has answered Bolna.
+  This does not depend on the LLM choosing to call a tool.
 - The app maps each Bolna agent id to its persona (`line`) and `language`.
 - Script matching is **structured**: same claimed agency and demand within 7 days, using Bolna's allowed-value extraction on all agents.
   Extracted values are the same English enum in both languages, so a script Bait HI collects counts for Guardian EN and the reverse.
@@ -26,10 +29,13 @@ Revised 2026-10-22: English and Hindi through Bolna's stock providers; the Modal
 | `/web-call/session` | POST | Reviewer | Mint a Bolna web call session for a Guardian agent (`language` `en` or `hi`) |
 | `/reports/{id}` | GET | Reviewer | One report draft |
 | `/reports/{id}/review` | POST | Reviewer | Mark reviewed; sends nothing |
+| `/family/{link_token}` | GET | Family member | Family alert page; checks for new alerts every 5 seconds and flashes and beeps on a new one |
+| `/family/{link_token}/alerts` | GET | Family alert page | JSON list of recent `likely_scam` alerts |
 | `/healthz` | GET | Warm-up ping | Liveness |
 
 Webhook auth: secret token in the path [hypothesis: Bolna documents webhook source IPs, not signatures; verify].
 Tool auth: bearer token in the custom function's `api_token` header field.
+Family auth: a long random secret in the path (`FAMILY_LINK_TOKEN`), so the family member needs no password; anyone with the link sees the alerts, and rotating the token revokes it.
 Dashboard auth: HTTP Basic admin sign-in (`ADMIN_USERNAME`, `ADMIN_PASSWORD`) on `/` and `/web-call/session` (amendment 2026-10-22); fixtures only, no real personal data.
 
 ## Data
@@ -38,7 +44,8 @@ Dashboard auth: HTTP Basic admin sign-in (`ADMIN_USERNAME`, `ADMIN_PASSWORD`) on
   Queries: upsert by `execution_id`; latest 50 for the dashboard.
 - `scripts`: `id`, `call_id`, `agency`, `demand`, `payee_bank`, `payee_account`, `paynow_id`, `url`, `summary`, `created_at`.
   Queries: count by `(agency, demand)` where `created_at > now() - 7 days`; group by `(agency, demand)` for "scripts this week".
-- `guardian_checks`: `id`, `execution_id` (nullable at tool time), `agency`, `demand`, `verdict`, `similar_count`, `created_at`.
+- `guardian_checks`: `id`, `execution_id` (nullable at tool time), `agency`, `demand`, `verdict`, `similar_count`, `language`, `alert_status` (`null` unless `likely_scam`; then `pending` until the Telegram send finishes, and `sent`, `failed` or `off` when Telegram is not configured), `created_at`.
+  Queries: latest 20 `likely_scam` rows for the family page.
 - `reports`: `id`, `call_id`, `draft`, `status` (`draft` | `reviewed`), `reviewed_at`.
 
 Migrations are ordered SQL files applied by a small runner; no ORM.
@@ -48,7 +55,7 @@ Migrations are ordered SQL files applied by a small runner; no ORM.
 **Bait:** scam call, then Bolna Bait graph agent (stall nodes, mission probes, extraction), then call ends, then Bolna posts the webhook, then the app fetches `GET /executions/{id}` (debug bundle when needed), stores the call, runs the leak guard on Ah Ma's turns, writes a `scripts` row and a draft `reports` row.
 
 **Guardian:** senior call, then Bolna Guardian graph agent extracts `agency` and `demand` from what the senior describes, then calls `POST /tools/match-script`, then the app counts matching scripts, decides the verdict, logs a `guardian_checks` row and returns a sentence, then Ah Ma speaks it.
-On "likely scam" the agent's prompt calls the transfer tool to the family number configured on the agent.
+On "likely scam" the app also marks the check as an alert, and after answering it sends the Telegram message and records `alert_status`; the family page shows the alert on its next check.
 Then the webhook stores the call as above, without a script row.
 
 **Tests:** a Bolna "Scammer" test agent and a "Senior" test agent, each prompted from one `seed/scripts.json` case, call the real agents; `scripts/check.py` reads the stored results and prints pass rates.
@@ -57,9 +64,10 @@ Then the webhook stores the call as above, without a script row.
 
 | Service | Use | Env var names |
 |---|---|---|
-| Bolna API | Agents, executions, test calls | `BOLNA_API_KEY`, `BOLNA_BAIT_AGENT_ID`, `BOLNA_BAIT_ZH_AGENT_ID`, `BOLNA_GUARDIAN_AGENT_ID`, `BOLNA_GUARDIAN_ZH_AGENT_ID`, `BOLNA_WEBHOOK_TOKEN`, `BOLNA_TOOL_TOKEN` |
+| Bolna API | Agents, executions, test calls | `BOLNA_API_KEY`, `BOLNA_BAIT_AGENT_ID`, `BOLNA_BAIT_HI_AGENT_ID`, `BOLNA_GUARDIAN_AGENT_ID`, `BOLNA_GUARDIAN_HI_AGENT_ID`, `BOLNA_WEBHOOK_TOKEN`, `BOLNA_TOOL_TOKEN` |
 | Neon Postgres | App DB and a test branch | `DATABASE_URL`, `TEST_DATABASE_URL` |
-| Render (web service) | Public HTTPS for webhook, tool and dashboard | `APP_BASE_URL`, `LOG_LEVEL`, `ADMIN_USERNAME`, `ADMIN_PASSWORD` |
+| Telegram Bot API | Family alert message, sent to one chat | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` |
+| Render (web service) | Public HTTPS for webhook, tool and dashboard | `APP_BASE_URL`, `LOG_LEVEL`, `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `FAMILY_LINK_TOKEN` |
 
 Hosting choice: Render, as on Envoi.
 Free instances sleep when idle, and a cold start during a Guardian tool call may exceed Bolna's tool timeout [unknown]; mitigate with a warm-up ping before demos, or a paid instance if you approve the spend.
@@ -69,4 +77,6 @@ Free instances sleep when idle, and a cold start during a Guardian tool call may
 - Bolna has no custom speech-to-text, so Hindi understanding depends on Bolna's providers; Bolna accepts `hi` on AssemblyAI at agent creation [verified 2026-10-22], call quality [unknown until S2]; Guardian HI falls back to yes/no and keypad questions.
 - One agent per language, not one multilingual agent, because mid-call language switching on Bolna is unverified; the cost is one line per language.
 - Mandarin is a stretch: two more agents (`zh`) only after S6, with no schema change beyond the `language` value; blocked today because Bolna refuses `zh` on every transcriber ([evidence](evidence/s2-mandarin-stt-precheck.md)).
+- Bolna call transfer was attempted in S3 and blocked on our account ("request blocked by outbound URL policy"); a phone transfer needs a paid telephony setup and stays out of scope.
+- The family is only reached if they have Telegram set up or the family page open; nobody is phoned automatically, and a missed alert is not retried.
 - Detecting who forwarded a call (SIP `Diversion`) needs our own carrier trunk; out of scope.

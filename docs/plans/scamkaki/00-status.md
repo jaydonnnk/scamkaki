@@ -2,10 +2,10 @@
 
 Updated: 2026-10-22 (Asia/Singapore).
 
-- Gate 1 - Product: **APPROVED 2026-10-22** (re-approved after the Hindi swap) ([01-product.md](01-product.md), [mockups](mockups/)).
-- Gate 2 - Architecture: **APPROVED 2026-10-22** (re-approved after the Hindi swap) ([02-architecture.md](02-architecture.md)).
-- Gate 3 - Program Design: **APPROVED 2026-10-22** (re-approved after the Hindi swap) ([03-program-design.md](03-program-design.md)).
-- Gate 4 - Slice plan: **APPROVED 2026-10-22** (re-approved after the Hindi swap) ([04-slices.md](04-slices.md)).
+- Gate 1 - Product: **IN PROGRESS, reopened 2026-10-24** for the family alert change (last approved 2026-10-22) ([01-product.md](01-product.md), [mockups](mockups/)).
+- Gate 2 - Architecture: **IN PROGRESS, reopened 2026-10-24** for the family alert change (last approved 2026-10-22) ([02-architecture.md](02-architecture.md)).
+- Gate 3 - Program Design: **IN PROGRESS, reopened 2026-10-24** for the family alert change (last approved 2026-10-22) ([03-program-design.md](03-program-design.md)).
+- Gate 4 - Slice plan: **IN PROGRESS, reopened 2026-10-24** for the family alert change (last approved 2026-10-22) ([04-slices.md](04-slices.md)).
 
 The gate revision branch `scamkaki/gates-english-mandarin` was fast-forwarded into `main` (with S1) and deleted on 2026-10-22.
 
@@ -17,7 +17,7 @@ S2 was authorized and closed 2026-10-22 (see approval history). S3 authorized 20
 
 - [x] S1 - Tracer: Guardian stub end to end, branch `scamkaki/slice-1-guardian-tracer`, done 2026-10-22; [evidence](evidence/s1-tracer.md). Deviation: tested by Bolna dashboard web call because the trial plan dials only +1/+91.
 - [x] S2 - Hindi voice, branch `scamkaki/slice-2-hindi-voice`, done 2026-10-22, **go**; [evidence](evidence/s2-hindi.md). Guardian HI (Sarvam `saaras:v4` + `bulbul:v3` `ritu`) extracted agency and demand in 2 of 3 post-fix synthetic calls; Hindi listener Pravesh: understandable, warnings clear, pace OK. Open for S3: repeat-back gets clipped when the caller keeps talking; English Guardian lacks the confirm-first steps.
-- [ ] S3 - Guardian verdict and family transfer, branch `scamkaki/slice-3-guardian-verdict`, in progress.
+- [ ] S3 - Guardian verdict and family alert, branch `scamkaki/slice-3-guardian-verdict`, in progress; paused until Gates 1-4 are re-approved. Verdict code is built and deployed; 2 of 5 calls used ([evidence](evidence/s3-guardian-verdict.md)).
 - [ ] S4 - Ah Ma Bait with extraction and leak guard
 - [ ] S5 - The loop: Guardian uses Bait's scripts
 - [ ] S6 - Dashboard, report review and demo
@@ -54,3 +54,6 @@ S2 was authorized and closed 2026-10-22 (see approval history). S3 authorized 20
   The user chose one probe call first to learn whether a web call can transfer, and the family number lives only in settings (`FAMILY_TRANSFER_NUMBER`), with a placeholder in `agents/*.json`.
 - 2026-10-23 Gate 3 wording amendment (user: "Approve amendment"): `sentence_for(verdict, similar_count, language)` and a `language` field on `POST /tools/match-script`, recording what S2 already built for the Hindi line. No gate reopens.
 - 2026-10-23 S3 push authorized (user: "Okay i authoruize pushing thus branch and fast forwarding to main so tht render deploys this new logic").
+- 2026-10-24 S3 transfer probes: Bolna blocked the transfer to the family phone ("request blocked by outbound URL policy"); 2 calls, 11 cents ([evidence](evidence/s3-guardian-verdict.md)).
+  Change (user: "Yes A+C is really good", then "Secret link. Start the gate drafts as well"): on "likely scam" the app alerts the family on a family alert page reached by a secret link and by Telegram, instead of transferring the call.
+  This changes approved decisions in all four gates, so Gates 1-4 are reopened and need re-approval before the S3 alert work continues.
