@@ -4,6 +4,7 @@ import json
 
 import pytest
 
+from scamkaki.domain.verdict import SAY
 from tests.conftest import ROOT
 
 HI_AGENTS = sorted((ROOT / "agents").glob("*_hi.json"))
@@ -52,3 +53,13 @@ def test_guardian_transfers_to_family_number_from_settings(name):
     param = json.loads(api["tools_params"]["transfer_to_family"]["param"])
     # The real number lives in settings only, never in the committed file.
     assert param["call_transfer_number"] == "${FAMILY_TRANSFER_NUMBER}"
+
+
+@pytest.mark.parametrize(("name", "language"), [("guardian", "en"), ("guardian_hi", "hi")])
+def test_transfer_speaks_the_approved_likely_scam_sentence(name, language):
+    # The LLM ends its turn after speaking, so on likely scam it transfers without
+    # speaking and the tool's message carries the reviewed warning instead (S3 probe).
+    tools = json.loads((ROOT / "agents" / f"{name}.json").read_text())["agent_config"]
+    api = tools["tasks"][0]["tools_config"]["api_tools"]
+    transfer = next(tool for tool in api["tools"] if tool["key"] == "transfer_call")
+    assert transfer["pre_call_message"] == SAY[language]["likely_scam"]
