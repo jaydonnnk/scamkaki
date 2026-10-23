@@ -58,3 +58,4 @@ S2 was authorized and closed 2026-10-22 (see approval history). S3 authorized 20
   Change (user: "Yes A+C is really good", then "Secret link. Start the gate drafts as well"): on "likely scam" the app alerts the family on a family alert page reached by a secret link and by Telegram, instead of transferring the call.
   This changes approved decisions in all four gates, so Gates 1-4 are reopened and need re-approval before the S3 alert work continues.
 - 2026-10-24 Gates 1-4 re-approved after the family alert change (user: "yes i approve all four gates"). S3 continues under its 2026-10-23 authorization; calls beyond the 5 and pushes are still asked separately.
+- 2026-10-24 S3 deploy and calls authorized (user: "I approve A B and C"): migration 0003 on production, push and fast-forward `main`, Bolna Guardian agent updates, and the 3 remaining S3 calls (2 English, 1 Hindi).
