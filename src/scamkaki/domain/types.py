@@ -16,6 +16,31 @@ DEMANDS: tuple[str, ...] = get_args(Demand)
 LANGUAGES: tuple[str, ...] = get_args(Language)
 
 
+LeakKind = Literal["nric", "otp_or_account_digits", "card"]
+
+
+@dataclass(frozen=True)
+class Extraction:
+    """What Ah Ma Bait got the scammer to say."""
+
+    agency: Agency
+    demand: Demand
+    payee_bank: str | None
+    payee_account: str | None
+    paynow_id: str | None
+    url: str | None
+    summary: str | None
+
+
+@dataclass(frozen=True)
+class Leak:
+    """A secret-looking value Ah Ma said. The excerpt has every digit masked."""
+
+    kind: LeakKind
+    turn_index: int
+    excerpt: str
+
+
 @dataclass(frozen=True)
 class MatchResult:
     verdict: Verdict
