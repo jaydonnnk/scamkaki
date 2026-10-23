@@ -32,9 +32,13 @@ class FakeBolnaWithSessions(FakeBolna):
     def __init__(self) -> None:
         super().__init__()
         self.sessions: list[str] = []
+        self.user_data: list[dict[str, str] | None] = []
 
-    def mint_web_call_session(self, agent_id: str) -> dict[str, Any]:
+    def mint_web_call_session(
+        self, agent_id: str, user_data: dict[str, str] | None = None
+    ) -> dict[str, Any]:
         self.sessions.append(agent_id)
+        self.user_data.append(user_data)
         return {"session": "fake"}
 
 

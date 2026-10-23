@@ -20,7 +20,15 @@ from scamkaki.domain import store, verdict
 from scamkaki.domain.extraction import parse_extraction
 from scamkaki.domain.leaks import agent_turns, find_leaks
 from scamkaki.domain.reports import draft_report
-from scamkaki.domain.types import Agency, Demand, Language, as_agency, as_demand, as_language
+from scamkaki.domain.types import (
+    Agency,
+    Demand,
+    Language,
+    as_agency,
+    as_demand,
+    as_language,
+    as_line,
+)
 from scamkaki.integrations import telegram
 from scamkaki.integrations.bolna import BolnaClient
 from scamkaki.lib.db import connect
@@ -254,15 +262,27 @@ def family_alerts(settings: SettingsDep, response: Response) -> list[dict[str, A
 
 
 @app.post("/web-call/session", dependencies=[AdminDep])
-def web_call_session(
+async def web_call_session(
+    request: Request,
     settings: SettingsDep,
     bolna: Annotated[BolnaClient, Depends(get_bolna)],
     language: str = "en",
+    line: str = "guardian",
 ) -> dict[str, Any]:
-    agent_id = settings.guardian_agent_id(as_language(language))
+    agent_id = settings.agent_id(as_line(line), as_language(language))
     if not agent_id:
-        raise HTTPException(status_code=503, detail="Guardian agent not configured")
-    return bolna.mint_web_call_session(agent_id)
+        raise HTTPException(status_code=503, detail="Agent not configured")
+    # The Web Call SDK posts {} or {"user_data": {...}}; pass only string variables on.
+    try:
+        body = await request.json()
+    except ValueError:
+        body = {}
+    user_data = body.get("user_data") if isinstance(body, dict) else None
+    if isinstance(user_data, dict):
+        user_data = {str(k): str(v) for k, v in user_data.items()}
+    else:
+        user_data = None
+    return await run_in_threadpool(bolna.mint_web_call_session, agent_id, user_data)
 
 
 @app.get("/", response_class=HTMLResponse, dependencies=[AdminDep])
@@ -270,4 +290,7 @@ def dashboard(request: Request, settings: SettingsDep) -> HTMLResponse:
     with connect(settings.database_url) as conn:
         calls = store.recent_calls(conn)
         checks = store.recent_checks(conn)
-    return templates.TemplateResponse(request, "dashboard.html", {"calls": calls, "checks": checks})
+        scripts = store.recent_scripts(conn)
+    return templates.TemplateResponse(
+        request, "dashboard.html", {"calls": calls, "checks": checks, "scripts": scripts}
+    )

@@ -18,8 +18,16 @@ class BolnaClient:
         response.raise_for_status()
         return response.json()
 
-    def mint_web_call_session(self, agent_id: str) -> dict[str, Any]:
-        """Short-lived, single-use browser call session (Web Call SDK docs)."""
-        response = self._http.post("/web-call/session", json={"agent_id": agent_id})
+    def mint_web_call_session(
+        self, agent_id: str, user_data: dict[str, str] | None = None
+    ) -> dict[str, Any]:
+        """Short-lived, single-use browser call session (Web Call SDK docs).
+
+        user_data are the call's variables, for example the fixture case id.
+        """
+        body: dict[str, Any] = {"agent_id": agent_id}
+        if user_data:
+            body["user_data"] = user_data
+        response = self._http.post("/web-call/session", json=body)
         response.raise_for_status()
         return response.json()

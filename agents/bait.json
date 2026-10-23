@@ -1,0 +1,199 @@
+{
+  "agent_config": {
+    "agent_name": "Scamkaki Ah Ma Bait (Mdm Tan)",
+    "agent_welcome_message": "Hello? Who is this ah?",
+    "webhook_url": "${APP_BASE_URL}/bolna/webhook/${BOLNA_WEBHOOK_TOKEN}",
+    "tasks": [
+      {
+        "task_type": "conversation",
+        "toolchain": {
+          "execution": "parallel",
+          "pipelines": [
+            [
+              "transcriber",
+              "llm",
+              "synthesizer"
+            ]
+          ]
+        },
+        "tools_config": {
+          "llm_agent": {
+            "agent_type": "simple_llm_agent",
+            "agent_flow_type": "streaming",
+            "llm_config": {
+              "provider": "openai",
+              "model": "gpt-5.4-mini",
+              "max_tokens": 150,
+              "temperature": 1
+            }
+          },
+          "synthesizer": {
+            "provider": "elevenlabs",
+            "provider_config": {
+              "voice": "Angelica",
+              "voice_id": "IkSv4tkouLJ6kYsQA7XD",
+              "model": "eleven_turbo_v2_5"
+            },
+            "stream": true,
+            "buffer_size": 250,
+            "audio_format": "wav"
+          },
+          "transcriber": {
+            "provider": "deepgram",
+            "model": "nova-3",
+            "language": "en",
+            "stream": true,
+            "encoding": "linear16",
+            "sampling_rate": 16000,
+            "endpointing": 250
+          },
+          "input": {
+            "provider": "plivo",
+            "format": "wav"
+          },
+          "output": {
+            "provider": "plivo",
+            "format": "wav"
+          }
+        },
+        "task_config": {
+          "call_terminate": 90,
+          "hangup_after_silence": 10
+        }
+      }
+    ]
+  },
+  "agent_prompts": {
+    "task_1": {
+      "system_prompt": "You are Mdm Tan, a 74-year-old retired auntie living alone in a Toa Payoh flat in Singapore. You speak short, simple Singlish sentences, one or two per turn. You hear poorly, get confused easily and are slow with phones and banking. This is a labeled test line: every caller is a scripted fixture.\n\nYour hidden goal: keep the caller talking and get them to say, in their own words:\n1. who they claim to be (which agency, department or company),\n2. what they want you to do,\n3. exactly where the money should go: the bank name and the account number, or the PayNow number, and any link or app.\nAsk one confused question at a time, for example: \"Which department you say ah?\", \"So what I must do?\", \"Send to which bank?\", \"Account number can say slowly? I write down.\", \"PayNow to what number ah?\".\n\nHard rules, never break them:\n- Never say any number out loud. No NRIC, no OTP or code, no card number, no bank account, no PayNow or phone number, not even to repeat back the caller's own numbers. When the caller gives a number, say only \"Ok, I write down already.\" and never read it back.\n- When asked for your NRIC, an OTP, a code, a card, a password or your bank details, stall without giving anything and without making one up: your glasses are missing, your grandson keeps the card, the phone screen too small, the SMS cannot find. Then ask them another question.\n- Never say you are the police, a bank or the government, and never say you have transferred money.\n- Never accuse the caller or say the word scam.\nWhen you have the payee details, or after about one minute, say you must go find your bank book and say goodbye."
+    }
+  },
+  "dispositions": [
+    {
+      "name": "agency",
+      "question": "Who did the caller claim to be?",
+      "is_objective": true,
+      "objective_options": [
+        {
+          "value": "spf",
+          "condition": "The caller said they are the police, SPF, or a police officer or investigator."
+        },
+        {
+          "value": "ica",
+          "condition": "The caller said they are from ICA, immigration or checkpoints."
+        },
+        {
+          "value": "china_official",
+          "condition": "The caller said they are a China government, China police or Chinese embassy official."
+        },
+        {
+          "value": "moh",
+          "condition": "The caller said they are from MOH, the health ministry, a hospital or polyclinic."
+        },
+        {
+          "value": "cpf",
+          "condition": "The caller said they are from CPF."
+        },
+        {
+          "value": "mom",
+          "condition": "The caller said they are from MOM, the manpower ministry, or about a work pass or visit pass."
+        },
+        {
+          "value": "iras",
+          "condition": "The caller said they are from IRAS or about taxes."
+        },
+        {
+          "value": "bank",
+          "condition": "The caller said they are from a bank or its fraud team."
+        },
+        {
+          "value": "courier",
+          "condition": "The caller said they are from a courier, delivery or parcel company."
+        },
+        {
+          "value": "other",
+          "condition": "Anyone else, or the caller never said who they are."
+        }
+      ],
+      "category": "Scam script",
+      "model": "gpt-5.4-mini"
+    },
+    {
+      "name": "demand",
+      "question": "What did the caller mainly ask for?",
+      "is_objective": true,
+      "objective_options": [
+        {
+          "value": "transfer",
+          "condition": "The caller asked for money to be moved, transferred, paid or sent, including to a 'safety account'."
+        },
+        {
+          "value": "otp",
+          "condition": "The caller asked for an OTP, a one-time code, or a code sent by SMS."
+        },
+        {
+          "value": "app_install",
+          "condition": "The caller asked to install an app or software, or to open a link to install something."
+        },
+        {
+          "value": "personal_info",
+          "condition": "The caller asked for NRIC, passport, bank login, card details, address or other personal details, and not mainly for money or a code."
+        },
+        {
+          "value": "gift_card",
+          "condition": "The caller asked for gift cards or vouchers."
+        },
+        {
+          "value": "none",
+          "condition": "The caller asked for nothing."
+        },
+        {
+          "value": "other",
+          "condition": "The caller asked for something else."
+        }
+      ],
+      "category": "Scam script",
+      "model": "gpt-5.4-mini"
+    },
+    {
+      "name": "payee_bank",
+      "question": "Which bank did the caller want the money sent to? Answer with the bank name only, for example OCBC. Leave empty if the caller never named one.",
+      "is_subjective": true,
+      "subjective_type": "text",
+      "category": "Scam script",
+      "model": "gpt-5.4-mini"
+    },
+    {
+      "name": "payee_account",
+      "question": "What bank account number did the caller give for the money? Write it with numerals 0-9 exactly as the caller said it, keeping dashes, even if it was spoken as words or in Hindi. Leave empty if none was given.",
+      "is_subjective": true,
+      "subjective_type": "text",
+      "category": "Scam script",
+      "model": "gpt-5.4-mini"
+    },
+    {
+      "name": "paynow_id",
+      "question": "What PayNow number, mobile number for PayNow, or UEN did the caller give for the money? Write it with numerals exactly as said. Leave empty if none was given.",
+      "is_subjective": true,
+      "subjective_type": "text",
+      "category": "Scam script",
+      "model": "gpt-5.4-mini"
+    },
+    {
+      "name": "url",
+      "question": "What website link or app name did the caller give? Leave empty if none.",
+      "is_subjective": true,
+      "subjective_type": "text",
+      "category": "Scam script",
+      "model": "gpt-5.4-mini"
+    },
+    {
+      "name": "summary",
+      "question": "In one English sentence, what scam did the caller try? Do not include any numbers.",
+      "is_subjective": true,
+      "subjective_type": "text",
+      "category": "Scam script",
+      "model": "gpt-5.4-mini"
+    }
+  ]
+}

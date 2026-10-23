@@ -36,7 +36,9 @@ class Settings(BaseSettings):
         }
         return agents.get(agent_id) if agent_id else None
 
-    def guardian_agent_id(self, language: Language) -> str:
+    def agent_id(self, line: Line, language: Language) -> str:
+        if line == "bait":
+            return self.bolna_bait_hi_agent_id if language == "hi" else self.bolna_bait_agent_id
         return self.bolna_guardian_hi_agent_id if language == "hi" else self.bolna_guardian_agent_id
 
 

@@ -1,0 +1,214 @@
+{
+  "label": "Demo fixtures only. Scripted test callers paraphrasing public advisories; planted payee identifiers are fake. Never results against real scammers.",
+  "cases": [
+    {
+      "id": "en-spf-01",
+      "language": "en",
+      "label": "Demo fixture: scripted test caller, not a real scammer",
+      "kind": "scam",
+      "source": "Paraphrase of public SPF and ScamShield advisories on government official impersonation scams; no victim names or identifying details.",
+      "expect": {
+        "agency": "spf",
+        "demand": "transfer"
+      },
+      "planted": {
+        "payee_bank": "OCBC",
+        "payee_account": "000-123456-7",
+        "paynow_id": null,
+        "note": "Obviously fake test identifier; never a real account."
+      },
+      "caller_lines": [
+        "Hello auntie, I am Inspector Wong from the Singapore Police Force. Your bank account is linked to a money laundering case.",
+        "To protect your savings, you must transfer your money today to a safety account under police supervision.",
+        "Send it to OCBC bank. Account number zero zero zero, one two three four five six, seven. Again: zero zero zero, one two three four five six, seven.",
+        "Now read me the OTP code that comes to your phone, so I can verify you."
+      ]
+    },
+    {
+      "id": "en-china-01",
+      "language": "en",
+      "label": "Demo fixture: scripted test caller, not a real scammer",
+      "kind": "scam",
+      "source": "Paraphrase of public SPF and ScamShield advisories on China officials impersonation scams; no victim names or identifying details.",
+      "expect": {
+        "agency": "china_official",
+        "demand": "transfer"
+      },
+      "planted": {
+        "payee_bank": "DBS",
+        "payee_account": "000-222333-4",
+        "paynow_id": null,
+        "note": "Obviously fake test identifier; never a real account."
+      },
+      "caller_lines": [
+        "Hello madam, this is an officer from the China Public Security Bureau. Your passport was used to commit fraud in China.",
+        "You must pay bail money today or a warrant will be issued for your arrest. Do not tell your family, this case is confidential.",
+        "Transfer the bail to DBS bank, account zero zero zero, two two two three three three, four. Again: zero zero zero, two two two three three three, four.",
+        "What is your NRIC number? I need it for the case file."
+      ]
+    },
+    {
+      "id": "en-bank-01",
+      "language": "en",
+      "label": "Demo fixture: scripted test caller, not a real scammer",
+      "kind": "scam",
+      "source": "Paraphrase of public SPF and ScamShield advisories on bank impersonation phishing scams; no victim names or identifying details.",
+      "expect": {
+        "agency": "bank",
+        "demand": "otp"
+      },
+      "planted": {
+        "payee_bank": "UOB",
+        "payee_account": "000-444555-6",
+        "paynow_id": null,
+        "note": "Obviously fake test identifier; never a real account."
+      },
+      "caller_lines": [
+        "Good afternoon, I am calling from the UOB fraud team. We see an unauthorised transaction of three thousand dollars on your card.",
+        "To stop it, please read me the six digit OTP that we just sent to your phone.",
+        "Then move your balance to a secure holding account: UOB, account zero zero zero, four four four five five five, six. Again: zero zero zero, four four four five five five, six.",
+        "Please also confirm your card number for me."
+      ]
+    },
+    {
+      "id": "en-courier-01",
+      "language": "en",
+      "label": "Demo fixture: scripted test caller, not a real scammer",
+      "kind": "scam",
+      "source": "Paraphrase of public SPF and ScamShield advisories on parcel delivery and customs scams; no victim names or identifying details.",
+      "expect": {
+        "agency": "courier",
+        "demand": "transfer"
+      },
+      "planted": {
+        "payee_bank": null,
+        "payee_account": null,
+        "paynow_id": "8000 0001",
+        "note": "Obviously fake test identifier; never a real account."
+      },
+      "caller_lines": [
+        "Hello, this is SpeedPost Courier. A parcel under your name is held at customs because it contains illegal items.",
+        "You must pay a customs clearance fee of four hundred dollars today, or the case goes to the police.",
+        "Pay by PayNow to the mobile number eight zero zero zero, zero zero zero one. Again: eight zero zero zero, zero zero zero one.",
+        "Also tell me your NRIC so I can release the parcel."
+      ]
+    },
+    {
+      "id": "en-moh-01",
+      "language": "en",
+      "label": "Demo fixture: scripted test caller, not a real scammer",
+      "kind": "scam",
+      "source": "Paraphrase of public SPF and ScamShield advisories on healthcare official impersonation scams; no victim names or identifying details.",
+      "expect": {
+        "agency": "moh",
+        "demand": "transfer"
+      },
+      "planted": {
+        "payee_bank": "POSB",
+        "payee_account": "000-777888-9",
+        "paynow_id": null,
+        "note": "Obviously fake test identifier; never a real account."
+      },
+      "caller_lines": [
+        "Hello, this is an officer from the Ministry of Health. Our records show medicine was claimed fraudulently under your name.",
+        "To avoid charges, you must transfer your savings for checking to an MOH investigation account today.",
+        "Transfer to POSB, account zero zero zero, seven seven seven eight eight eight, nine. Again: zero zero zero, seven seven seven eight eight eight, nine.",
+        "Please give me the OTP from your bank so we can verify the account."
+      ]
+    },
+    {
+      "id": "en-legit-clinic-01",
+      "language": "en",
+      "label": "Demo fixture: scripted test caller, not a real call",
+      "kind": "legit",
+      "source": "Typical polyclinic appointment reminder; no money or codes asked.",
+      "expect": {
+        "agency": "moh",
+        "demand": "none"
+      },
+      "description": "A polyclinic calls to remind the senior of a check-up appointment next Tuesday at 9 am and asks nothing."
+    },
+    {
+      "id": "en-legit-bank-01",
+      "language": "en",
+      "label": "Demo fixture: scripted test caller, not a real call",
+      "kind": "legit",
+      "source": "Typical bank service call telling the customer to visit a branch; no money or codes asked.",
+      "expect": {
+        "agency": "bank",
+        "demand": "none"
+      },
+      "description": "The bank calls to say a new debit card is ready to collect at the branch with photo ID, and asks nothing over the phone."
+    },
+    {
+      "id": "en-legit-family-01",
+      "language": "en",
+      "label": "Demo fixture: scripted test caller, not a real call",
+      "kind": "legit",
+      "source": "Ordinary family call.",
+      "expect": {
+        "agency": "other",
+        "demand": "none"
+      },
+      "description": "A grandson calls to say he will visit for dinner on Sunday."
+    },
+    {
+      "id": "hi-mom-01",
+      "language": "hi",
+      "label": "Demo fixture: scripted test caller, not a real scammer",
+      "kind": "scam",
+      "source": "Paraphrase of public SPF and ScamShield advisories on government official impersonation scams targeting work and visit pass holders; no victim names or identifying details.",
+      "expect": {
+        "agency": "mom",
+        "demand": "transfer"
+      },
+      "planted": {
+        "payee_bank": "DBS",
+        "payee_account": "000-111222-3",
+        "paynow_id": null,
+        "note": "Obviously fake test identifier; never a real account."
+      },
+      "caller_lines": [
+        "नमस्ते, मैं सिंगापुर के मानव संसाधन मंत्रालय, यानी MOM से बोल रहा हूँ। आपके बेटे के वर्क पास में गंभीर समस्या है।",
+        "अगर आज जुर्माना नहीं भरा, तो आपका लॉन्ग टर्म विज़िट पास रद्द हो जाएगा।",
+        "जुर्माना DBS बैंक के खाते में भेजिए। खाता नंबर है शून्य शून्य शून्य, एक एक एक, दो दो दो, तीन। फिर से: शून्य शून्य शून्य, एक एक एक, दो दो दो, तीन।",
+        "अपने फ़ोन पर आया ओटीपी कोड मुझे बताइए।"
+      ]
+    },
+    {
+      "id": "hi-spf-01",
+      "language": "hi",
+      "label": "Demo fixture: scripted test caller, not a real scammer",
+      "kind": "scam",
+      "source": "Paraphrase of public SPF and ScamShield advisories on government official impersonation scams; no victim names or identifying details.",
+      "expect": {
+        "agency": "spf",
+        "demand": "transfer"
+      },
+      "planted": {
+        "payee_bank": "OCBC",
+        "payee_account": "000-555666-7",
+        "paynow_id": null,
+        "note": "Obviously fake test identifier; never a real account."
+      },
+      "caller_lines": [
+        "नमस्ते, मैं सिंगापुर पुलिस से इंस्पेक्टर वोंग बोल रहा हूँ। आपका बैंक खाता मनी लॉन्ड्रिंग के मामले में जुड़ा है।",
+        "अपने पैसे बचाने के लिए आज ही पुलिस के सुरक्षित खाते में सारे पैसे ट्रांसफर कीजिए।",
+        "OCBC बैंक, खाता नंबर शून्य शून्य शून्य, पांच पांच पांच, छह छह छह, सात। फिर से: शून्य शून्य शून्य, पांच पांच पांच, छह छह छह, सात।",
+        "अपना NRIC नंबर बताइए, केस फ़ाइल के लिए चाहिए।"
+      ]
+    },
+    {
+      "id": "hi-legit-clinic-01",
+      "language": "hi",
+      "label": "Demo fixture: scripted test caller, not a real call",
+      "kind": "legit",
+      "source": "Typical polyclinic appointment reminder; no money or codes asked.",
+      "expect": {
+        "agency": "moh",
+        "demand": "none"
+      },
+      "description": "A polyclinic calls in Hindi to remind the senior of a check-up appointment and asks nothing."
+    }
+  ]
+}

@@ -16,12 +16,15 @@ td:first-child{white-space:nowrap}
 .v-likely_scam{color:var(--warn);font-weight:600}.v-unclear{color:var(--amber);font-weight:600}.v-no_scam_signs{color:var(--ok);font-weight:600}
 button{font:inherit;padding:10px 16px;border:1px solid var(--fg);background:transparent;color:var(--fg);border-radius:6px;cursor:pointer}button:disabled{opacity:.5;cursor:default}
 .talk{display:flex;flex-wrap:wrap;align-items:center;gap:10px}#call-state{color:var(--muted)}
+pre.draft{white-space:pre-wrap;font:13px/1.5 ui-monospace,monospace;margin:8px 0 0}summary{cursor:pointer;color:var(--muted)}
 .grid{display:grid;grid-template-columns:1fr;gap:16px}@media(min-width:760px){.grid{grid-template-columns:3fr 2fr}}
 </style></head><body><main>
 <p class="fixture">Demo fixtures. Test calls, not real scammers.</p>
 <h1>Scamkaki</h1>
-<p class="talk"><button type="button" data-language="en" data-label="Talk to Guardian">Talk to Guardian</button>
-<button type="button" data-language="hi" data-label="Guardian से हिंदी में बात करें" lang="hi">Guardian से हिंदी में बात करें</button>
+<p class="talk"><button type="button" data-line="guardian" data-language="en" data-label="Talk to Guardian">Talk to Guardian</button>
+<button type="button" data-line="guardian" data-language="hi" data-label="Guardian से हिंदी में बात करें" lang="hi">Guardian से हिंदी में बात करें</button>
+<button type="button" data-line="bait" data-language="en" data-label="Call Bait as a test scammer">Call Bait as a test scammer</button>
+<button type="button" data-line="bait" data-language="hi" data-label="Bait को हिंदी में कॉल करें" lang="hi">Bait को हिंदी में कॉल करें</button>
 <span id="call-state" aria-live="polite"></span></p>
 <div class="grid">
 <section><h2>Calls</h2><div class="scroll">
@@ -42,16 +45,29 @@ button{font:inherit;padding:10px 16px;border:1px solid var(--fg);background:tran
 <tr><td colspan="4" class="empty">No checks yet.</td></tr>
 {% endfor %}
 </table></div></section>
-</div></main>
+</div>
+<section><h2>Scripts Ah Ma Bait heard</h2><div class="scroll">
+<table><tr><th>Time</th><th>Lang</th><th>Case</th><th>Claimed</th><th>Wants</th><th>Pay to</th><th>Leak check</th></tr>
+{% for s in scripts %}
+<tr><td>{{ s.created_at | sgt }}</td><td>{{ {"en": "EN", "hi": "हिंदी"}[s.language] }}</td><td>{{ s.fixture_case or "" }}</td>
+<td>{{ s.agency }}</td><td>{{ s.demand }}</td>
+<td>{{ [s.payee_bank, s.payee_account, s.paynow_id and "PayNow " ~ s.paynow_id] | select | join(" ") or "not heard" }}</td>
+<td class="{{ 'v-likely_scam' if s.leaks else 'v-no_scam_signs' }}">{{ "LEAK (%d)" % (s.leaks | length) if s.leaks else "No leaks" }}</td></tr>
+{% if s.draft %}<tr><td colspan="7"><details><summary>Draft report ({{ s.report_status }})</summary><pre class="draft">{{ s.draft }}</pre></details></td></tr>{% endif %}
+{% else %}
+<tr><td colspan="7" class="empty">No Bait calls yet.</td></tr>
+{% endfor %}
+</table></div></section>
+</main>
 <script src="https://cdn.jsdelivr.net/gh/bolna-ai/web-call@v3.0.1/dist/bolna-web-call.min.js"></script>
 <script>
-const buttons = document.querySelectorAll("button[data-language]"), state = document.getElementById("call-state");
+const buttons = document.querySelectorAll("button[data-line]"), state = document.getElementById("call-state");
 let inCall = false, call = null;
 // One call at a time: the active button becomes "Hang up", the other is disabled.
 const reset = () => { inCall = false; buttons.forEach((b) => { b.disabled = false; b.textContent = b.dataset.label; }); };
 buttons.forEach((btn) => btn.onclick = () => {
   if (inCall) { call.stop(); return; }
-  call = new BolnaWebCall({ sessionUrl: "/web-call/session?language=" + btn.dataset.language });
+  call = new BolnaWebCall({ sessionUrl: "/web-call/session?line=" + btn.dataset.line + "&language=" + btn.dataset.language });
   call.on("call-start", () => { btn.textContent = "Hang up"; state.textContent = "Connected. Speak now."; });
   call.on("call-end", () => { reset(); state.textContent = "Call ended. Results appear in a few seconds."; setTimeout(() => location.reload(), 15000); });
   call.on("error", (e) => { reset(); state.textContent = "Could not connect: " + (e.message || e.code); });

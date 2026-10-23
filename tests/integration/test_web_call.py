@@ -1,5 +1,5 @@
 from scamkaki.app.main import app, get_bolna
-from tests.conftest import GUARDIAN_AGENT, GUARDIAN_HI_AGENT
+from tests.conftest import BAIT_AGENT, BAIT_HI_AGENT, GUARDIAN_AGENT, GUARDIAN_HI_AGENT
 from tests.support.fakes import FakeBolnaWithSessions
 
 
@@ -22,3 +22,19 @@ def test_web_call_session_mints_for_hindi_guardian(client):
 
     assert response.status_code == 200
     assert bolna.sessions == [GUARDIAN_HI_AGENT]
+
+
+def test_web_call_session_mints_for_bait_with_case(client):
+    bolna = FakeBolnaWithSessions()
+    app.dependency_overrides[get_bolna] = lambda: bolna
+
+    response = client.post(
+        "/web-call/session?line=bait",
+        json={"user_data": {"fixture_case": "en-spf-01"}},
+        auth=("admin", "admin-pass"),
+    )
+    hindi = client.post("/web-call/session?line=bait&language=hi", auth=("admin", "admin-pass"))
+
+    assert (response.status_code, hindi.status_code) == (200, 200)
+    assert bolna.sessions == [BAIT_AGENT, BAIT_HI_AGENT]
+    assert bolna.user_data == [{"fixture_case": "en-spf-01"}, None]

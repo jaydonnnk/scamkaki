@@ -58,6 +58,10 @@ def as_demand(value: object) -> Demand:
     return text if text in DEMANDS else "other"  # type: ignore[return-value]
 
 
+def as_line(value: object) -> Line:
+    return "bait" if str(value or "").strip().lower() == "bait" else "guardian"
+
+
 def as_language(value: object) -> Language:
     text = str(value or "").strip().lower()
     return text if text in LANGUAGES else "en"  # type: ignore[return-value]
