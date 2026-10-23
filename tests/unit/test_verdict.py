@@ -1,6 +1,8 @@
+from datetime import UTC, datetime
+
 import pytest
 
-from scamkaki.domain.verdict import SAY, decide, sentence_for
+from scamkaki.domain.verdict import SAY, alert_text, decide, sentence_for
 
 # Words that would tell a senior a call is safe, per language.
 SAFE_WORDS = {"en": ("safe",), "hi": ("सुरक्षित", "सेफ")}
@@ -50,3 +52,20 @@ def test_sentence_never_says_safe(language, verdict, similar_count):
 def test_sentence_mentions_repeat_count_only_when_seen(language):
     assert sentence_for("unclear", 0, language) == SAY[language]["unclear"]
     assert "2" in sentence_for("unclear", 2, language)
+
+
+def test_alert_text_is_labeled_fixture_and_names_claim():
+    text = alert_text("spf", "transfer", "hi", 0, datetime(2026, 10, 24, 6, 2, tzinfo=UTC))
+
+    assert text.startswith("[Demo fixture] Ah Ma Guardian: likely scam call")
+    assert "Caller claimed to be: Police (SPF)" in text
+    assert "Asked for: Money transfer" in text
+    assert "Line: Hindi, 24 Oct 14:02" in text  # Singapore time
+    assert "Same script" not in text
+    assert text.endswith("Please call Ah Ma now.")
+
+
+def test_alert_text_mentions_repeat_script_when_seen():
+    text = alert_text("ica", "otp", "en", 3, datetime(2026, 10, 24, tzinfo=UTC))
+
+    assert "Same script heard 3 times this week." in text

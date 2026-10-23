@@ -39,4 +39,5 @@ def test_settings() -> Settings:
         bolna_tool_token="tool-token",
         database_url=url,
         admin_password="admin-pass",
+        family_link_token="family-link",
     )

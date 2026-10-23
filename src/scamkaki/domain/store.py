@@ -1,11 +1,13 @@
-"""SQL for calls and Guardian checks."""
+"""SQL for calls, Guardian checks and family alerts."""
 
-from typing import Any
+from typing import Any, Literal
 
 import psycopg
 from psycopg.types.json import Jsonb
 
 from scamkaki.domain.types import Agency, Demand, Language, Line, MatchResult
+
+AlertStatus = Literal["sent", "failed", "off"]
 
 
 def upsert_call(
@@ -48,16 +50,37 @@ def upsert_call(
 
 
 def log_guardian_check(
-    conn: psycopg.Connection, agency: Agency, demand: Demand, result: MatchResult
+    conn: psycopg.Connection,
+    agency: Agency,
+    demand: Demand,
+    language: Language,
+    result: MatchResult,
 ) -> int:
+    alert_status = "pending" if result.verdict == "likely_scam" else None
     row = conn.execute(
         """
-        insert into guardian_checks (agency, demand, verdict, similar_count)
-        values (%s, %s, %s, %s) returning id
+        insert into guardian_checks (agency, demand, language, verdict, similar_count,
+                                     alert_status)
+        values (%s, %s, %s, %s, %s, %s) returning id
         """,
-        (agency, demand, result.verdict, result.similar_count),
+        (agency, demand, language, result.verdict, result.similar_count, alert_status),
     ).fetchone()
     return row["id"]
+
+
+def set_alert_status(conn: psycopg.Connection, check_id: int, status: AlertStatus) -> None:
+    conn.execute("update guardian_checks set alert_status = %s where id = %s", (status, check_id))
+
+
+def recent_alerts(conn: psycopg.Connection, limit: int = 20) -> list[dict[str, Any]]:
+    return conn.execute(
+        """
+        select id, agency, demand, language, similar_count, alert_status, created_at
+        from guardian_checks where verdict = 'likely_scam'
+        order by created_at desc, id desc limit %s
+        """,
+        (limit,),
+    ).fetchall()
 
 
 def recent_calls(conn: psycopg.Connection, limit: int = 50) -> list[dict[str, Any]]:

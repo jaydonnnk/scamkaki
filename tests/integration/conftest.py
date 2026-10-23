@@ -1,10 +1,10 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from scamkaki.app.main import app, get_bolna
+from scamkaki.app.main import app, get_bolna, get_telegram
 from scamkaki.lib.db import connect, migrate
 from scamkaki.lib.env import get_settings
-from tests.support.fakes import FakeBolna
+from tests.support.fakes import FakeBolna, FakeTelegram
 
 
 @pytest.fixture
@@ -21,8 +21,14 @@ def bolna() -> FakeBolna:
 
 
 @pytest.fixture
-def client(test_settings, db, bolna):
+def telegram() -> FakeTelegram:
+    return FakeTelegram()
+
+
+@pytest.fixture
+def client(test_settings, db, bolna, telegram):
     app.dependency_overrides[get_settings] = lambda: test_settings
     app.dependency_overrides[get_bolna] = lambda: bolna
+    app.dependency_overrides[get_telegram] = lambda: telegram
     yield TestClient(app)
     app.dependency_overrides.clear()

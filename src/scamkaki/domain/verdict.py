@@ -1,4 +1,7 @@
-"""What Guardian decides and says, in the line's language. Never says a call is safe."""
+"""What Guardian decides, says, and tells the family. Never says a call is safe."""
+
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from scamkaki.domain.types import Agency, Demand, Language, MatchResult, Verdict
 
@@ -13,7 +16,7 @@ SAY: dict[Language, dict[Verdict, str]] = {
     "en": {
         "likely_scam": (
             "This is likely a scam. Do not transfer money or share any code."
-            " I will connect you to your family now."
+            " I have alerted your family. Please wait for their call."
         ),
         "unclear": "Not sure. Please call your family before doing anything.",
         "no_scam_signs": (
@@ -23,7 +26,9 @@ SAY: dict[Language, dict[Verdict, str]] = {
     },
     "hi": {
         "likely_scam": (
-            "यह शायद धोखाधड़ी है।" + _HI_WARNINGS + " मैं अभी आपको आपके परिवार से जोड़ रही हूँ।"
+            "यह शायद धोखाधड़ी है।"
+            + _HI_WARNINGS
+            + " मैंने आपके परिवार को खबर कर दी है। उनके फ़ोन का इंतज़ार कीजिए।"
         ),
         "unclear": (
             "पक्का नहीं कह सकती।" + _HI_WARNINGS + " कुछ भी करने से पहले अपने परिवार को फ़ोन कीजिए।"
@@ -68,3 +73,45 @@ def match(agency: Agency, demand: Demand, language: Language = "en") -> MatchRes
     similar_count = 0  # S5 counts similar scripts from Bait's library.
     verdict = decide(agency, demand, similar_count)
     return MatchResult(verdict, similar_count, sentence_for(verdict, similar_count, language))
+
+
+SGT = ZoneInfo("Asia/Singapore")
+
+# Plain labels for the family, shared by the Telegram message and the family page.
+AGENCY_LABELS: dict[Agency, str] = {
+    "spf": "Police (SPF)",
+    "ica": "ICA",
+    "china_official": "China official",
+    "moh": "MOH",
+    "cpf": "CPF",
+    "mom": "MOM",
+    "iras": "IRAS",
+    "bank": "A bank",
+    "courier": "A courier",
+    "other": "Not clear",
+}
+DEMAND_LABELS: dict[Demand, str] = {
+    "transfer": "Money transfer",
+    "otp": "An OTP code",
+    "app_install": "Install an app",
+    "personal_info": "Personal details",
+    "gift_card": "Gift cards",
+    "none": "Nothing",
+    "other": "Something else",
+}
+LANGUAGE_LABELS: dict[Language, str] = {"en": "English", "hi": "Hindi"}
+
+
+def alert_text(
+    agency: Agency, demand: Demand, language: Language, similar_count: int, at: datetime
+) -> str:
+    lines = [
+        "[Demo fixture] Ah Ma Guardian: likely scam call",
+        f"Caller claimed to be: {AGENCY_LABELS[agency]}",
+        f"Asked for: {DEMAND_LABELS[demand]}",
+        f"Line: {LANGUAGE_LABELS[language]}, {at.astimezone(SGT):%d %b %H:%M}",
+    ]
+    if similar_count >= 1:
+        lines.append(f"Same script heard {similar_count} times this week.")
+    lines.append("Please call Ah Ma now.")
+    return "\n".join(lines)

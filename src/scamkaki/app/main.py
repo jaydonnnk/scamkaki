@@ -1,20 +1,24 @@
-"""FastAPI app: Bolna webhook, Guardian match-script tool, dashboard."""
+"""FastAPI app: Bolna webhook, Guardian match-script tool, family alerts, dashboard."""
 
 import logging
+from collections.abc import Callable
 from dataclasses import asdict
+from datetime import UTC, datetime
+from functools import partial
 from hmac import compare_digest
 from pathlib import Path
 from typing import Annotated, Any
 from zoneinfo import ZoneInfo
 
-from fastapi import Depends, FastAPI, HTTPException, Request, Response
+from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Request, Response
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import HTMLResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.templating import Jinja2Templates
 
 from scamkaki.domain import store, verdict
-from scamkaki.domain.types import as_agency, as_demand, as_language
+from scamkaki.domain.types import Agency, Demand, Language, as_agency, as_demand, as_language
+from scamkaki.integrations import telegram
 from scamkaki.integrations.bolna import BolnaClient
 from scamkaki.lib.db import connect
 from scamkaki.lib.env import Settings, get_settings
@@ -61,6 +65,26 @@ AdminDep = Depends(require_admin)
 
 def get_bolna(settings: SettingsDep) -> BolnaClient:
     return BolnaClient(settings.bolna_api_key)
+
+
+SendAlert = Callable[[str], bool]
+
+
+def get_telegram(settings: SettingsDep) -> SendAlert | None:
+    """The family's Telegram sender, or None when the bot is not configured."""
+    if not (settings.telegram_bot_token and settings.telegram_chat_id):
+        return None
+    return partial(telegram.send_message, settings.telegram_bot_token, settings.telegram_chat_id)
+
+
+def require_family_link(link_token: str, settings: SettingsDep) -> None:
+    """The family page has no password; the secret link is the key. Fails closed if unset."""
+    expected = settings.family_link_token
+    if not expected or not compare_digest(link_token.encode(), expected.encode()):
+        raise HTTPException(status_code=404)
+
+
+FamilyDep = Depends(require_family_link)
 
 
 def fixture_case_of(execution: dict[str, Any]) -> str | None:
@@ -114,7 +138,12 @@ def bolna_webhook(
 
 
 @app.post("/tools/match-script")
-async def match_script(request: Request, settings: SettingsDep) -> dict[str, Any]:
+async def match_script(
+    request: Request,
+    settings: SettingsDep,
+    background: BackgroundTasks,
+    send_alert: Annotated[SendAlert | None, Depends(get_telegram)],
+) -> dict[str, Any]:
     expected = f"Bearer {settings.bolna_tool_token}"
     if not compare_digest(request.headers.get("authorization", ""), expected):
         raise HTTPException(status_code=401)
@@ -133,17 +162,80 @@ async def match_script(request: Request, settings: SettingsDep) -> dict[str, Any
     except Exception:
         log.exception("verdict failed; answering unclear")
         result = verdict.unclear(language)
+    check_id = None
     try:
-        await run_in_threadpool(_log_check, settings.database_url, agency, demand, result)
+        check_id = await run_in_threadpool(
+            _log_check, settings.database_url, agency, demand, language, result
+        )
     except Exception:
         # Never leave the senior in silence because logging failed.
         log.exception("failed to log guardian check")
+    if result.verdict == "likely_scam":
+        # Runs after the answer is sent, so a slow Telegram never delays Ah Ma.
+        background.add_task(
+            _alert_family,
+            settings.database_url,
+            send_alert,
+            check_id,
+            agency,
+            demand,
+            language,
+            result.similar_count,
+        )
     return asdict(result)
 
 
-def _log_check(database_url: str, agency, demand, result) -> None:
+def _log_check(database_url: str, agency, demand, language, result) -> int:
     with connect(database_url) as conn:
-        store.log_guardian_check(conn, agency, demand, result)
+        return store.log_guardian_check(conn, agency, demand, language, result)
+
+
+def _alert_family(
+    database_url: str,
+    send_alert: SendAlert | None,
+    check_id: int | None,
+    agency: Agency,
+    demand: Demand,
+    language: Language,
+    similar_count: int,
+) -> None:
+    if send_alert is None:
+        status = "off"
+    else:
+        text = verdict.alert_text(agency, demand, language, similar_count, datetime.now(UTC))
+        status = "sent" if send_alert(text) else "failed"
+    if check_id is None:
+        return
+    try:
+        with connect(database_url) as conn:
+            store.set_alert_status(conn, check_id, status)
+    except Exception:
+        log.exception("failed to record family alert status")
+
+
+@app.get("/family/{link_token}", response_class=HTMLResponse, dependencies=[FamilyDep])
+def family_page(request: Request) -> HTMLResponse:
+    response = templates.TemplateResponse(
+        request,
+        "family.html",
+        {
+            "agencies": verdict.AGENCY_LABELS,
+            "demands": verdict.DEMAND_LABELS,
+            "languages": verdict.LANGUAGE_LABELS,
+        },
+    )
+    # Keep the secret link out of Referer headers and search engines.
+    response.headers["Referrer-Policy"] = "no-referrer"
+    response.headers["X-Robots-Tag"] = "noindex"
+    return response
+
+
+@app.get("/family/{link_token}/alerts", dependencies=[FamilyDep])
+def family_alerts(settings: SettingsDep, response: Response) -> list[dict[str, Any]]:
+    response.headers["Cache-Control"] = "no-store"
+    with connect(settings.database_url) as conn:
+        rows = store.recent_alerts(conn)
+    return [{**row, "created_at": row["created_at"].isoformat()} for row in rows]
 
 
 @app.post("/web-call/session", dependencies=[AdminDep])

@@ -36,3 +36,15 @@ class FakeBolnaWithSessions(FakeBolna):
     def mint_web_call_session(self, agent_id: str) -> dict[str, Any]:
         self.sessions.append(agent_id)
         return {"session": "fake"}
+
+
+class FakeTelegram:
+    """Records family alert messages; set ok=False to simulate a failed send."""
+
+    def __init__(self, ok: bool = True) -> None:
+        self.ok = ok
+        self.sent: list[str] = []
+
+    def __call__(self, text: str) -> bool:
+        self.sent.append(text)
+        return self.ok
