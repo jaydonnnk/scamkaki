@@ -1,11 +1,12 @@
-"""SQL for calls, Guardian checks and family alerts."""
+"""SQL for calls, Bait scripts and reports, Guardian checks and family alerts."""
 
+from dataclasses import asdict
 from typing import Any, Literal
 
 import psycopg
 from psycopg.types.json import Jsonb
 
-from scamkaki.domain.types import Agency, Demand, Language, Line, MatchResult
+from scamkaki.domain.types import Agency, Demand, Extraction, Language, Leak, Line, MatchResult
 
 AlertStatus = Literal["sent", "failed", "off"]
 
@@ -18,18 +19,20 @@ def upsert_call(
     language: Language,
     transcript: str,
     extracted: dict[str, Any],
+    leaks: list[Leak] | None = None,
     status: str,
     duration_s: int | None,
     fixture_case: str | None,
 ) -> int:
     row = conn.execute(
         """
-        insert into calls (execution_id, line, language, transcript, extracted, status,
+        insert into calls (execution_id, line, language, transcript, extracted, leaks, status,
                            duration_s, fixture_case)
-        values (%s, %s, %s, %s, %s, %s, %s, %s)
+        values (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         on conflict (execution_id) do update set
             transcript = excluded.transcript,
             extracted = excluded.extracted,
+            leaks = excluded.leaks,
             status = excluded.status,
             duration_s = excluded.duration_s,
             fixture_case = coalesce(excluded.fixture_case, calls.fixture_case)
@@ -41,12 +44,59 @@ def upsert_call(
             language,
             transcript,
             Jsonb(extracted),
+            Jsonb([asdict(leak) for leak in leaks or []]),
             status,
             duration_s,
             fixture_case,
         ),
     ).fetchone()
     return row["id"]
+
+
+def add_script(conn: psycopg.Connection, call_id: int, extraction: Extraction) -> int:
+    """One script per Bait call; a repeated webhook refreshes it instead of adding a row."""
+    fields = asdict(extraction)
+    columns = ", ".join(fields)
+    updates = ", ".join(f"{name} = excluded.{name}" for name in fields)
+    row = conn.execute(
+        f"""
+        insert into scripts (call_id, {columns}) values (%s, {", ".join(["%s"] * len(fields))})
+        on conflict (call_id) do update set {updates}
+        returning id
+        """,
+        (call_id, *fields.values()),
+    ).fetchone()
+    return row["id"]
+
+
+def add_report(conn: psycopg.Connection, call_id: int, draft: str) -> int:
+    """One draft report per Bait call; a reviewed report is never rewritten."""
+    row = conn.execute(
+        """
+        insert into reports (call_id, draft) values (%s, %s)
+        on conflict (call_id) do update set draft = excluded.draft
+            where reports.status = 'draft'
+        returning id
+        """,
+        (call_id, draft),
+    ).fetchone()
+    if row is None:  # Already reviewed: keep it as the reviewer saw it.
+        row = conn.execute("select id from reports where call_id = %s", (call_id,)).fetchone()
+    return row["id"]
+
+
+def recent_scripts(conn: psycopg.Connection, limit: int = 50) -> list[dict[str, Any]]:
+    """Bait scripts with their call and draft report, newest first, for the dashboard."""
+    return conn.execute(
+        """
+        select s.*, c.language, c.fixture_case, c.leaks, r.id as report_id, r.draft,
+               r.status as report_status
+        from scripts s join calls c on c.id = s.call_id
+        left join reports r on r.call_id = s.call_id
+        order by s.created_at desc, s.id desc limit %s
+        """,
+        (limit,),
+    ).fetchall()
 
 
 def log_guardian_check(

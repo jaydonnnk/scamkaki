@@ -11,7 +11,7 @@ from tests.support.fakes import FakeBolna, FakeTelegram
 def db(test_settings):
     migrate(test_settings.database_url)
     with connect(test_settings.database_url) as conn:
-        conn.execute("truncate calls, guardian_checks restart identity")
+        conn.execute("truncate calls, guardian_checks, scripts, reports restart identity")
     return test_settings.database_url
 
 

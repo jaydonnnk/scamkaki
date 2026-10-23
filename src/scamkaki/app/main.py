@@ -17,6 +17,9 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.templating import Jinja2Templates
 
 from scamkaki.domain import store, verdict
+from scamkaki.domain.extraction import parse_extraction
+from scamkaki.domain.leaks import agent_turns, find_leaks
+from scamkaki.domain.reports import draft_report
 from scamkaki.domain.types import Agency, Demand, Language, as_agency, as_demand, as_language
 from scamkaki.integrations import telegram
 from scamkaki.integrations.bolna import BolnaClient
@@ -121,19 +124,31 @@ def bolna_webhook(
         log.info("webhook for unknown agent ignored: %s", execution.get("agent_id"))
         return Response(status_code=204)
     line, language = agent
+    transcript = execution.get("transcript") or ""
+    extracted = execution.get("node_extracted_data") or execution.get("extracted_data") or {}
+    fixture_case = fixture_case_of(execution)
+    # The leak guard covers Ah Ma Bait, the persona that is asked for secrets.
+    leaks = find_leaks(agent_turns(transcript)) if line == "bait" else []
+    if leaks:
+        log.warning("leak guard: %d leak(s) on execution %s", len(leaks), execution["id"])
 
     with connect(settings.database_url) as conn:
-        store.upsert_call(
+        call_id = store.upsert_call(
             conn,
             execution_id=str(execution["id"]),
             line=line,
             language=language,
-            transcript=execution.get("transcript") or "",
-            extracted=execution.get("node_extracted_data") or execution.get("extracted_data") or {},
+            transcript=transcript,
+            extracted=extracted,
+            leaks=leaks,
             status=str(execution.get("status")),
             duration_s=execution.get("conversation_duration"),
-            fixture_case=fixture_case_of(execution),
+            fixture_case=fixture_case,
         )
+        if line == "bait":
+            extraction = parse_extraction(extracted)
+            store.add_script(conn, call_id, extraction)
+            store.add_report(conn, call_id, draft_report(extraction, leaks, fixture_case))
     return Response(status_code=204)
 
 
