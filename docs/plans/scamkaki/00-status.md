@@ -65,3 +65,4 @@ S2 was authorized and closed 2026-10-22 (see approval history). S3 authorized 20
   Live fixture calls instead use a synthetic caller: a local page plays each case's scripted caller lines (macOS `say`) into a Bolna web call and passes the case id as web call `user_data`; `scripts/check.py` reads the stored results.
   `agents/test_scammer.json`, `agents/test_senior.json` and `BolnaClient.start_call` are dropped; S4 runs 7 calls (5 English, 2 Hindi) within $0.75.
   Limit: the scripted caller cannot react to Ah Ma's replies. S5 inherits this method. Decision wording only in Gates 1-3; no gate reopens.
+- 2026-10-26 S4 deploy authorized (user: "Yes, all three"): push `scamkaki/slice-4-bait`, fast-forward `main` so Render deploys, and migration 0004 on production (applied 2026-10-26). The user set `BOLNA_BAIT_AGENT_ID` and `BOLNA_BAIT_HI_AGENT_ID` on Render ("Done, both set").
