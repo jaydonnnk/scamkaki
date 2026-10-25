@@ -165,7 +165,7 @@
     },
     {
       "name": "payee_account",
-      "question": "What bank account number did the caller give for the money? Write it with numerals 0-9 exactly as the caller said it, keeping dashes, even if it was spoken as words or in Hindi. Leave empty if none was given.",
+      "question": "What bank account number did the caller give for the money? Write it with numerals 0-9 exactly as the caller said it, keeping dashes, even if it was spoken as words or in Hindi. Leave empty if none was given. Give the number once, even if the caller repeats it. Speech-to-text may write Hindi digit words oddly: शून्य/ज़ीरो = 0, एक = 1, दो/दू/दु = 2, तीन = 3, चार = 4, पांच/पाँच = 5, छह/छः/छे/छै/छी = 6, सात = 7, आठ = 8, नौ = 9.",
       "is_subjective": true,
       "subjective_type": "text",
       "category": "Scam script",
@@ -173,7 +173,7 @@
     },
     {
       "name": "paynow_id",
-      "question": "What PayNow number, mobile number for PayNow, or UEN did the caller give for the money? Write it with numerals exactly as said. Leave empty if none was given.",
+      "question": "What PayNow number, mobile number for PayNow, or UEN did the caller give for the money? Write it with numerals. Leave empty if none was given. Give the number once, even if the caller repeats it. Speech-to-text may write Hindi digit words oddly: शून्य/ज़ीरो = 0, एक = 1, दो/दू/दु = 2, तीन = 3, चार = 4, पांच/पाँच = 5, छह/छः/छे/छै/छी = 6, सात = 7, आठ = 8, नौ = 9.",
       "is_subjective": true,
       "subjective_type": "text",
       "category": "Scam script",
