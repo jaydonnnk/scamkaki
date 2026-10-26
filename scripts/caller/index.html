@@ -17,7 +17,7 @@ select,button{font:inherit;padding:8px 12px;border:1px solid var(--fg);backgroun
 </main>
 <script src="https://cdn.jsdelivr.net/gh/bolna-ai/web-call@v3.0.1/dist/bolna-web-call.min.js"></script>
 <script>
-const LOUD = 0.02, QUIET_MS = 1000, MAX_CALL_MS = 80000;
+const LOUD = 0.02, QUIET_MS = 1000, MAX_CALL_MS = 75000;
 const $ = (id) => document.getElementById(id);
 const log = (msg) => { $("log").textContent += new Date().toISOString().slice(11, 19) + " " + msg + "\n"; };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

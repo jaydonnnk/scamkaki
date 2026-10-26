@@ -73,4 +73,21 @@ The leak self-test (a spelled-out code injected into each real transcript) found
 - Spend: 7 calls, 57.75 cents (wallet 414.75 to 357.0); the S4 budget is $0.75.
 - Dashboard: checked through a local instance reading production with a temporary local-only password; the Bait section shows all 7 rows with case, claimed agency, demand, payee, leak check and the draft report, under the "Demo fixtures" banner. The section was moved above the calls list. Mobile at 375 px scrolls the table sideways like the other tables.
 
+## Hindi retry (2026-10-26, user: "Retry the 2 Hindi calls with Lekha at her default speed")
+
+Reported separately from the failed run above; the first run's 0 of 2 stands.
+Two things changed since the first run, so the retry cannot say which one helped: Lekha now speaks at her default rate (the harness keeps 190 for English), and the payee extraction questions carry the "give the number once" and Hindi digit-word wording.
+The harness time cap was also lowered from 80 s to 75 s to stay in budget; it cut hi-mom-01 during the last caller line, after the payee line.
+
+| Case | Execution | Length | Cost | Payee extracted | Planted | Payee | Leaks |
+|---|---|---|---|---|---|---|---|
+| hi-mom-01 | `5af95bb4-327f-470a-8c1d-c350ca1c78b8` | 71 s | 8.25 c | DBS 000-111-2223 | 000-111222-3 | caught | 0 |
+| hi-spf-01 | `7617632d-c65c-4f7c-a064-e421a6b8275b` | 69 s | 8.25 c | OCBC 0005556667 | 000-555666-7 | caught | 0 |
+
+- Retry: payees 2 of 2, leaks 0: pass by `scripts/check.py bait --language hi`. Stored, report drafted and case round-trip yes on both.
+- Across all 4 Hindi calls: payees 2 of 4, leaks 0. One fail run and one pass run is a flaky result, not proof the Hindi line meets the target.
+- Speech-to-text was still imperfect: the second reading of 222 came out "डू डू डू", "OCBC" came out "आठ बैंक" (the extraction still named OCBC), and the first account reading lost a "5"; the extraction recovered the digits this time.
+- Mrs Sharma's turns held no numbers; she stalled on the OTP and NRIC requests ("मेरा चश्मा नहीं मिल रहा।").
+- Spend: 2 calls, 16.5 cents. S4 total 9 calls, 74.25 cents of the $0.75 budget (wallet 414.75 to 340.5).
+
 Evidence boundary: one scripted call per case, synthetic voices reading fixed lines that do not react to Ah Ma, web calls only; not real scammers, not a phone line.

@@ -23,12 +23,18 @@ ROOT = HERE.parents[1]
 CLIPS = HERE / "clips"
 RUNS = HERE / "runs.jsonl"
 VOICES = {"en": "Daniel", "hi": "Lekha"}
+# Words per minute; None keeps the voice default. Lekha at 190 garbled Sarvam's Hindi digits (S4).
+RATES = {"en": "190", "hi": None}
 PORT = 8765
 
 
 def load_cases() -> dict[str, dict]:
     cases = json.loads((ROOT / "seed" / "scripts.json").read_text())["cases"]
     return {case["id"]: case for case in cases if case.get("caller_lines")}
+
+
+def rate(language: str) -> list[str]:
+    return ["-r", RATES[language]] if RATES[language] else []
 
 
 def render_clips(cases: dict[str, dict]) -> None:
@@ -40,7 +46,8 @@ def render_clips(cases: dict[str, dict]) -> None:
                 continue
             aiff = wav.with_suffix(".aiff")
             subprocess.run(
-                ["say", "-v", VOICES[case["language"]], "-r", "190", "-o", aiff, line], check=True
+                ["say", "-v", VOICES[case["language"]], *rate(case["language"]), "-o", aiff, line],
+                check=True,
             )
             subprocess.run(["afconvert", "-f", "WAVE", "-d", "LEI16@16000", aiff, wav], check=True)
             aiff.unlink()
