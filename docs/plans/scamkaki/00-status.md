@@ -11,14 +11,14 @@ The gate revision branch `scamkaki/gates-english-mandarin` was fast-forwarded in
 
 The user asked for compact versions of all four gates in one pass because of hackathon time (2026-10-22: "draft compact versions of all four in one pass as we dont have much time").
 S1 authorized 2026-10-22 by the user ("You have my authorization to start slice 1"), with the installs ("I give authroizeation for 7") and a Bolna budget of $5 for today and tomorrow.
-S2 was authorized and closed 2026-10-22 (see approval history). S3 authorized 2026-10-23 and closed 2026-10-24; S4 authorized 2026-10-24; S5 and S6 are not yet authorized.
+S2 was authorized and closed 2026-10-22 (see approval history). S3 authorized 2026-10-23 and closed 2026-10-24; S4 authorized 2026-10-24 and closed 2026-10-26; S5 and S6 are not yet authorized.
 
 ## Slices
 
 - [x] S1 - Tracer: Guardian stub end to end, branch `scamkaki/slice-1-guardian-tracer`, done 2026-10-22; [evidence](evidence/s1-tracer.md). Deviation: tested by Bolna dashboard web call because the trial plan dials only +1/+91.
 - [x] S2 - Hindi voice, branch `scamkaki/slice-2-hindi-voice`, done 2026-10-22, **go**; [evidence](evidence/s2-hindi.md). Guardian HI (Sarvam `saaras:v4` + `bulbul:v3` `ritu`) extracted agency and demand in 2 of 3 post-fix synthetic calls; Hindi listener Pravesh: understandable, warnings clear, pace OK. Open for S3: repeat-back gets clipped when the caller keeps talking; English Guardian lacks the confirm-first steps.
 - [x] S3 - Guardian verdict and family alert, branch `scamkaki/slice-3-guardian-verdict`, done 2026-10-24; [evidence](evidence/s3-guardian-verdict.md). Bolna call transfer was blocked on our account, so the app alerts the family by Telegram and a family page (gates re-approved 2026-10-24). Live: English scam and Hindi scam alerted (`sent`), English legit did not; 6 calls (one over plan, a cut-off attempt), 33 cents. Limits: smoke test only, alert seconds not measured, Hindi likely-scam ending awaiting Pravesh's re-check.
-- [ ] S4 - Ah Ma Bait with extraction and leak guard, branch `scamkaki/slice-4-bait`, in progress; [evidence](evidence/s4-bait.md). Live 2026-10-26: English payees 5 of 5, zero leaks (pass); Hindi payees 0 of 2, zero leaks (fail: speech-to-text garbled the synthetic caller's Hindi digits); Hindi retry with Lekha at default speed and the reworded payee questions: 2 of 2, zero leaks (all Hindi calls 2 of 4, flaky). 9 calls, 74.25 cents.
+- [x] S4 - Ah Ma Bait with extraction and leak guard, branch `scamkaki/slice-4-bait`, done 2026-10-26; [evidence](evidence/s4-bait.md). Synthetic caller, web calls. English: payees 5 of 5, zero leaks (pass). Hindi: 2 of 4 payees over two runs (first run 0 of 2, retry with Lekha at default speed and reworded payee questions 2 of 2), zero leaks: **flaky**, recorded as such by the user's decision. 9 calls, 74.25 cents. Limits: one scripted call per case; the caller does not react to Ah Ma; Hindi speech-to-text garbles digit words; not real scammers.
 - [ ] S5 - The loop: Guardian uses Bait's scripts
 - [ ] S6 - Dashboard, report review and demo
 
@@ -66,3 +66,5 @@ S2 was authorized and closed 2026-10-22 (see approval history). S3 authorized 20
   `agents/test_scammer.json`, `agents/test_senior.json` and `BolnaClient.start_call` are dropped; S4 runs 7 calls (5 English, 2 Hindi) within $0.75.
   Limit: the scripted caller cannot react to Ah Ma's replies. S5 inherits this method. Decision wording only in Gates 1-3; no gate reopens.
 - 2026-10-26 S4 deploy authorized (user: "Yes, all three"): push `scamkaki/slice-4-bait`, fast-forward `main` so Render deploys, and migration 0004 on production (applied 2026-10-26). The user set `BOLNA_BAIT_AGENT_ID` and `BOLNA_BAIT_HI_AGENT_ID` on Render ("Done, both set").
+- 2026-10-26 S4 closed (user: "Push the slice branch, fast-forward main, run the architect-reviewer cleanup and close S4, recording Hindi as 2 of 4 flaky."). Post-slice cleanup found no orphan, stale or redundant files.
+  Amendment recorded at close, no gate reopens: `POST /web-call/session` takes `line` (`guardian` or `bait`) and forwards web call `user_data`; the dashboard has Bait call buttons and shows Bait scripts with draft reports.
