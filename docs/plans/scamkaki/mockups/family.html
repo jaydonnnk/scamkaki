@@ -11,6 +11,8 @@ h1{font-size:22px;margin:12px 0 4px}.sub{color:var(--muted);font-size:14px;margi
 .alert{border:2px solid var(--warn);background:var(--warn-bg);border-radius:8px;padding:16px;margin-bottom:16px}
 .alert h2{color:var(--warn);font-size:20px;margin:0 0 8px}
 .alert p{margin:4px 0}.alert .do{font-weight:600;margin-top:12px}
+.alert.urgent{border-width:4px}
+.tag{display:inline-block;background:var(--warn);color:var(--bg);font-weight:700;font-size:13px;padding:2px 8px;border-radius:4px;margin:0 0 8px}
 button{font:inherit;padding:8px 14px;border-radius:6px;border:1px solid var(--line);background:transparent;color:var(--fg)}
 h3{font-size:15px;margin:20px 0 8px}
 ul{list-style:none;padding:0;margin:0}li{padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
@@ -20,17 +22,28 @@ ul{list-style:none;padding:0;margin:0}li{padding:8px 0;border-bottom:1px solid v
 <h1>Ah Ma Guardian</h1>
 <p class="sub">Family alerts. Keep this page open, or rely on the Telegram message.</p>
 <p><button>Turn on sound</button></p>
-<section class="alert" aria-live="assertive">
-<h2>Likely scam call</h2>
-<p>Caller claimed to be: <strong>Police (SPF)</strong></p>
-<p>Asked for: <strong>Money transfer</strong></p>
+<section class="alert urgent" aria-live="assertive">
+<p class="tag">Urgent: Ah Ma already acted</p>
+<h2>Likely scam</h2>
+<p>Ah Ma already: <strong>Gave card details and a code</strong></p>
+<p>Contacted by: <strong>SMS</strong>, claiming to be <strong>A courier</strong></p>
+<p>Asked for: <strong>Card details on a website</strong></p>
+<p>Warning signs: <strong>Small fee by link</strong></p>
 <p>Line: English &middot; 14:02 today</p>
+<p class="do">Call Ah Ma now. Help her call the bank on the number on the back of her card.</p>
+</section>
+<section class="alert" aria-live="polite">
+<h2>Likely scam</h2>
+<p>Contacted by: <strong>Phone call</strong>, claiming to be <strong>Ministry of Law</strong></p>
+<p>Asked for: <strong>Money transfer</strong></p>
+<p>Warning signs: <strong>Passed to an officer &middot; Told to keep it secret &middot; Told to stay on the line</strong></p>
+<p>Line: English &middot; 13:40 today</p>
 <p>Same script heard 3 times this week.</p>
 <p class="do">Please call Ah Ma now.</p>
 </section>
 <h3>Earlier alerts</h3>
 <ul>
 <li><span class="time">Yesterday 19:40</span> &middot; हिंदी &middot; MOM, OTP</li>
-<li><span class="time">Mon 10:15</span> &middot; English &middot; Courier, app install</li>
+<li><span class="time">Mon 10:15</span> &middot; English &middot; WhatsApp, investment group, money transfer</li>
 </ul>
 </main></body></html>

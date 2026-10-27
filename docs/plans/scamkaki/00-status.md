@@ -1,17 +1,19 @@
 # Status: Scamkaki
 
-Updated: 2026-10-22 (Asia/Singapore).
+Updated: 2026-10-27 (Asia/Singapore).
 
-- Gate 1 - Product: **APPROVED 2026-10-24** (re-approved after the family alert change) ([01-product.md](01-product.md), [mockups](mockups/)).
-- Gate 2 - Architecture: **APPROVED 2026-10-24** (re-approved after the family alert change) ([02-architecture.md](02-architecture.md)).
-- Gate 3 - Program Design: **APPROVED 2026-10-24** (re-approved after the family alert change) ([03-program-design.md](03-program-design.md)).
-- Gate 4 - Slice plan: **APPROVED 2026-10-24** (re-approved after the family alert change) ([04-slices.md](04-slices.md)).
+- Gate 1 - Product: **APPROVED 2026-10-27** (re-approved after the sophisticated-scam revision) ([01-product.md](01-product.md), [mockups](mockups/)).
+- Gate 2 - Architecture: **APPROVED 2026-10-27** (re-approved after the sophisticated-scam revision) ([02-architecture.md](02-architecture.md)).
+- Gate 3 - Program Design: **APPROVED 2026-10-27** (re-approved after the sophisticated-scam revision) ([03-program-design.md](03-program-design.md)).
+- Gate 4 - Slice plan: **APPROVED 2026-10-27** (re-approved after the sophisticated-scam revision) ([04-slices.md](04-slices.md)).
+
+The revision lives on branch `scamkaki/gates-sophisticated-scams`, cut from `main`; not yet committed or merged.
 
 The gate revision branch `scamkaki/gates-english-mandarin` was fast-forwarded into `main` (with S1) and deleted on 2026-10-22.
 
 The user asked for compact versions of all four gates in one pass because of hackathon time (2026-10-22: "draft compact versions of all four in one pass as we dont have much time").
 S1 authorized 2026-10-22 by the user ("You have my authorization to start slice 1"), with the installs ("I give authroizeation for 7") and a Bolna budget of $5 for today and tomorrow.
-S2 was authorized and closed 2026-10-22 (see approval history). S3 authorized 2026-10-23 and closed 2026-10-24; S4 authorized 2026-10-24 and closed 2026-10-26; S5 authorized 2026-10-27; S6 is not yet authorized.
+S2 was authorized and closed 2026-10-22 (see approval history). S3 authorized 2026-10-23 and closed 2026-10-24; S4 authorized 2026-10-24 and closed 2026-10-26; S5 authorized 2026-10-27 and paused the same day by the gate reopening; S6 is not yet authorized.
 
 ## Slices
 
@@ -19,7 +21,7 @@ S2 was authorized and closed 2026-10-22 (see approval history). S3 authorized 20
 - [x] S2 - Hindi voice, branch `scamkaki/slice-2-hindi-voice`, done 2026-10-22, **go**; [evidence](evidence/s2-hindi.md). Guardian HI (Sarvam `saaras:v4` + `bulbul:v3` `ritu`) extracted agency and demand in 2 of 3 post-fix synthetic calls; Hindi listener Pravesh: understandable, warnings clear, pace OK. Open for S3: repeat-back gets clipped when the caller keeps talking; English Guardian lacks the confirm-first steps.
 - [x] S3 - Guardian verdict and family alert, branch `scamkaki/slice-3-guardian-verdict`, done 2026-10-24; [evidence](evidence/s3-guardian-verdict.md). Bolna call transfer was blocked on our account, so the app alerts the family by Telegram and a family page (gates re-approved 2026-10-24). Live: English scam and Hindi scam alerted (`sent`), English legit did not; 6 calls (one over plan, a cut-off attempt), 33 cents. Limits: smoke test only, alert seconds not measured, Hindi likely-scam ending awaiting Pravesh's re-check.
 - [x] S4 - Ah Ma Bait with extraction and leak guard, branch `scamkaki/slice-4-bait`, done 2026-10-26; [evidence](evidence/s4-bait.md). Synthetic caller, web calls. English: payees 5 of 5, zero leaks (pass). Hindi: 2 of 4 payees over two runs (first run 0 of 2, retry with Lekha at default speed and reworded payee questions 2 of 2), zero leaks: **flaky**, recorded as such by the user's decision. 9 calls, 74.25 cents. Limits: one scripted call per case; the caller does not react to Ah Ma; Hindi speech-to-text garbles digit words; not real scammers.
-- [ ] S5 - The loop: Guardian uses Bait's scripts, branch `scamkaki/slice-5-guardian-loop`, in progress.
+- [ ] S5 - The loop and sophisticated scams, branch `scamkaki/slice-5-guardian-loop`, **paused** 2026-10-27; Gates 1-4 re-approved the same day, S5 still needs re-authorization under the revised contract. Built so far on the branch: 7-day count, Guardian caller mode, `check.py guardian`; one probe call (`47a10fcb`) showed Bolna did not call the tool with an execution id in the param template, so checks link to calls by time. No S5 evidence file yet; no further calls.
 - [ ] S6 - Dashboard, report review and demo
 
 ## Notes for a fresh session
@@ -70,3 +72,10 @@ S2 was authorized and closed 2026-10-22 (see approval history). S3 authorized 20
   Amendment recorded at close, no gate reopens: `POST /web-call/session` takes `line` (`guardian` or `bait`) and forwards web call `user_data`; the dashboard has Bait call buttons and shows Bait scripts with draft reports.
 - 2026-10-27 S5 authorized (user: "Yes, authorize S5: branch scamkaki/slice-5-guardian-loop, the code, Guardian EN/HI agent updates if needed, no fresh Bait calls, budget $1.50, up to 18 live Guardian calls. Use your recommended case linking (A, then B). Pushes, ff main and any migration asked separately.").
   Case linking: A passes the Bolna execution id in the Guardian tool call; B, the fallback, matches each check to its call by time. Pushes, fast-forward of `main` and any migration are asked separately.
+- 2026-10-27 steer (user: "I want scamkaki guardian to be tailored such that even sophisticated scams via voice can be noticed as a scam"; then "Yes, reopen Gates 1-4 and draft the sophisticated-scam revision. Pause S5."): the seeded scripts were too easy to recognise.
+  Due diligence against the SPF mid-year brief 2026: 80.8% of scams are self-effected transfers; 65+ are 40.8% of government impersonation victims; new telco-to-official handoffs; cash and valuables handover; courier fee phishing that adds cards to mobile wallets; phone calls 9.7% of contact methods and falling.
+  Draft revision: Guardian asks contact channel, three warning-sign questions and whether the senior already acted; `decide` adds harmful-act, red-tactic and friend-money branches; already-acted calls get bank and 1799 advice and an urgent family alert; Guardian fixtures rewritten (12 English, 3 Hindi); Bait unchanged; S5 contract grows.
+  This changes approved decisions in all four gates, so Gates 1-4 are reopened. S5 is paused; no calls, pushes or agent updates are authorized by this reopening.
+- 2026-10-27 Gates 1-4 re-approved after the sophisticated-scam revision (user: "I approve Gates 1-4 as drafted.").
+  Approval accepts the drafts as written, including Bait unchanged and the least confident decisions 8-12 in Gate 3, as a proposal; it establishes no runtime or model evidence.
+  S5 stays paused until re-authorized under the revised contract. No commit, push, merge, migration, Bolna agent update or call is authorized by this approval.
