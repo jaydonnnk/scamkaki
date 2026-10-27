@@ -54,7 +54,7 @@
                 "method": "POST",
                 "url": "${APP_BASE_URL}/tools/match-script",
                 "api_token": "Bearer ${BOLNA_TOOL_TOKEN}",
-                "param": "{\"agency\": \"%(agency)s\", \"demand\": \"%(demand)s\"}"
+                "param": "{\"agency\": \"%(agency)s\", \"demand\": \"%(demand)s\", \"execution_id\": \"%(execution_id)s\"}"
               }
             }
           }
