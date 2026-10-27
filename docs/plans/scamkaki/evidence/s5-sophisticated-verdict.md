@@ -59,13 +59,23 @@ Each mutation was applied alone, the named tests run, and the file restored.
 The real `family.html` template, rendered with two sample alerts (one urgent courier case, one MinLaw handoff) and a stubbed fetch, checked at 375 px: the urgent alert is on top with the "Urgent: Ah Ma already acted" tag, card details and code, SMS, warning sign and the bank instruction; no horizontal scroll.
 This was a local render, not the deployed page.
 
-## Not done yet (needs separate authorization)
+## Deploy and Render run (2026-10-28)
 
-- Push the branch and fast-forward `main` so Render deploys, and migration 0005 on production.
-- `curl` of the 15 reports against Render, the deployed family page at phone width and one Telegram message, as the S5 contract asks.
-- A local server against the test database was tried for the `curl` run; reading the test database URL from `.env.local` was blocked by permissions, so the same reports were sent through the real route in-process instead.
+Authorized by the user ("Yes: push scamkaki/slice-5-guardian-loop, fast-forward main so Render deploys, and run migration 0005 on production. Then do the Render curl run and family page check. No calls.").
+
+- Migration 0005 applied to production first (`scripts/migrate.py`: "applied: 0005_guardian_signs.sql"), so the new code never ran against the old table.
+- Branch and `main` pushed at `e172268`; `git ls-remote` confirms both. Render served the new family page on the first poll.
+- `curl` run: each Guardian fixture's expected report POSTed to `https://scamkaki.onrender.com/tools/match-script` (token redacted): **15 of 15** got the expected verdict and `urgent` flag, HTTP 200, 127 to 614 ms. These write labeled fixture checks to the production database and sent 10 `[Demo fixture]` Telegram alerts.
+- Sample answers:
+  - `en-courier-paid-01`: "Call your bank now on the number on the back of your card, and call ScamShield at 1799. This is likely a scam. ..." (`urgent` true)
+  - `en-legit-grandson-01`: "Not sure. Please call your family before doing anything. Call them back on the number you already have, not the one that contacted you."
+  - `hi-mom-handoff-01`: likely scam in Hindi, ending "ऐसी ही कॉल इस हफ़्ते 3 बार आई है।"
+- The loop works on production data: `hi-mom-handoff-01` (spf, transfer) counted 3 Bait scripts and `en-ica-video-01` (china_official, transfer) counted 1, from the S4 Bait calls.
+- Family alerts JSON from Render: the two already-acted courier alerts (English and Hindi) are first and `urgent`; channel, warning signs and `acted` are stored; the newest 10 alerts all have `alert_status` `sent`, meaning Telegram accepted each message.
+- Deployed family page: its HTML and alerts were fetched from Render (the secret link was never printed) and replayed locally at 375 px and desktop width: the urgent Hindi courier alert on top with tag, card details and code, SMS, warning sign and bank instruction; 16 earlier alerts listed; no horizontal scroll.
+- Not seen by me: the Telegram messages on the family member's phone. `sent` is Telegram's acceptance, not a screenshot of delivery.
 
 ## Open points
 
-- The family page lists urgent alerts first, as Gate 3 says. An old urgent alert stays on top and keeps flashing when a newer, non-urgent alert arrives. [hypothesis: worth limiting "urgent first" to recent alerts; needs a Gate 3 wording decision]
+- The family page lists urgent alerts first, as Gate 3 says. An old urgent alert stays on top and keeps flashing when a newer, non-urgent alert arrives (seen on Render: the S5 urgent fixtures now sit above every later alert). [hypothesis: worth limiting "urgent first" to recent alerts; needs a Gate 3 wording decision]
 - The Hindi act-now and call-back sentences need the Hindi listener check planned for S6.
