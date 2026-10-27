@@ -1,6 +1,7 @@
 """FastAPI app: Bolna webhook, Guardian match-script tool, family alerts, dashboard."""
 
 import logging
+import re
 from collections.abc import Callable
 from dataclasses import asdict
 from datetime import UTC, datetime
@@ -48,6 +49,8 @@ TERMINAL_STATUSES = {
     "balance-low",
 }
 SGT = ZoneInfo("Asia/Singapore")
+# Bolna execution ids are UUIDs; anything else (an unfilled template) is dropped.
+EXECUTION_ID = re.compile(r"[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}")
 
 app = FastAPI(title="Scamkaki")
 templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
@@ -179,16 +182,20 @@ async def match_script(
     params = {**request.query_params, **body}
     agency, demand = as_agency(params.get("agency")), as_demand(params.get("demand"))
     language = as_language(params.get("language"))
+    execution_id = as_execution_id(params.get("execution_id"))
 
     try:
-        result = verdict.match(agency, demand, language)
+        similar_count = await run_in_threadpool(
+            _count_similar, settings.database_url, agency, demand
+        )
+        result = verdict.match(agency, demand, similar_count, language)
     except Exception:
         log.exception("verdict failed; answering unclear")
         result = verdict.unclear(language)
     check_id = None
     try:
         check_id = await run_in_threadpool(
-            _log_check, settings.database_url, agency, demand, language, result
+            _log_check, settings.database_url, agency, demand, language, result, execution_id
         )
     except Exception:
         # Never leave the senior in silence because logging failed.
@@ -208,9 +215,20 @@ async def match_script(
     return asdict(result)
 
 
-def _log_check(database_url: str, agency, demand, language, result) -> int:
+def as_execution_id(value: object) -> str | None:
+    """The Bolna execution id the tool call carries, or None if Bolna left it unfilled."""
+    text = str(value or "").strip()
+    return text if EXECUTION_ID.fullmatch(text) else None
+
+
+def _count_similar(database_url: str, agency: Agency, demand: Demand) -> int:
     with connect(database_url) as conn:
-        return store.log_guardian_check(conn, agency, demand, language, result)
+        return store.count_similar(conn, agency, demand)
+
+
+def _log_check(database_url: str, agency, demand, language, result, execution_id) -> int:
+    with connect(database_url) as conn:
+        return store.log_guardian_check(conn, agency, demand, language, result, execution_id)
 
 
 def _alert_family(

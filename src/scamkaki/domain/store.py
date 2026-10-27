@@ -99,21 +99,57 @@ def recent_scripts(conn: psycopg.Connection, limit: int = 50) -> list[dict[str, 
     ).fetchall()
 
 
+def count_similar(conn: psycopg.Connection, agency: Agency, demand: Demand, days: int = 7) -> int:
+    """Bait scripts with this agency and demand in the last `days` days, in any language."""
+    row = conn.execute(
+        """
+        select count(*) as n from scripts
+        where agency = %s and demand = %s and created_at > now() - make_interval(days => %s)
+        """,
+        (agency, demand, days),
+    ).fetchone()
+    return row["n"]
+
+
+def scripts_this_week(conn: psycopg.Connection) -> list[dict[str, Any]]:
+    """Bait scripts of the last 7 days grouped by agency and demand, most heard first."""
+    return conn.execute(
+        """
+        select s.agency, s.demand, count(*) as n,
+               array_agg(distinct c.language order by c.language) as languages,
+               max(s.created_at) as last_seen
+        from scripts s join calls c on c.id = s.call_id
+        where s.created_at > now() - interval '7 days'
+        group by s.agency, s.demand
+        order by n desc, last_seen desc
+        """
+    ).fetchall()
+
+
 def log_guardian_check(
     conn: psycopg.Connection,
     agency: Agency,
     demand: Demand,
     language: Language,
     result: MatchResult,
+    execution_id: str | None = None,
 ) -> int:
     alert_status = "pending" if result.verdict == "likely_scam" else None
     row = conn.execute(
         """
         insert into guardian_checks (agency, demand, language, verdict, similar_count,
-                                     alert_status)
-        values (%s, %s, %s, %s, %s, %s) returning id
+                                     alert_status, execution_id)
+        values (%s, %s, %s, %s, %s, %s, %s) returning id
         """,
-        (agency, demand, language, result.verdict, result.similar_count, alert_status),
+        (
+            agency,
+            demand,
+            language,
+            result.verdict,
+            result.similar_count,
+            alert_status,
+            execution_id,
+        ),
     ).fetchone()
     return row["id"]
 

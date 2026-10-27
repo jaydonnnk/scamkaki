@@ -54,6 +54,12 @@ def test_sentence_mentions_repeat_count_only_when_seen(language):
     assert "2" in sentence_for("unclear", 2, language)
 
 
+def test_sentence_says_same_script_heard_this_week():
+    assert sentence_for("likely_scam", 3, "en").endswith(" Same script heard 3 times this week.")
+    assert sentence_for("unclear", 1, "en").endswith(" Same script heard 1 time this week.")
+    assert sentence_for("unclear", 2, "hi").endswith(" ऐसी ही कॉल इस हफ़्ते 2 बार आई है।")
+
+
 def test_alert_text_is_labeled_fixture_and_names_claim():
     text = alert_text("spf", "transfer", "hi", 0, datetime(2026, 10, 24, 6, 2, tzinfo=UTC))
 
@@ -69,3 +75,5 @@ def test_alert_text_mentions_repeat_script_when_seen():
     text = alert_text("ica", "otp", "en", 3, datetime(2026, 10, 24, tzinfo=UTC))
 
     assert "Same script heard 3 times this week." in text
+    one = alert_text("ica", "otp", "en", 1, datetime(2026, 10, 24, tzinfo=UTC))
+    assert "Same script heard 1 time this week." in one

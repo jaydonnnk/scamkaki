@@ -70,7 +70,7 @@ function renderLatest(a, isNew) {
   box.append(labelled("Caller claimed to be", AGENCIES[a.agency] || a.agency));
   box.append(labelled("Asked for", DEMANDS[a.demand] || a.demand));
   box.append(el("p", "Line: " + (LANGUAGES[a.language] || a.language) + " · " + when(a.created_at)));
-  if (a.similar_count > 0) box.append(el("p", "Same script heard " + a.similar_count + " times this week."));
+  if (a.similar_count > 0) box.append(el("p", "Same script heard " + a.similar_count + (a.similar_count === 1 ? " time" : " times") + " this week."));
   box.append(el("p", "Please call Ah Ma now.", "do"));
   box.append(el("p", "Telegram: " + (TELEGRAM[a.alert_status] || "unknown"), "meta"));
   document.getElementById("latest").replaceChildren(box);

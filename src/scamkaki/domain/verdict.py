@@ -42,9 +42,13 @@ SAY: dict[Language, dict[Verdict, str]] = {
 }
 
 _SIMILAR: dict[Language, str] = {
-    "en": " The same kind of call was reported {n} times recently.",
-    "hi": " ऐसी ही कॉल हाल में {n} बार आई है।",
+    "en": " Same script heard {times} this week.",
+    "hi": " ऐसी ही कॉल इस हफ़्ते {n} बार आई है।",
 }
+
+
+def _times(n: int) -> str:
+    return "1 time" if n == 1 else f"{n} times"
 
 
 def decide(agency: Agency, demand: Demand, similar_count: int) -> Verdict:
@@ -60,7 +64,7 @@ def decide(agency: Agency, demand: Demand, similar_count: int) -> Verdict:
 def sentence_for(verdict: Verdict, similar_count: int, language: Language = "en") -> str:
     say = SAY[language][verdict]
     if similar_count >= 1:
-        say += _SIMILAR[language].format(n=similar_count)
+        say += _SIMILAR[language].format(n=similar_count, times=_times(similar_count))
     return say
 
 
@@ -69,8 +73,10 @@ def unclear(language: Language = "en") -> MatchResult:
     return MatchResult(verdict="unclear", similar_count=0, say=SAY[language]["unclear"])
 
 
-def match(agency: Agency, demand: Demand, language: Language = "en") -> MatchResult:
-    similar_count = 0  # S5 counts similar scripts from Bait's library.
+def match(
+    agency: Agency, demand: Demand, similar_count: int, language: Language = "en"
+) -> MatchResult:
+    """similar_count is how many Bait scripts this week share the agency and demand."""
     verdict = decide(agency, demand, similar_count)
     return MatchResult(verdict, similar_count, sentence_for(verdict, similar_count, language))
 
@@ -112,6 +118,6 @@ def alert_text(
         f"Line: {LANGUAGE_LABELS[language]}, {at.astimezone(SGT):%d %b %H:%M}",
     ]
     if similar_count >= 1:
-        lines.append(f"Same script heard {similar_count} times this week.")
+        lines.append(f"Same script heard {_times(similar_count)} this week.")
     lines.append("Please call Ah Ma now.")
     return "\n".join(lines)

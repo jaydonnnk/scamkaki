@@ -1,8 +1,35 @@
 import pytest
 
 from scamkaki.app.main import app, get_telegram
-from scamkaki.domain import verdict
+from scamkaki.domain import store, verdict
+from scamkaki.domain.types import Extraction
 from scamkaki.lib.db import connect
+
+EXECUTION_ID = "0b6d7c1e-9f2a-4c3b-8d5e-1a2b3c4d5e6f"
+
+
+def bait_script(db, agency, demand, language="en", days_ago=0):
+    """A script Ah Ma Bait collected, as the webhook would store it, dated days_ago."""
+    with connect(db) as conn:
+        n = conn.execute("select count(*) as n from calls").fetchone()["n"]
+        call_id = store.upsert_call(
+            conn,
+            execution_id=f"bait-{n}",
+            line="bait",
+            language=language,
+            transcript="",
+            extracted={},
+            status="completed",
+            duration_s=60,
+            fixture_case=None,
+        )
+        script_id = store.add_script(
+            conn, call_id, Extraction(agency, demand, None, None, None, None, None)
+        )
+        conn.execute(
+            "update scripts set created_at = now() - make_interval(days => %s) where id = %s",
+            (days_ago, script_id),
+        )
 
 
 def test_match_script_rejects_bad_token(client, db):
@@ -67,15 +94,84 @@ def test_match_script_answers_in_hindi_for_hindi_line(client, db):
     assert "परिवार को खबर कर दी है" in say
 
 
+def test_match_script_counts_last_seven_days_only(client, db, telegram):
+    bait_script(db, "spf", "transfer", "en", days_ago=1)
+    bait_script(db, "spf", "transfer", "hi", days_ago=6)  # Counts across languages.
+    bait_script(db, "spf", "transfer", "en", days_ago=8)  # Older than a week.
+    bait_script(db, "spf", "otp", "en")  # Same agency, other demand.
+    bait_script(db, "ica", "transfer", "en")  # Same demand, other agency.
+
+    response = client.post(
+        "/tools/match-script",
+        json={"agency": "spf", "demand": "transfer"},
+        headers={"Authorization": "Bearer tool-token"},
+    )
+
+    assert response.json()["verdict"] == "likely_scam"
+    assert response.json()["similar_count"] == 2
+    assert response.json()["say"].endswith(" Same script heard 2 times this week.")
+    assert "Same script heard 2 times this week." in telegram.sent[0]
+    with connect(db) as conn:
+        assert conn.execute("select similar_count from guardian_checks").fetchone() == {
+            "similar_count": 2
+        }
+
+
+def test_match_script_repeat_script_without_hard_demand_is_unclear(client, db, telegram):
+    bait_script(db, "bank", "none", "hi")
+
+    response = client.post(
+        "/tools/match-script",
+        json={"agency": "bank", "demand": "none"},
+        headers={"Authorization": "Bearer tool-token"},
+    )
+
+    assert response.json()["verdict"] == "unclear"
+    assert response.json()["say"].endswith(" Same script heard 1 time this week.")
+    assert telegram.sent == []
+
+
+def test_scripts_this_week_groups_by_agency_and_demand(db):
+    bait_script(db, "spf", "transfer", "en")
+    bait_script(db, "spf", "transfer", "hi", days_ago=2)
+    bait_script(db, "mom", "transfer", "hi")
+    bait_script(db, "bank", "transfer", "en", days_ago=8)
+
+    with connect(db) as conn:
+        groups = store.scripts_this_week(conn)
+
+    assert [(g["agency"], g["demand"], g["n"], g["languages"]) for g in groups] == [
+        ("spf", "transfer", 2, ["en", "hi"]),
+        ("mom", "transfer", 1, ["hi"]),
+    ]
+
+
+@pytest.mark.parametrize(
+    ("sent", "stored"),
+    [(EXECUTION_ID, EXECUTION_ID), ("%(execution_id)s", None), ("{execution_id}", None)],
+)
+def test_match_script_stores_execution_id_when_bolna_fills_it(client, db, sent, stored):
+    client.post(
+        "/tools/match-script",
+        json={"agency": "bank", "demand": "none", "execution_id": sent},
+        headers={"Authorization": "Bearer tool-token"},
+    )
+
+    with connect(db) as conn:
+        row = conn.execute("select execution_id from guardian_checks").fetchone()
+    assert row == {"execution_id": stored}
+
+
 @pytest.mark.parametrize(
     ("language", "say"),
     [("en", "Not sure. Please call your family before doing anything."), ("hi", "पक्का नहीं")],
 )
-def test_match_script_error_returns_unclear(client, db, monkeypatch, language, say):
+@pytest.mark.parametrize("target", [(verdict, "decide"), (store, "count_similar")])
+def test_match_script_error_returns_unclear(client, db, monkeypatch, language, say, target):
     def broken(*args, **kwargs):
         raise RuntimeError("boom")
 
-    monkeypatch.setattr(verdict, "decide", broken)
+    monkeypatch.setattr(*target, broken)
     response = client.post(
         "/tools/match-script",
         json={"agency": "spf", "demand": "transfer", "language": language},
