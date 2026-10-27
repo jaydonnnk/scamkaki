@@ -11,7 +11,7 @@ The gate revision branch `scamkaki/gates-english-mandarin` was fast-forwarded in
 
 The user asked for compact versions of all four gates in one pass because of hackathon time (2026-10-22: "draft compact versions of all four in one pass as we dont have much time").
 S1 authorized 2026-10-22 by the user ("You have my authorization to start slice 1"), with the installs ("I give authroizeation for 7") and a Bolna budget of $5 for today and tomorrow.
-S2 was authorized and closed 2026-10-22 (see approval history). S3 authorized 2026-10-23 and closed 2026-10-24; S4 authorized 2026-10-24 and closed 2026-10-26; S5 and S6 are not yet authorized.
+S2 was authorized and closed 2026-10-22 (see approval history). S3 authorized 2026-10-23 and closed 2026-10-24; S4 authorized 2026-10-24 and closed 2026-10-26; S5 authorized 2026-10-27; S6 is not yet authorized.
 
 ## Slices
 
@@ -19,7 +19,7 @@ S2 was authorized and closed 2026-10-22 (see approval history). S3 authorized 20
 - [x] S2 - Hindi voice, branch `scamkaki/slice-2-hindi-voice`, done 2026-10-22, **go**; [evidence](evidence/s2-hindi.md). Guardian HI (Sarvam `saaras:v4` + `bulbul:v3` `ritu`) extracted agency and demand in 2 of 3 post-fix synthetic calls; Hindi listener Pravesh: understandable, warnings clear, pace OK. Open for S3: repeat-back gets clipped when the caller keeps talking; English Guardian lacks the confirm-first steps.
 - [x] S3 - Guardian verdict and family alert, branch `scamkaki/slice-3-guardian-verdict`, done 2026-10-24; [evidence](evidence/s3-guardian-verdict.md). Bolna call transfer was blocked on our account, so the app alerts the family by Telegram and a family page (gates re-approved 2026-10-24). Live: English scam and Hindi scam alerted (`sent`), English legit did not; 6 calls (one over plan, a cut-off attempt), 33 cents. Limits: smoke test only, alert seconds not measured, Hindi likely-scam ending awaiting Pravesh's re-check.
 - [x] S4 - Ah Ma Bait with extraction and leak guard, branch `scamkaki/slice-4-bait`, done 2026-10-26; [evidence](evidence/s4-bait.md). Synthetic caller, web calls. English: payees 5 of 5, zero leaks (pass). Hindi: 2 of 4 payees over two runs (first run 0 of 2, retry with Lekha at default speed and reworded payee questions 2 of 2), zero leaks: **flaky**, recorded as such by the user's decision. 9 calls, 74.25 cents. Limits: one scripted call per case; the caller does not react to Ah Ma; Hindi speech-to-text garbles digit words; not real scammers.
-- [ ] S5 - The loop: Guardian uses Bait's scripts
+- [ ] S5 - The loop: Guardian uses Bait's scripts, branch `scamkaki/slice-5-guardian-loop`, in progress.
 - [ ] S6 - Dashboard, report review and demo
 
 ## Notes for a fresh session
@@ -68,3 +68,5 @@ S2 was authorized and closed 2026-10-22 (see approval history). S3 authorized 20
 - 2026-10-26 S4 deploy authorized (user: "Yes, all three"): push `scamkaki/slice-4-bait`, fast-forward `main` so Render deploys, and migration 0004 on production (applied 2026-10-26). The user set `BOLNA_BAIT_AGENT_ID` and `BOLNA_BAIT_HI_AGENT_ID` on Render ("Done, both set").
 - 2026-10-26 S4 closed (user: "Push the slice branch, fast-forward main, run the architect-reviewer cleanup and close S4, recording Hindi as 2 of 4 flaky."). Post-slice cleanup found no orphan, stale or redundant files.
   Amendment recorded at close, no gate reopens: `POST /web-call/session` takes `line` (`guardian` or `bait`) and forwards web call `user_data`; the dashboard has Bait call buttons and shows Bait scripts with draft reports.
+- 2026-10-27 S5 authorized (user: "Yes, authorize S5: branch scamkaki/slice-5-guardian-loop, the code, Guardian EN/HI agent updates if needed, no fresh Bait calls, budget $1.50, up to 18 live Guardian calls. Use your recommended case linking (A, then B). Pushes, ff main and any migration asked separately.").
+  Case linking: A passes the Bolna execution id in the Guardian tool call; B, the fallback, matches each check to its call by time. Pushes, fast-forward of `main` and any migration are asked separately.
