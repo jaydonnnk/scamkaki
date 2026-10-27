@@ -10,36 +10,41 @@ main{max-width:720px;margin:0 auto;padding:16px}
 select,button{font:inherit;padding:8px 12px;border:1px solid var(--fg);background:transparent;color:var(--fg);border-radius:6px}button:disabled{opacity:.4}
 #log{font:13px/1.5 ui-monospace,monospace;white-space:pre-wrap;border-top:1px solid var(--line);margin-top:16px;padding-top:8px}
 </style></head><body><main>
-<p class="fixture">Test harness. Plays scripted fixture caller lines into a Bolna web call to Ah Ma Bait. Every call costs credit.</p>
+<p class="fixture">Test harness. Plays scripted fixture lines into a Bolna web call: a scammer to Ah Ma Bait, or a senior to Ah Ma Guardian. Every call costs credit.</p>
 <h1>Synthetic caller</h1>
 <p><select id="case"></select> <button id="start" type="button">Place call</button> <button id="stop" type="button" disabled>Hang up</button></p>
 <div id="log" aria-live="polite"></div>
 </main>
 <script src="https://cdn.jsdelivr.net/gh/bolna-ai/web-call@v3.0.1/dist/bolna-web-call.min.js"></script>
 <script>
-const LOUD = 0.02, QUIET_MS = 1000, MAX_CALL_MS = 75000;
+const LOUD = 0.02;
+// Guardian pauses while it checks the script, so it gets a longer quiet gap and call cap.
+const QUIET_MS = { bait: 1000, guardian: 1500 }, MAX_CALL_MS = { bait: 75000, guardian: 100000 };
+// After the senior's last line, keep listening until Guardian has been silent this long.
+const TAIL_QUIET_MS = 8000;
 const $ = (id) => document.getElementById(id);
 const log = (msg) => { $("log").textContent += new Date().toISOString().slice(11, 19) + " " + msg + "\n"; };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-let cases = [], call = null, agentLoudAt = 0, agentSpoke = false;
+let cases = [], call = null, agentLoudAt = 0, agentSpoke = false, quietMs = 1000;
 
 fetch("/cases").then((r) => r.json()).then((list) => {
   cases = list;
-  for (const c of list) $("case").add(new Option(`${c.id} (${c.language}, ${c.clips.length} lines)`, c.id));
+  for (const c of list) $("case").add(new Option(`${c.line}: ${c.id} (${c.language}, ${c.clips.length} lines)`, c.line + ":" + c.id));
 });
 
 // Waits until Ah Ma has said something and then been quiet for QUIET_MS, or until maxMs.
 async function agentTurnDone(maxMs) {
   const until = Date.now() + maxMs;
   while (Date.now() < until) {
-    if (agentSpoke && Date.now() - agentLoudAt > QUIET_MS) return true;
+    if (agentSpoke && Date.now() - agentLoudAt > quietMs) return true;
     await sleep(100);
   }
   return false;
 }
 
 $("start").onclick = async () => {
-  const c = cases.find((x) => x.id === $("case").value);
+  const c = cases.find((x) => x.line + ":" + x.id === $("case").value);
+  quietMs = QUIET_MS[c.line];
   $("start").disabled = true; $("stop").disabled = false;
   const ctx = new AudioContext();
   await ctx.resume();
@@ -54,9 +59,9 @@ $("start").onclick = async () => {
     src.onended = resolve; src.start();
   });
 
-  const record = { case: c.id, language: c.language, started_at: new Date().toISOString(), clips_played: 0 };
-  call = new BolnaWebCall({ sessionUrl: "/session?case=" + encodeURIComponent(c.id) });
-  const cap = setTimeout(() => { log("time cap reached, hanging up"); call.stop(); }, MAX_CALL_MS);
+  const record = { case: c.id, line: c.line, language: c.language, started_at: new Date().toISOString(), clips_played: 0 };
+  call = new BolnaWebCall({ sessionUrl: `/session?line=${c.line}&case=${encodeURIComponent(c.id)}` });
+  const cap = setTimeout(() => { log("time cap reached, hanging up"); call.stop(); }, MAX_CALL_MS[c.line]);
   call.on("volume-level", (v) => { if (v > LOUD) { agentLoudAt = Date.now(); agentSpoke = true; } });
   call.on("error", (e) => log("error: " + (e.code || "") + " " + (e.message || "")));
   call.on("call-end", async (e) => {
@@ -76,6 +81,12 @@ $("start").onclick = async () => {
       await play(buf); record.clips_played = i + 1;
       agentSpoke = false;
       log(await agentTurnDone(20000) ? "Ah Ma answered" : "Ah Ma silent");
+    }
+    // Guardian answers the last line with the tool's verdict, often after a pause.
+    while (c.line === "guardian" && call.getState() === "active") {
+      agentSpoke = false;
+      if (!(await agentTurnDone(TAIL_QUIET_MS))) break;
+      log("Ah Ma said more");
     }
     await sleep(1500);
     log("script done, hanging up"); call.stop();

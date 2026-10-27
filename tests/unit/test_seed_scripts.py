@@ -33,3 +33,16 @@ def test_each_scam_caller_says_its_planted_payee():
         spoken = digits(normalize_spoken_digits(" ".join(case["caller_lines"])))
         assert payee and payee in spoken, case["id"]
         assert planted["payee_account"] is None or planted["payee_account"].startswith("000-")
+
+
+CONFIRM = {"en": "yes", "hi": "हाँ"}
+
+
+def test_each_case_has_senior_lines_ending_in_a_yes():
+    """Guardian repeats the story back and waits for a yes before it checks the script."""
+    for case in CASES:
+        lines = case["senior_lines"]
+        assert len(lines) >= 3, case["id"]
+        assert lines[-1].lower().startswith(CONFIRM[case["language"]]), case["id"]
+        # The senior describes the call; no identifiers ride along.
+        assert not re.search(r"\d{3,}", normalize_spoken_digits(" ".join(lines))), case["id"]

@@ -1,5 +1,5 @@
 {
-  "label": "Demo fixtures only. Scripted test callers paraphrasing public advisories; planted payee identifiers are fake. Never results against real scammers.",
+  "label": "Demo fixtures only. Scripted test callers paraphrasing public advisories: caller_lines are a scammer talking to Ah Ma Bait, senior_lines are a senior describing the call to Ah Ma Guardian. Planted payee identifiers are fake. Never results against real scammers or real seniors.",
   "cases": [
     {
       "id": "en-spf-01",
@@ -22,6 +22,11 @@
         "To protect your savings, you must transfer your money today to a safety account under police supervision.",
         "Send it to OCBC bank. Account number zero zero zero, one two three four five six, seven. Again: zero zero zero, one two three four five six, seven.",
         "Now read me the OTP code that comes to your phone, so I can verify you."
+      ],
+      "senior_lines": [
+        "A man called me just now. He said he is a police inspector from the Singapore Police Force.",
+        "He said my bank account is in a money laundering case, and I must transfer all my money today to a police safety account.",
+        "Yes, that's right."
       ]
     },
     {
@@ -45,6 +50,11 @@
         "You must pay bail money today or a warrant will be issued for your arrest. Do not tell your family, this case is confidential.",
         "Transfer the bail to DBS bank, account zero zero zero, two two two three three three, four. Again: zero zero zero, two two two three three three, four.",
         "What is your NRIC number? I need it for the case file."
+      ],
+      "senior_lines": [
+        "Just now someone called. He said he is an officer from China, the Public Security Bureau.",
+        "He said my passport was used for fraud in China, and I must transfer bail money to a bank account today, or they will arrest me.",
+        "Yes, that's right."
       ]
     },
     {
@@ -68,6 +78,11 @@
         "To stop it, please read me the six digit OTP that we just sent to your phone.",
         "Then move your balance to a secure holding account: UOB, account zero zero zero, four four four five five five, six. Again: zero zero zero, four four four five five five, six.",
         "Please also confirm your card number for me."
+      ],
+      "senior_lines": [
+        "Someone called me, said he is from the UOB bank fraud team.",
+        "He said got fraud on my card, and I must move all my money to a secure holding account in the bank.",
+        "Yes, that's right."
       ]
     },
     {
@@ -91,6 +106,11 @@
         "You must pay a customs clearance fee of four hundred dollars today, or the case goes to the police.",
         "Pay by PayNow to the mobile number eight zero zero zero, zero zero zero one. Again: eight zero zero zero, zero zero zero one.",
         "Also tell me your NRIC so I can release the parcel."
+      ],
+      "senior_lines": [
+        "A courier company called me. They said my parcel is stuck at customs.",
+        "They want me to pay a customs fee of four hundred dollars today by PayNow to their number.",
+        "Yes, that's right."
       ]
     },
     {
@@ -114,6 +134,11 @@
         "To avoid charges, you must transfer your savings for checking to an MOH investigation account today.",
         "Transfer to POSB, account zero zero zero, seven seven seven eight eight eight, nine. Again: zero zero zero, seven seven seven eight eight eight, nine.",
         "Please give me the OTP from your bank so we can verify the account."
+      ],
+      "senior_lines": [
+        "A man called, he said he is an officer from the Ministry of Health.",
+        "He said medicine was claimed under my name, and I must transfer my savings to an MOH account for checking.",
+        "Yes, that's right."
       ]
     },
     {
@@ -126,7 +151,12 @@
         "agency": "moh",
         "demand": "none"
       },
-      "description": "A polyclinic calls to remind the senior of a check-up appointment next Tuesday at 9 am and asks nothing."
+      "description": "A polyclinic calls to remind the senior of a check-up appointment next Tuesday at 9 am and asks nothing.",
+      "senior_lines": [
+        "The polyclinic called me just now.",
+        "They only reminded me about my check-up next Tuesday morning. They did not ask for anything.",
+        "Yes, that's right."
+      ]
     },
     {
       "id": "en-legit-bank-01",
@@ -138,7 +168,12 @@
         "agency": "bank",
         "demand": "none"
       },
-      "description": "The bank calls to say a new debit card is ready to collect at the branch with photo ID, and asks nothing over the phone."
+      "description": "The bank calls to say a new debit card is ready to collect at the branch with photo ID, and asks nothing over the phone.",
+      "senior_lines": [
+        "My bank called me this morning.",
+        "They said my new debit card is ready, I can collect it at the branch with my IC. They never asked me for anything on the phone.",
+        "Yes, that's right."
+      ]
     },
     {
       "id": "en-legit-family-01",
@@ -150,7 +185,12 @@
         "agency": "other",
         "demand": "none"
       },
-      "description": "A grandson calls to say he will visit for dinner on Sunday."
+      "description": "A grandson calls to say he will visit for dinner on Sunday.",
+      "senior_lines": [
+        "My grandson called me just now.",
+        "He said he will come for dinner on Sunday. He did not ask for anything.",
+        "Yes, that's right."
+      ]
     },
     {
       "id": "hi-mom-01",
@@ -173,6 +213,11 @@
         "अगर आज जुर्माना नहीं भरा, तो आपका लॉन्ग टर्म विज़िट पास रद्द हो जाएगा।",
         "जुर्माना DBS बैंक के खाते में भेजिए। खाता नंबर है शून्य शून्य शून्य, एक एक एक, दो दो दो, तीन। फिर से: शून्य शून्य शून्य, एक एक एक, दो दो दो, तीन।",
         "अपने फ़ोन पर आया ओटीपी कोड मुझे बताइए।"
+      ],
+      "senior_lines": [
+        "अभी एक आदमी का फ़ोन आया। उसने कहा कि वह सिंगापुर के मानव संसाधन मंत्रालय, यानी MOM से है।",
+        "उसने कहा कि मेरे बेटे के वर्क पास में समस्या है, और आज ही एक बैंक खाते में जुर्माने के पैसे ट्रांसफर करने होंगे।",
+        "हाँ, यही बात है।"
       ]
     },
     {
@@ -196,6 +241,11 @@
         "अपने पैसे बचाने के लिए आज ही पुलिस के सुरक्षित खाते में सारे पैसे ट्रांसफर कीजिए।",
         "OCBC बैंक, खाता नंबर शून्य शून्य शून्य, पांच पांच पांच, छह छह छह, सात। फिर से: शून्य शून्य शून्य, पांच पांच पांच, छह छह छह, सात।",
         "अपना NRIC नंबर बताइए, केस फ़ाइल के लिए चाहिए।"
+      ],
+      "senior_lines": [
+        "अभी एक आदमी का फ़ोन आया। उसने कहा कि वह सिंगापुर पुलिस का इंस्पेक्टर है।",
+        "उसने कहा कि मेरा बैंक खाता मनी लॉन्ड्रिंग के मामले में है, और आज ही सारे पैसे पुलिस के सुरक्षित खाते में ट्रांसफर करने होंगे।",
+        "हाँ, यही बात है।"
       ]
     },
     {
@@ -208,7 +258,12 @@
         "agency": "moh",
         "demand": "none"
       },
-      "description": "A polyclinic calls in Hindi to remind the senior of a check-up appointment and asks nothing."
+      "description": "A polyclinic calls in Hindi to remind the senior of a check-up appointment and asks nothing.",
+      "senior_lines": [
+        "अभी पॉलीक्लिनिक से फ़ोन आया था।",
+        "उन्होंने बस मेरी जाँच की अपॉइंटमेंट याद दिलाई। उन्होंने कुछ नहीं माँगा।",
+        "हाँ, यही बात है।"
+      ]
     }
   ]
 }

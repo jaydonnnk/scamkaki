@@ -1,10 +1,12 @@
-"""Synthetic caller: plays a fixture case's scripted caller lines into a Bolna web call.
+"""Synthetic caller: plays a fixture case's scripted lines into a Bolna web call.
 
 Usage: uv run python scripts/caller/serve.py   then open http://127.0.0.1:8765
 
-Renders each case's caller_lines with macOS `say` (Daniel for English, Lekha for Hindi),
-serves a local page that places a web call to the case's agent with the case id as
-user_data, and appends each placed call to scripts/caller/runs.jsonl for scripts/check.py.
+Two modes per case: "bait" plays the scammer's caller_lines to Ah Ma Bait, "guardian" plays
+the senior's senior_lines to Ah Ma Guardian. Renders the lines with macOS `say` (Daniel for
+English, Lekha for Hindi), serves a local page that places a web call to the line's agent in
+the case's language with the case id as user_data, and appends each placed call to
+scripts/caller/runs.jsonl for scripts/check.py.
 Every call it places costs Bolna credit. Binds to localhost only; the API key stays here.
 """
 
@@ -26,11 +28,18 @@ VOICES = {"en": "Daniel", "hi": "Lekha"}
 # Words per minute; None keeps the voice default. Lekha at 190 garbled Sarvam's Hindi digits (S4).
 RATES = {"en": "190", "hi": None}
 PORT = 8765
+# The scripted lines each line's agent hears, and the clip name suffix they render to.
+LINES = {"bait": ("caller_lines", ""), "guardian": ("senior_lines", "-senior")}
 
 
 def load_cases() -> dict[str, dict]:
     cases = json.loads((ROOT / "seed" / "scripts.json").read_text())["cases"]
-    return {case["id"]: case for case in cases if case.get("caller_lines")}
+    return {case["id"]: case for case in cases}
+
+
+def clip_names(case: dict, line: str) -> list[str]:
+    field, suffix = LINES[line]
+    return [f"{case['id']}{suffix}-{i}.wav" for i in range(len(case.get(field) or []))]
 
 
 def rate(language: str) -> list[str]:
@@ -40,17 +49,18 @@ def rate(language: str) -> list[str]:
 def render_clips(cases: dict[str, dict]) -> None:
     CLIPS.mkdir(exist_ok=True)
     for case in cases.values():
-        for i, line in enumerate(case["caller_lines"]):
-            wav = CLIPS / f"{case['id']}-{i}.wav"
-            if wav.exists():
-                continue
-            aiff = wav.with_suffix(".aiff")
-            subprocess.run(
-                ["say", "-v", VOICES[case["language"]], *rate(case["language"]), "-o", aiff, line],
-                check=True,
-            )
-            subprocess.run(["afconvert", "-f", "WAVE", "-d", "LEI16@16000", aiff, wav], check=True)
-            aiff.unlink()
+        for line, (field, _) in LINES.items():
+            for name, text in zip(clip_names(case, line), case.get(field) or [], strict=True):
+                wav = CLIPS / name
+                if wav.exists():
+                    continue
+                aiff = wav.with_suffix(".aiff")
+                voice = ["-v", VOICES[case["language"]], *rate(case["language"])]
+                subprocess.run(["say", *voice, "-o", aiff, text], check=True)
+                subprocess.run(
+                    ["afconvert", "-f", "WAVE", "-d", "LEI16@16000", aiff, wav], check=True
+                )
+                aiff.unlink()
 
 
 class Handler(SimpleHTTPRequestHandler):
@@ -75,10 +85,13 @@ class Handler(SimpleHTTPRequestHandler):
                     {
                         "id": case["id"],
                         "language": case["language"],
-                        "clips": [f"/clips/{case['id']}-{i}.wav" for i in range(len(lines))],
+                        "line": line,
+                        "clips": [f"/clips/{name}" for name in names],
                     }
+                    for line in LINES
                     for case in self.cases.values()
-                    for lines in [case["caller_lines"]]
+                    for names in [clip_names(case, line)]
+                    if names
                 ],
             )
         return super().do_GET()
@@ -87,13 +100,15 @@ class Handler(SimpleHTTPRequestHandler):
         url = urlparse(self.path)
         body = self.rfile.read(int(self.headers.get("Content-Length") or 0))
         if url.path == "/session":
-            case = self.cases.get(parse_qs(url.query).get("case", [""])[0])
-            if case is None:
-                return self._json(404, {"error": "unknown case"})
+            query = parse_qs(url.query)
+            case = self.cases.get(query.get("case", [""])[0])
+            line = query.get("line", ["bait"])[0]
+            if case is None or line not in LINES or not clip_names(case, line):
+                return self._json(404, {"error": "unknown case or line"})
             settings = get_settings()
-            agent_id = settings.agent_id("bait", case["language"])
+            agent_id = settings.agent_id(line, case["language"])
             if not agent_id:
-                return self._json(503, {"error": "Bait agent id not set"})
+                return self._json(503, {"error": f"{line} agent id not set"})
             session = BolnaClient(settings.bolna_api_key).mint_web_call_session(
                 agent_id, {"fixture_case": case["id"]}
             )
