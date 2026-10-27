@@ -81,11 +81,11 @@ Free instances sleep when idle, and a cold start during a Guardian tool call may
 
 - Bolna has no custom speech-to-text, so Hindi understanding depends on Bolna's providers; Bolna accepts `hi` on AssemblyAI at agent creation [verified 2026-10-22], call quality [unknown until S2]; Guardian HI falls back to yes/no and keypad questions.
 - One agent per language, not one multilingual agent, because mid-call language switching on Bolna is unverified; the cost is one line per language.
-- Mandarin is a stretch: two more agents (`zh`) only after S6, with no schema change beyond the `language` value; blocked today because Bolna refuses `zh` on every transcriber ([evidence](evidence/s2-mandarin-stt-precheck.md)).
+- Mandarin is a stretch: two more agents (`zh`) only after S7, with no schema change beyond the `language` value; blocked today because Bolna refuses `zh` on every transcriber ([evidence](evidence/s2-mandarin-stt-precheck.md)).
 - Bolna call transfer was attempted in S3 and blocked on our account ("request blocked by outbound URL policy"); a phone transfer needs a paid telephony setup and stays out of scope.
 - The family is only reached if they have Telegram set up or the family page open; nobody is phoned automatically, and a missed alert is not retried.
 - Detecting who forwarded a call (SIP `Diversion`) needs our own carrier trunk; out of scope.
-- Warning signs travel as one comma-separated string because Bolna's custom-function param template fills `%(name)s` text values; whether the LLM fills five values reliably is [unknown until S5]. Unknown signs are dropped, never guessed.
-- Guardian's call grows by about four questions; keeping it under three minutes for a senior is [unknown until S5].
+- Warning signs travel as one comma-separated string because Bolna's custom-function param template fills `%(name)s` text values; whether the LLM fills five values reliably is [unknown until S6]. Unknown signs are dropped, never guessed.
+- Guardian's call grows by about four questions; keeping it under three minutes for a senior is [unknown until S6].
 - The verdict is only as good as what the senior tells Guardian and what speech-to-text hears; a senior who hides the secrecy instruction defeats the warning-sign rule.
 - Bait's extraction and `scripts` are unchanged, so the 7-day count still matches on agency and demand only; Bait never produces the new agency and demand values (telco, MAS, MinLaw, cash handover and others), so those always count 0 until Bait is extended.

@@ -284,5 +284,5 @@ Guard coverage: for each rule in `decide` (including each new branch: harmful ac
 8. Bait is left unchanged. The alternative is to have Bait extract warning signs too, so the 7-day count can match on tactics; or to move Bait's runs down the cut order since phone scams are shrinking [verified, SPF mid-year brief 2026].
 9. Any one red warning sign alone gives `likely_scam`. Legit callers rarely hand you to another officer, ask for secrecy, keep you on the line or ask for a fee by link [hypothesis]; the cost is false alarms if speech-to-text or the LLM mislabels a sign.
 10. A money request from friend or family with no red sign is `unclear`, not `likely_scam`, so a real grandson is not reported as a scammer; a hijacked WhatsApp that asks for the same amount to the same person would also pass as `unclear`.
-11. Warning signs travel as one comma-separated string through Bolna's param template; five LLM-filled values per call is [unknown until S5].
+11. Warning signs travel as one comma-separated string through Bolna's param template; five LLM-filled values per call is [unknown until S6].
 12. The act-now advice (call the bank on the number on the card, then 1799) follows SPF's "report to your bank immediately" guidance [verified, SPF advisory 15 Jul 2026]; the Hindi wording needs a listener check.
