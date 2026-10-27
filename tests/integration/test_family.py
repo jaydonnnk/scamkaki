@@ -2,10 +2,10 @@ from scamkaki.app.main import app
 from scamkaki.lib.env import get_settings
 
 
-def check(client, agency, demand):
+def check(client, agency, demand, **signs):
     return client.post(
         "/tools/match-script",
-        json={"agency": agency, "demand": demand},
+        json={"agency": agency, "demand": demand, **signs},
         headers={"Authorization": "Bearer tool-token"},
     )
 
@@ -40,3 +40,21 @@ def test_family_alerts_lists_likely_scam_only(client):
     assert [(a["agency"], a["demand"]) for a in alerts] == [("spf", "transfer")]
     assert alerts[0]["alert_status"] == "sent"
     assert alerts[0]["language"] == "en"
+
+
+def test_family_alerts_list_urgent_first(client):
+    check(client, "courier", "card_details", channel="sms", tactics="link_fee", acted="paid")
+    check(client, "minlaw", "transfer", channel="call", tactics="stay_on_line,handoff")
+
+    alerts = client.get("/family/family-link/alerts").json()
+
+    assert [(a["agency"], a["urgent"]) for a in alerts] == [("courier", True), ("minlaw", False)]
+    assert alerts[0]["acted"] == "paid" and alerts[0]["channel"] == "sms"
+    assert alerts[1]["tactics"] == ["handoff", "stay_on_line"]  # fixed order, not as sent
+
+
+def test_family_page_knows_the_new_labels(client):
+    page = client.get("/family/family-link").text
+
+    assert "Urgent: Ah Ma already acted" in page
+    assert "Told to stay on the line" in page and "Card details on a website" in page

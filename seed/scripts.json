@@ -1,8 +1,9 @@
 {
-  "label": "Demo fixtures only. Scripted test callers paraphrasing public advisories: caller_lines are a scammer talking to Ah Ma Bait, senior_lines are a senior describing the call to Ah Ma Guardian. Planted payee identifiers are fake. Never results against real scammers or real seniors.",
+  "label": "Demo fixtures only. Scripted test callers paraphrasing public advisories: bait cases are a scammer's caller_lines played to Ah Ma Bait; guardian cases are a senior's senior_lines played to Ah Ma Guardian, written so the senior trusts the caller. Planted payee identifiers are fake. Never results against real scammers or real seniors.",
   "cases": [
     {
       "id": "en-spf-01",
+      "for": "bait",
       "language": "en",
       "label": "Demo fixture: scripted test caller, not a real scammer",
       "kind": "scam",
@@ -22,15 +23,11 @@
         "To protect your savings, you must transfer your money today to a safety account under police supervision.",
         "Send it to OCBC bank. Account number zero zero zero, one two three four five six, seven. Again: zero zero zero, one two three four five six, seven.",
         "Now read me the OTP code that comes to your phone, so I can verify you."
-      ],
-      "senior_lines": [
-        "A man called me just now. He said he is a police inspector from the Singapore Police Force.",
-        "He said my bank account is in a money laundering case, and I must transfer all my money today to a police safety account.",
-        "Yes, that's right."
       ]
     },
     {
       "id": "en-china-01",
+      "for": "bait",
       "language": "en",
       "label": "Demo fixture: scripted test caller, not a real scammer",
       "kind": "scam",
@@ -50,15 +47,11 @@
         "You must pay bail money today or a warrant will be issued for your arrest. Do not tell your family, this case is confidential.",
         "Transfer the bail to DBS bank, account zero zero zero, two two two three three three, four. Again: zero zero zero, two two two three three three, four.",
         "What is your NRIC number? I need it for the case file."
-      ],
-      "senior_lines": [
-        "Just now someone called. He said he is an officer from China, the Public Security Bureau.",
-        "He said my passport was used for fraud in China, and I must transfer bail money to a bank account today, or they will arrest me.",
-        "Yes, that's right."
       ]
     },
     {
       "id": "en-bank-01",
+      "for": "bait",
       "language": "en",
       "label": "Demo fixture: scripted test caller, not a real scammer",
       "kind": "scam",
@@ -78,15 +71,11 @@
         "To stop it, please read me the six digit OTP that we just sent to your phone.",
         "Then move your balance to a secure holding account: UOB, account zero zero zero, four four four five five five, six. Again: zero zero zero, four four four five five five, six.",
         "Please also confirm your card number for me."
-      ],
-      "senior_lines": [
-        "Someone called me, said he is from the UOB bank fraud team.",
-        "He said got fraud on my card, and I must move all my money to a secure holding account in the bank.",
-        "Yes, that's right."
       ]
     },
     {
       "id": "en-courier-01",
+      "for": "bait",
       "language": "en",
       "label": "Demo fixture: scripted test caller, not a real scammer",
       "kind": "scam",
@@ -106,15 +95,11 @@
         "You must pay a customs clearance fee of four hundred dollars today, or the case goes to the police.",
         "Pay by PayNow to the mobile number eight zero zero zero, zero zero zero one. Again: eight zero zero zero, zero zero zero one.",
         "Also tell me your NRIC so I can release the parcel."
-      ],
-      "senior_lines": [
-        "A courier company called me. They said my parcel is stuck at customs.",
-        "They want me to pay a customs fee of four hundred dollars today by PayNow to their number.",
-        "Yes, that's right."
       ]
     },
     {
       "id": "en-moh-01",
+      "for": "bait",
       "language": "en",
       "label": "Demo fixture: scripted test caller, not a real scammer",
       "kind": "scam",
@@ -134,66 +119,11 @@
         "To avoid charges, you must transfer your savings for checking to an MOH investigation account today.",
         "Transfer to POSB, account zero zero zero, seven seven seven eight eight eight, nine. Again: zero zero zero, seven seven seven eight eight eight, nine.",
         "Please give me the OTP from your bank so we can verify the account."
-      ],
-      "senior_lines": [
-        "A man called, he said he is an officer from the Ministry of Health.",
-        "He said medicine was claimed under my name, and I must transfer my savings to an MOH account for checking.",
-        "Yes, that's right."
-      ]
-    },
-    {
-      "id": "en-legit-clinic-01",
-      "language": "en",
-      "label": "Demo fixture: scripted test caller, not a real call",
-      "kind": "legit",
-      "source": "Typical polyclinic appointment reminder; no money or codes asked.",
-      "expect": {
-        "agency": "moh",
-        "demand": "none"
-      },
-      "description": "A polyclinic calls to remind the senior of a check-up appointment next Tuesday at 9 am and asks nothing.",
-      "senior_lines": [
-        "The polyclinic called me just now.",
-        "They only reminded me about my check-up next Tuesday morning. They did not ask for anything.",
-        "Yes, that's right."
-      ]
-    },
-    {
-      "id": "en-legit-bank-01",
-      "language": "en",
-      "label": "Demo fixture: scripted test caller, not a real call",
-      "kind": "legit",
-      "source": "Typical bank service call telling the customer to visit a branch; no money or codes asked.",
-      "expect": {
-        "agency": "bank",
-        "demand": "none"
-      },
-      "description": "The bank calls to say a new debit card is ready to collect at the branch with photo ID, and asks nothing over the phone.",
-      "senior_lines": [
-        "My bank called me this morning.",
-        "They said my new debit card is ready, I can collect it at the branch with my IC. They never asked me for anything on the phone.",
-        "Yes, that's right."
-      ]
-    },
-    {
-      "id": "en-legit-family-01",
-      "language": "en",
-      "label": "Demo fixture: scripted test caller, not a real call",
-      "kind": "legit",
-      "source": "Ordinary family call.",
-      "expect": {
-        "agency": "other",
-        "demand": "none"
-      },
-      "description": "A grandson calls to say he will visit for dinner on Sunday.",
-      "senior_lines": [
-        "My grandson called me just now.",
-        "He said he will come for dinner on Sunday. He did not ask for anything.",
-        "Yes, that's right."
       ]
     },
     {
       "id": "hi-mom-01",
+      "for": "bait",
       "language": "hi",
       "label": "Demo fixture: scripted test caller, not a real scammer",
       "kind": "scam",
@@ -213,15 +143,11 @@
         "अगर आज जुर्माना नहीं भरा, तो आपका लॉन्ग टर्म विज़िट पास रद्द हो जाएगा।",
         "जुर्माना DBS बैंक के खाते में भेजिए। खाता नंबर है शून्य शून्य शून्य, एक एक एक, दो दो दो, तीन। फिर से: शून्य शून्य शून्य, एक एक एक, दो दो दो, तीन।",
         "अपने फ़ोन पर आया ओटीपी कोड मुझे बताइए।"
-      ],
-      "senior_lines": [
-        "अभी एक आदमी का फ़ोन आया। उसने कहा कि वह सिंगापुर के मानव संसाधन मंत्रालय, यानी MOM से है।",
-        "उसने कहा कि मेरे बेटे के वर्क पास में समस्या है, और आज ही एक बैंक खाते में जुर्माने के पैसे ट्रांसफर करने होंगे।",
-        "हाँ, यही बात है।"
       ]
     },
     {
       "id": "hi-spf-01",
+      "for": "bait",
       "language": "hi",
       "label": "Demo fixture: scripted test caller, not a real scammer",
       "kind": "scam",
@@ -241,27 +167,352 @@
         "अपने पैसे बचाने के लिए आज ही पुलिस के सुरक्षित खाते में सारे पैसे ट्रांसफर कीजिए।",
         "OCBC बैंक, खाता नंबर शून्य शून्य शून्य, पांच पांच पांच, छह छह छह, सात। फिर से: शून्य शून्य शून्य, पांच पांच पांच, छह छह छह, सात।",
         "अपना NRIC नंबर बताइए, केस फ़ाइल के लिए चाहिए।"
-      ],
+      ]
+    },
+    {
+      "id": "en-telco-minlaw-01",
+      "for": "guardian",
+      "language": "en",
+      "label": "Demo fixture: scripted senior, not a real call",
+      "kind": "scam",
+      "source": "Paraphrase of the SPF mid-year brief 2026 on telco-to-official handoffs (Singtel, then MinLaw) and the MinLaw impersonation advisory; no victim names or identifying details.",
+      "expect": {
+        "agency": "minlaw",
+        "demand": "transfer",
+        "channel": "call",
+        "tactics": [
+          "handoff",
+          "secrecy",
+          "stay_on_line"
+        ],
+        "acted": "none",
+        "verdict": "likely_scam"
+      },
       "senior_lines": [
-        "अभी एक आदमी का फ़ोन आया। उसने कहा कि वह सिंगापुर पुलिस का इंस्पेक्टर है।",
-        "उसने कहा कि मेरा बैंक खाता मनी लॉन्ड्रिंग के मामले में है, और आज ही सारे पैसे पुलिस के सुरक्षित खाते में ट्रांसफर करने होंगे।",
+        "A lady from Singtel called me. Very polite, she knew my IC number. She said a phone line under my name was used for a crime.",
+        "Then she passed me to an officer from the Ministry of Law. He said I must move my savings to an account for checking, and I must not tell my son, and I must stay on the line until it is done.",
+        "He sounded very professional, so I think it is real. I just want to check with you first.",
+        "Yes, that's right."
+      ]
+    },
+    {
+      "id": "en-bank-otp-01",
+      "for": "guardian",
+      "language": "en",
+      "label": "Demo fixture: scripted senior, not a real call",
+      "kind": "scam",
+      "source": "Paraphrase of public SPF and bank advisories on phishing calls posing as bank fraud teams; no victim names or identifying details.",
+      "expect": {
+        "agency": "bank",
+        "demand": "otp",
+        "channel": "call",
+        "tactics": [
+          "knew_details"
+        ],
+        "acted": "none",
+        "verdict": "likely_scam"
+      },
+      "senior_lines": [
+        "Someone from my bank's fraud team called. He knew the last four digits of my card and a shop I paid at yesterday.",
+        "He said someone is trying to use my card overseas. To cancel it, I must read him the code that the bank sends to my phone.",
+        "Yes, that's right."
+      ]
+    },
+    {
+      "id": "en-courier-paid-01",
+      "for": "guardian",
+      "language": "en",
+      "label": "Demo fixture: scripted senior, not a real call",
+      "kind": "scam",
+      "source": "Paraphrase of SPF advisories of 15 Jul and 5 Aug 2026 on courier phishing with small redelivery fees; no victim names or identifying details.",
+      "expect": {
+        "agency": "courier",
+        "demand": "card_details",
+        "channel": "sms",
+        "tactics": [
+          "link_fee"
+        ],
+        "acted": "gave_code_or_card",
+        "verdict": "likely_scam"
+      },
+      "senior_lines": [
+        "I got an SMS from the courier. It said my parcel cannot be delivered because the address is wrong.",
+        "I clicked the link and paid the redelivery fee, one dollar sixty-four, with my credit card. Then I typed in the code the bank sent me.",
+        "The website looked exactly like the real one. Is that a problem?",
+        "Yes, that's right."
+      ]
+    },
+    {
+      "id": "en-investment-01",
+      "for": "guardian",
+      "language": "en",
+      "label": "Demo fixture: scripted senior, not a real call",
+      "kind": "scam",
+      "source": "Paraphrase of the SPF mid-year brief 2026 on investment scams run through WhatsApp chat groups; no victim names or identifying details.",
+      "expect": {
+        "agency": "investment",
+        "demand": "transfer",
+        "channel": "whatsapp",
+        "tactics": [
+          "paid_first"
+        ],
+        "acted": "none",
+        "verdict": "likely_scam"
+      },
+      "senior_lines": [
+        "I joined a WhatsApp group with a teacher who gives stock tips. Many members share their profits every day.",
+        "I tried with a small amount first, and I really could take out a small profit. Now the assistant says I should top up more to join the VIP group for bigger returns.",
+        "Yes, that's right."
+      ]
+    },
+    {
+      "id": "en-whatsapp-friend-01",
+      "for": "guardian",
+      "language": "en",
+      "label": "Demo fixture: scripted senior, not a real call",
+      "kind": "scam",
+      "source": "Paraphrase of the SPF mid-year brief 2026 on WhatsApp impersonation of known contacts; no victim names or identifying details.",
+      "expect": {
+        "agency": "friend_family",
+        "demand": "transfer",
+        "channel": "whatsapp",
+        "tactics": [
+          "new_payee",
+          "urgency_threat"
+        ],
+        "acted": "none",
+        "verdict": "likely_scam"
+      },
+      "senior_lines": [
+        "My old friend messaged me on WhatsApp. He said his bank transfer got stuck and he needs to borrow eight hundred dollars today.",
+        "He asked me to send it to his cousin's account because his own account has a problem. He will pay me back next week.",
+        "Yes, that's right."
+      ]
+    },
+    {
+      "id": "en-cash-handover-01",
+      "for": "guardian",
+      "language": "en",
+      "label": "Demo fixture: scripted senior, not a real call",
+      "kind": "scam",
+      "source": "Paraphrase of the SPF mid-year brief 2026 on government impersonation scams with cash and valuables handed over; no victim names or identifying details.",
+      "expect": {
+        "agency": "spf",
+        "demand": "cash_handover",
+        "channel": "call",
+        "tactics": [
+          "secrecy"
+        ],
+        "acted": "none",
+        "verdict": "likely_scam"
+      },
+      "senior_lines": [
+        "A police officer called me about an investigation. He said my money must be checked.",
+        "He told me to withdraw my cash and take out my gold jewellery, and a colleague will come to my house to collect them for checking. He said not to tell anyone because the case is confidential.",
+        "Yes, that's right."
+      ]
+    },
+    {
+      "id": "en-job-task-01",
+      "for": "guardian",
+      "language": "en",
+      "label": "Demo fixture: scripted senior, not a real call",
+      "kind": "scam",
+      "source": "Paraphrase of public SPF and bank advisories on job and task scams; no victim names or identifying details.",
+      "expect": {
+        "agency": "employer",
+        "demand": "transfer",
+        "channel": "whatsapp",
+        "tactics": [
+          "paid_first"
+        ],
+        "acted": "none",
+        "verdict": "likely_scam"
+      },
+      "senior_lines": [
+        "A company messaged me on WhatsApp about a part-time job, liking videos from home.",
+        "They really paid me thirty dollars for the first tasks. Now they say I must put in some money first to unlock the better tasks that pay more.",
+        "Yes, that's right."
+      ]
+    },
+    {
+      "id": "en-ica-video-01",
+      "for": "guardian",
+      "language": "en",
+      "label": "Demo fixture: scripted senior, not a real call",
+      "kind": "scam",
+      "source": "Paraphrase of the SPF advisory of 14 Aug 2026 on ICA and China official impersonation; no victim names or identifying details.",
+      "expect": {
+        "agency": "china_official",
+        "demand": "transfer",
+        "channel": "video",
+        "tactics": [
+          "handoff",
+          "channel_move"
+        ],
+        "acted": "none",
+        "verdict": "likely_scam"
+      },
+      "senior_lines": [
+        "Someone from ICA called. He said a parcel with fake passports was sent under my name.",
+        "He passed me to the China police, and they asked me to continue on a WhatsApp video call. The officer showed me his uniform and a document.",
+        "He said I must declare my assets by moving my savings to an account they give me, so they can clear my name.",
+        "Yes, that's right."
+      ]
+    },
+    {
+      "id": "en-legit-bank-app-01",
+      "for": "guardian",
+      "language": "en",
+      "label": "Demo fixture: scripted senior, not a real call",
+      "kind": "legit",
+      "source": "Typical bank call about a card purchase, confirmed by the bank app's call notification; nothing asked beyond yes or no.",
+      "expect": {
+        "agency": "bank",
+        "demand": "none",
+        "channel": "call",
+        "tactics": [
+          "knew_details"
+        ],
+        "acted": "none",
+        "verdict": "unclear"
+      },
+      "senior_lines": [
+        "My bank called me about a purchase on my card. My bank app showed a message that the bank was calling me.",
+        "They knew my name and the last four digits of my card. They only asked if I made the purchase, yes or no. They did not ask for any code or money.",
+        "Yes, that's right."
+      ]
+    },
+    {
+      "id": "en-legit-singpost-01",
+      "for": "guardian",
+      "language": "en",
+      "label": "Demo fixture: scripted senior, not a real call",
+      "kind": "legit",
+      "source": "Typical SingPost parcel notice; no link, no fee.",
+      "expect": {
+        "agency": "courier",
+        "demand": "none",
+        "channel": "sms",
+        "tactics": [],
+        "acted": "none",
+        "verdict": "no_scam_signs"
+      },
+      "senior_lines": [
+        "I got an SMS from SingPost.",
+        "It said my parcel is ready at the POPStation near my block. There was no link and no fee.",
+        "Yes, that's right."
+      ]
+    },
+    {
+      "id": "en-legit-grandson-01",
+      "for": "guardian",
+      "language": "en",
+      "label": "Demo fixture: scripted senior, not a real call",
+      "kind": "legit",
+      "source": "Typical family request from a known number; the right answer is to verify, not to call it a scam.",
+      "expect": {
+        "agency": "friend_family",
+        "demand": "transfer",
+        "channel": "call",
+        "tactics": [],
+        "acted": "none",
+        "verdict": "unclear"
+      },
+      "senior_lines": [
+        "My grandson called me from his usual number.",
+        "He bought groceries for me yesterday, and he asked me to PayNow him fifty dollars for them.",
+        "Yes, that's right."
+      ]
+    },
+    {
+      "id": "en-legit-cpf-01",
+      "for": "guardian",
+      "language": "en",
+      "label": "Demo fixture: scripted senior, not a real call",
+      "kind": "legit",
+      "source": "Typical gov.sg reminder SMS without a link.",
+      "expect": {
+        "agency": "cpf",
+        "demand": "none",
+        "channel": "sms",
+        "tactics": [],
+        "acted": "none",
+        "verdict": "no_scam_signs"
+      },
+      "senior_lines": [
+        "I got an SMS from gov.sg about my CPF.",
+        "It reminded me to update my CPF nomination by logging in myself with Singpass. There was no link inside.",
+        "Yes, that's right."
+      ]
+    },
+    {
+      "id": "hi-mom-handoff-01",
+      "for": "guardian",
+      "language": "hi",
+      "label": "Demo fixture: scripted senior, not a real call",
+      "kind": "scam",
+      "source": "Paraphrase of public SPF advisories on government official impersonation scams targeting work and visit pass holders, with handoffs between officials; no victim names or identifying details.",
+      "expect": {
+        "agency": "spf",
+        "demand": "transfer",
+        "channel": "call",
+        "tactics": [
+          "handoff",
+          "secrecy"
+        ],
+        "acted": "none",
+        "verdict": "likely_scam"
+      },
+      "senior_lines": [
+        "अभी MOM, यानी मानव संसाधन मंत्रालय से एक बहुत विनम्र आदमी का फ़ोन आया। उसने कहा कि मेरे बेटे के वर्क पास में समस्या है।",
+        "फिर उसने मुझे सिंगापुर पुलिस के एक अफ़सर से बात करवाई। अफ़सर ने कहा कि आज ही जुर्माने के पैसे एक खाते में भेजने होंगे, और यह बात बेटे को भी नहीं बतानी है।",
         "हाँ, यही बात है।"
       ]
     },
     {
-      "id": "hi-legit-clinic-01",
+      "id": "hi-courier-paid-01",
+      "for": "guardian",
       "language": "hi",
-      "label": "Demo fixture: scripted test caller, not a real call",
-      "kind": "legit",
-      "source": "Typical polyclinic appointment reminder; no money or codes asked.",
+      "label": "Demo fixture: scripted senior, not a real call",
+      "kind": "scam",
+      "source": "Paraphrase of SPF advisories of 15 Jul and 5 Aug 2026 on courier phishing with small redelivery fees; no victim names or identifying details.",
       "expect": {
-        "agency": "moh",
-        "demand": "none"
+        "agency": "courier",
+        "demand": "card_details",
+        "channel": "sms",
+        "tactics": [
+          "link_fee"
+        ],
+        "acted": "gave_code_or_card",
+        "verdict": "likely_scam"
       },
-      "description": "A polyclinic calls in Hindi to remind the senior of a check-up appointment and asks nothing.",
       "senior_lines": [
-        "अभी पॉलीक्लिनिक से फ़ोन आया था।",
-        "उन्होंने बस मेरी जाँच की अपॉइंटमेंट याद दिलाई। उन्होंने कुछ नहीं माँगा।",
+        "मुझे कूरियर कंपनी का एक SMS आया कि पता गलत होने की वजह से मेरा पार्सल नहीं पहुँच सकता।",
+        "मैंने लिंक खोलकर अपने क्रेडिट कार्ड से दोबारा डिलीवरी की छोटी सी फ़ीस भर दी, और बैंक से आया कोड भी डाल दिया।",
+        "हाँ, यही बात है।"
+      ]
+    },
+    {
+      "id": "hi-legit-bank-app-01",
+      "for": "guardian",
+      "language": "hi",
+      "label": "Demo fixture: scripted senior, not a real call",
+      "kind": "legit",
+      "source": "Typical bank call about a card purchase, confirmed by the bank app's call notification; nothing asked beyond yes or no.",
+      "expect": {
+        "agency": "bank",
+        "demand": "none",
+        "channel": "call",
+        "tactics": [
+          "knew_details"
+        ],
+        "acted": "none",
+        "verdict": "unclear"
+      },
+      "senior_lines": [
+        "मेरे बैंक से फ़ोन आया, और मेरे बैंक ऐप में भी दिखा कि बैंक ही फ़ोन कर रहा है।",
+        "उन्हें मेरा नाम और कार्ड के आख़िरी चार अंक पता थे। उन्होंने बस पूछा कि क्या यह खरीदारी मैंने की थी। कोई कोड या पैसे नहीं माँगे।",
         "हाँ, यही बात है।"
       ]
     }

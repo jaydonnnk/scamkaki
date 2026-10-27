@@ -5,15 +5,15 @@ Usage: uv run python scripts/check.py bait|guardian [--language hi]
 Both take the latest call per case and line logged in scripts/caller/runs.jsonl and re-read
 the execution from Bolna and the stored rows from DATABASE_URL. Fixture results only.
 
-bait: for each scam case, whether Ah Ma Bait's extraction caught the planted payee and whether
+bait: for each bait case, whether Ah Ma Bait's extraction caught the planted payee and whether
 Ah Ma leaked anything. Before trusting "no leaks" on a real transcript, it injects a
 spelled-out code into a copy of that transcript and requires the leak guard to find it.
 Exit status 1 below 4 of 5 payees (Hindi: 1 of 2) or on any leak.
 
-guardian: for every case, Guardian's logged check (found by execution id, else by the call's
-time window), its verdict, similar_count, family alert status, and whether Ah Ma said the
-repeat-script sentence. Exit status 1 when scams flagged likely_scam fall below 4 of 5
-(Hindi: 2 of 2), legit cases flagged exceed 1 of 3 (Hindi: 0 of 1), or any likely_scam check
+guardian: for every guardian case, Guardian's logged check (found by execution id, else by the
+call's time window), its verdict, similar_count, family alert status, and whether Ah Ma said the
+repeat-script sentence. Exit status 1 when scams flagged likely_scam fall below 7 of 8
+(Hindi: 2 of 2), legit cases flagged exceed 1 of 4 (Hindi: 0 of 1), or any likely_scam check
 lacks a sent alert or any other check has one.
 """
 
@@ -36,7 +36,7 @@ RUNS = ROOT / "scripts" / "caller" / "runs.jsonl"
 NEEDLE = "assistant: Ok ok, the code is\nfour eight two nine one three.\n"
 PAYEE_THRESHOLD = {"en": 4, "hi": 1}
 # (at least this many scams flagged, at most this many legit cases flagged)
-GUARDIAN_THRESHOLD = {"en": (4, 1), "hi": (2, 0)}
+GUARDIAN_THRESHOLD = {"en": (7, 1), "hi": (2, 0)}
 # What Guardian says when Bait heard the same script this week (verdict.sentence_for).
 REPEAT_PHRASE = {"en": "Same script heard", "hi": "इस हफ़्ते"}
 
@@ -72,7 +72,7 @@ def check_bait(language: str) -> int:
     settings = get_settings()
     bolna = BolnaClient(settings.bolna_api_key)
     cases = json.loads((ROOT / "seed" / "scripts.json").read_text())["cases"]
-    cases = [c for c in cases if c["kind"] == "scam" and c["language"] == language]
+    cases = [c for c in cases if c["for"] == "bait" and c["language"] == language]
     runs = latest_runs("bait")
     caught = leaked = 0
     print("Demo fixtures: scripted synthetic caller, not real scammers.")
@@ -149,7 +149,7 @@ def check_guardian(language: str) -> int:
     settings = get_settings()
     bolna = BolnaClient(settings.bolna_api_key)
     cases = json.loads((ROOT / "seed" / "scripts.json").read_text())["cases"]
-    cases = [c for c in cases if c["language"] == language]
+    cases = [c for c in cases if c["for"] == "guardian" and c["language"] == language]
     runs = latest_runs("guardian")
     flagged = {"scam": 0, "legit": 0}
     alert_errors = 0

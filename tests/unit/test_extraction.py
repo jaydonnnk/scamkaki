@@ -1,4 +1,5 @@
-from scamkaki.domain.extraction import parse_extraction
+from scamkaki.domain.extraction import parse_extraction, parse_guardian_report
+from scamkaki.domain.types import GuardianReport
 
 
 def test_parse_extraction_maps_unknown_agency_to_other():
@@ -37,3 +38,26 @@ def test_parse_extraction_accepts_flat_values_and_nothing():
     assert parse_extraction({"agency": "ICA", "paynow_id": "8000 0000"}).paynow_id == "8000 0000"
     empty = parse_extraction(None)
     assert (empty.agency, empty.demand, empty.payee_account) == ("other", "other", None)
+
+
+def test_parse_guardian_report_drops_unknown_tactics_and_defaults_acted():
+    senior = parse_guardian_report(
+        {
+            "agency": "MinLaw",
+            "demand": "transfer",
+            "channel": "WhatsApp",
+            "tactics": " Handoff, secrecy,made-up, stay on line ,",
+        }
+    )
+
+    assert senior == GuardianReport(
+        "minlaw", "transfer", "whatsapp", frozenset({"handoff", "secrecy", "stay_on_line"}), "none"
+    )
+
+
+def test_parse_guardian_report_maps_unknown_values_and_nothing():
+    assert parse_guardian_report(
+        {"agency": "x", "demand": "y", "channel": "pigeon", "tactics": "", "acted": "maybe"}
+    ) == GuardianReport("other", "other", "other", frozenset(), "none")
+    assert parse_guardian_report(None) == GuardianReport("other", "other")
+    assert parse_guardian_report({"acted": "Gave_Code_Or_Card"}).acted == "gave_code_or_card"

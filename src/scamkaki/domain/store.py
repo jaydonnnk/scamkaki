@@ -6,7 +6,17 @@ from typing import Any, Literal
 import psycopg
 from psycopg.types.json import Jsonb
 
-from scamkaki.domain.types import Agency, Demand, Extraction, Language, Leak, Line, MatchResult
+from scamkaki.domain.types import (
+    TACTICS,
+    Agency,
+    Demand,
+    Extraction,
+    GuardianReport,
+    Language,
+    Leak,
+    Line,
+    MatchResult,
+)
 
 AlertStatus = Literal["sent", "failed", "off"]
 
@@ -128,8 +138,7 @@ def scripts_this_week(conn: psycopg.Connection) -> list[dict[str, Any]]:
 
 def log_guardian_check(
     conn: psycopg.Connection,
-    agency: Agency,
-    demand: Demand,
+    report: GuardianReport,
     language: Language,
     result: MatchResult,
     execution_id: str | None = None,
@@ -137,13 +146,16 @@ def log_guardian_check(
     alert_status = "pending" if result.verdict == "likely_scam" else None
     row = conn.execute(
         """
-        insert into guardian_checks (agency, demand, language, verdict, similar_count,
-                                     alert_status, execution_id)
-        values (%s, %s, %s, %s, %s, %s, %s) returning id
+        insert into guardian_checks (agency, demand, channel, tactics, acted, language, verdict,
+                                     similar_count, alert_status, execution_id)
+        values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) returning id
         """,
         (
-            agency,
-            demand,
+            report.agency,
+            report.demand,
+            report.channel,
+            [tactic for tactic in TACTICS if tactic in report.tactics],
+            report.acted,
             language,
             result.verdict,
             result.similar_count,
@@ -159,11 +171,14 @@ def set_alert_status(conn: psycopg.Connection, check_id: int, status: AlertStatu
 
 
 def recent_alerts(conn: psycopg.Connection, limit: int = 20) -> list[dict[str, Any]]:
+    """Likely-scam checks for the family page: urgent ones (the senior already acted) first."""
     return conn.execute(
         """
-        select id, agency, demand, language, similar_count, alert_status, created_at
+        select id, agency, demand, channel, tactics, acted,
+               acted in ('paid', 'gave_code_or_card', 'installed_app') as urgent,
+               language, similar_count, alert_status, created_at
         from guardian_checks where verdict = 'likely_scam'
-        order by created_at desc, id desc limit %s
+        order by urgent desc, created_at desc, id desc limit %s
         """,
         (limit,),
     ).fetchall()

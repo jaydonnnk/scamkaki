@@ -12,6 +12,8 @@ h1{font-size:22px;margin:12px 0 4px}.sub{color:var(--muted);font-size:14px;margi
 .alert{border:2px solid var(--warn);background:var(--warn-bg);border-radius:8px;padding:16px;margin:16px 0}
 .alert h2{color:var(--warn);font-size:20px;margin:0 0 8px}
 .alert p{margin:4px 0}.alert .do{font-weight:600;margin-top:12px}.alert .meta{color:var(--muted);font-size:13px;margin-top:8px}
+.alert.urgent{border-width:4px}
+.tag{display:inline-block;background:var(--warn);color:var(--bg);font-weight:700;font-size:13px;padding:2px 8px;border-radius:4px;margin:0 0 8px}
 .flash{animation:flash 1s ease-in-out infinite}
 @keyframes flash{50%{background:var(--bg)}}
 @media (prefers-reduced-motion:reduce){.flash{animation:none}}
@@ -33,6 +35,9 @@ ul{list-style:none;padding:0;margin:0}li{padding:8px 0;border-bottom:1px solid v
 <script>
 const AGENCIES = {{ agencies | tojson }};
 const DEMANDS = {{ demands | tojson }};
+const CHANNELS = {{ channels | tojson }};
+const TACTICS = {{ tactics | tojson }};
+const ACTED = {{ acted | tojson }};
 const LANGUAGES = {{ languages | tojson }};
 const TELEGRAM = {pending: "sending", sent: "sent", failed: "failed", off: "not set up"};
 const alertsUrl = location.pathname.replace(/\/$/, "") + "/alerts";
@@ -64,14 +69,26 @@ function labelled(label, value) {
   return p;
 }
 
+function signs(a) {
+  return (a.tactics || []).map((t) => TACTICS[t] || t).join(" · ");
+}
+
 function renderLatest(a, isNew) {
-  const box = el("section", undefined, "alert" + (isNew ? " flash" : ""));
-  box.append(el("h2", "Likely scam call"));
-  box.append(labelled("Caller claimed to be", AGENCIES[a.agency] || a.agency));
+  const box = el("section", undefined, "alert" + (a.urgent ? " urgent" : "") + (isNew ? " flash" : ""));
+  if (a.urgent) box.append(el("p", "Urgent: Ah Ma already acted", "tag"));
+  box.append(el("h2", "Likely scam"));
+  if (a.urgent) box.append(labelled("Ah Ma already", ACTED[a.acted] || a.acted));
+  const who = labelled("Contacted by", CHANNELS[a.channel] || a.channel);
+  who.append(", claiming to be ");
+  who.append(el("strong", AGENCIES[a.agency] || a.agency));
+  box.append(who);
   box.append(labelled("Asked for", DEMANDS[a.demand] || a.demand));
+  if (a.tactics && a.tactics.length) box.append(labelled("Warning signs", signs(a)));
   box.append(el("p", "Line: " + (LANGUAGES[a.language] || a.language) + " · " + when(a.created_at)));
   if (a.similar_count > 0) box.append(el("p", "Same script heard " + a.similar_count + (a.similar_count === 1 ? " time" : " times") + " this week."));
-  box.append(el("p", "Please call Ah Ma now.", "do"));
+  box.append(el("p", a.urgent
+    ? "Call Ah Ma now. Help her call the bank on the number on the back of her card."
+    : "Please call Ah Ma now.", "do"));
   box.append(el("p", "Telegram: " + (TELEGRAM[a.alert_status] || "unknown"), "meta"));
   document.getElementById("latest").replaceChildren(box);
 }
@@ -82,7 +99,9 @@ function renderEarlier(list) {
   ul.replaceChildren(...list.map((a) => {
     const li = el("li");
     li.append(el("span", when(a.created_at), "time"));
+    if (a.urgent) li.append(" · Urgent");
     li.append(" · " + (LANGUAGES[a.language] || a.language) + " · "
+      + (CHANNELS[a.channel] || a.channel) + ", "
       + (AGENCIES[a.agency] || a.agency) + ", " + (DEMANDS[a.demand] || a.demand));
     return li;
   }));

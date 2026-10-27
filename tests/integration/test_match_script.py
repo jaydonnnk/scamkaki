@@ -1,9 +1,12 @@
+import json
+
 import pytest
 
 from scamkaki.app.main import app, get_telegram
 from scamkaki.domain import store, verdict
 from scamkaki.domain.types import Extraction
 from scamkaki.lib.db import connect
+from tests.conftest import ROOT
 
 EXECUTION_ID = "0b6d7c1e-9f2a-4c3b-8d5e-1a2b3c4d5e6f"
 
@@ -59,10 +62,59 @@ def test_match_script_decides_and_logs_check(client, db):
             "This is likely a scam. Do not transfer money or share any code."
             " I have alerted your family. Please wait for their call."
         ),
+        "urgent": False,
     }
     with connect(db) as conn:
         row = conn.execute("select agency, demand, verdict from guardian_checks").fetchone()
     assert row == {"agency": "spf", "demand": "transfer", "verdict": "likely_scam"}
+
+
+def test_match_script_stores_channel_tactics_and_acted(client, db, telegram):
+    response = client.post(
+        "/tools/match-script",
+        json={
+            "agency": "courier",
+            "demand": "card_details",
+            "channel": "SMS",
+            "tactics": "link_fee, made-up",
+            "acted": "gave_code_or_card",
+        },
+        headers={"Authorization": "Bearer tool-token"},
+    )
+
+    body = response.json()
+    assert body["verdict"] == "likely_scam" and body["urgent"] is True
+    assert body["say"].startswith("Call your bank now on the number on the back of your card")
+    assert telegram.sent[0].splitlines()[1] == "URGENT: Ah Ma already: Gave card details or a code"
+    with connect(db) as conn:
+        row = conn.execute("select channel, tactics, acted from guardian_checks").fetchone()
+    assert row == {"channel": "sms", "tactics": ["link_fee"], "acted": "gave_code_or_card"}
+
+
+def test_match_script_without_new_fields_uses_defaults(client, db):
+    """An agent still on the S4 tool params keeps working."""
+    response = client.post(
+        "/tools/match-script",
+        json={"agency": "bank", "demand": "none"},
+        headers={"Authorization": "Bearer tool-token"},
+    )
+
+    assert response.json()["verdict"] == "no_scam_signs"
+    assert response.json()["urgent"] is False
+    with connect(db) as conn:
+        row = conn.execute("select channel, tactics, acted from guardian_checks").fetchone()
+    assert row == {"channel": "other", "tactics": [], "acted": "none"}
+
+
+def test_match_script_red_tactic_alerts_family_without_a_hard_demand(client, db, telegram):
+    response = client.post(
+        "/tools/match-script",
+        json={"agency": "minlaw", "demand": "none", "tactics": "handoff,secrecy"},
+        headers={"Authorization": "Bearer tool-token"},
+    )
+
+    assert response.json()["verdict"] == "likely_scam"
+    assert "Warning signs: Passed to another officer, Told to keep it secret" in telegram.sent[0]
 
 
 def test_match_script_unknown_values_find_no_scam_signs(client, db):
@@ -255,3 +307,33 @@ def test_match_script_without_telegram_records_alert_off(client, db):
 
     assert response.json()["verdict"] == "likely_scam"
     assert check_row(db)["alert_status"] == "off"
+
+
+GUARDIAN_CASES = [
+    case
+    for case in json.loads((ROOT / "seed" / "scripts.json").read_text())["cases"]
+    if case["for"] == "guardian"
+]
+
+
+@pytest.mark.parametrize("case", GUARDIAN_CASES, ids=lambda case: case["id"])
+def test_match_script_answers_every_guardian_fixture(client, db, telegram, case):
+    """Each fixture's expected report, sent as the Guardian agent sends it, gets its verdict."""
+    expect = case["expect"]
+    response = client.post(
+        "/tools/match-script",
+        json={
+            "agency": expect["agency"],
+            "demand": expect["demand"],
+            "channel": expect["channel"],
+            "tactics": ",".join(expect["tactics"]),
+            "acted": expect["acted"],
+            "language": case["language"],
+        },
+        headers={"Authorization": "Bearer tool-token"},
+    )
+
+    body = response.json()
+    assert body["verdict"] == expect["verdict"]
+    assert body["urgent"] is (expect["acted"] != "none")
+    assert len(telegram.sent) == (expect["verdict"] == "likely_scam")

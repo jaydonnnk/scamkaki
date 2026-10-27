@@ -18,15 +18,14 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.templating import Jinja2Templates
 
 from scamkaki.domain import store, verdict
-from scamkaki.domain.extraction import parse_extraction
+from scamkaki.domain.extraction import parse_extraction, parse_guardian_report
 from scamkaki.domain.leaks import agent_turns, find_leaks
 from scamkaki.domain.reports import draft_report
 from scamkaki.domain.types import (
     Agency,
     Demand,
+    GuardianReport,
     Language,
-    as_agency,
-    as_demand,
     as_language,
     as_line,
 )
@@ -180,22 +179,22 @@ async def match_script(
     if not isinstance(body, dict):
         body = {}
     params = {**request.query_params, **body}
-    agency, demand = as_agency(params.get("agency")), as_demand(params.get("demand"))
+    report = parse_guardian_report(params)
     language = as_language(params.get("language"))
     execution_id = as_execution_id(params.get("execution_id"))
 
     try:
         similar_count = await run_in_threadpool(
-            _count_similar, settings.database_url, agency, demand
+            _count_similar, settings.database_url, report.agency, report.demand
         )
-        result = verdict.match(agency, demand, similar_count, language)
+        result = verdict.match(report, similar_count, language)
     except Exception:
         log.exception("verdict failed; answering unclear")
         result = verdict.unclear(language)
     check_id = None
     try:
         check_id = await run_in_threadpool(
-            _log_check, settings.database_url, agency, demand, language, result, execution_id
+            _log_check, settings.database_url, report, language, result, execution_id
         )
     except Exception:
         # Never leave the senior in silence because logging failed.
@@ -207,8 +206,7 @@ async def match_script(
             settings.database_url,
             send_alert,
             check_id,
-            agency,
-            demand,
+            report,
             language,
             result.similar_count,
         )
@@ -226,24 +224,23 @@ def _count_similar(database_url: str, agency: Agency, demand: Demand) -> int:
         return store.count_similar(conn, agency, demand)
 
 
-def _log_check(database_url: str, agency, demand, language, result, execution_id) -> int:
+def _log_check(database_url: str, report, language, result, execution_id) -> int:
     with connect(database_url) as conn:
-        return store.log_guardian_check(conn, agency, demand, language, result, execution_id)
+        return store.log_guardian_check(conn, report, language, result, execution_id)
 
 
 def _alert_family(
     database_url: str,
     send_alert: SendAlert | None,
     check_id: int | None,
-    agency: Agency,
-    demand: Demand,
+    report: GuardianReport,
     language: Language,
     similar_count: int,
 ) -> None:
     if send_alert is None:
         status = "off"
     else:
-        text = verdict.alert_text(agency, demand, language, similar_count, datetime.now(UTC))
+        text = verdict.alert_text(report, language, similar_count, datetime.now(UTC))
         status = "sent" if send_alert(text) else "failed"
     if check_id is None:
         return
@@ -262,6 +259,9 @@ def family_page(request: Request) -> HTMLResponse:
         {
             "agencies": verdict.AGENCY_LABELS,
             "demands": verdict.DEMAND_LABELS,
+            "channels": verdict.CHANNEL_LABELS,
+            "tactics": verdict.TACTIC_LABELS,
+            "acted": verdict.ACTED_LABELS,
             "languages": verdict.LANGUAGE_LABELS,
         },
     )

@@ -1,9 +1,17 @@
-"""Parse what Bolna extracted from a Bait call into an `Extraction`."""
+"""Parse what Bolna extracted from a Bait call, and what Guardian heard from a senior."""
 
 from collections.abc import Mapping
 from typing import Any
 
-from scamkaki.domain.types import Extraction, as_agency, as_demand
+from scamkaki.domain.types import (
+    Extraction,
+    GuardianReport,
+    as_acted,
+    as_agency,
+    as_channel,
+    as_demand,
+    as_tactics,
+)
 
 TEXT_FIELDS = ("payee_bank", "payee_account", "paynow_id", "url", "summary")
 # What an extraction LLM writes when the scammer never said it.
@@ -45,4 +53,16 @@ def parse_extraction(raw: Mapping[str, Any] | None) -> Extraction:
         agency=as_agency(flat.get("agency")),
         demand=as_demand(flat.get("demand")),
         **{field: _text(flat.get(field)) for field in TEXT_FIELDS},
+    )
+
+
+def parse_guardian_report(raw: Mapping[str, Any] | None) -> GuardianReport:
+    """Unknown values become "other"; unknown warning signs are dropped; missing acted is none."""
+    flat = _flatten(raw or {})
+    return GuardianReport(
+        agency=as_agency(flat.get("agency")),
+        demand=as_demand(flat.get("demand")),
+        channel=as_channel(flat.get("channel")),
+        tactics=as_tactics(flat.get("tactics")),
+        acted=as_acted(flat.get("acted")),
     )
