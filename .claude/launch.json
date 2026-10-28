@@ -1,0 +1,15 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "synthetic-caller",
+      "runtimeExecutable": "uv",
+      "runtimeArgs": [
+        "run",
+        "python",
+        "scripts/caller/serve.py"
+      ],
+      "port": 8765
+    }
+  ]
+}
