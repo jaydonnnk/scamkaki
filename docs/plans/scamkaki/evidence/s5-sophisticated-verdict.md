@@ -48,11 +48,11 @@ Each mutation was applied alone, the named tests run, and the file restored.
 | Urgent line removed from the Telegram text | `test_alert_text_marks_urgent_when_acted` |
 | Unknown warning signs kept | `test_parse_guardian_report_drops_unknown_tactics_and_defaults_acted` |
 | Unknown `acted` becomes `unsure` | `test_parse_guardian_report_drops_unknown_tactics_and_defaults_acted` |
-| Family alerts not urgent first | `test_family_alerts_list_urgent_first` |
-| Warning signs stored in another order | `test_family_alerts_list_urgent_first` |
+| Family alerts not urgent first | `test_family_alerts_list_recent_urgent_first` (renamed from `test_family_alerts_list_urgent_first`) |
+| Warning signs stored in another order | `test_family_alerts_list_recent_urgent_first` |
 | `acted` not stored | `test_match_script_stores_channel_tactics_and_acted` |
 
-14 of 14 caught.
+14 of 14 caught; 2 more for the 24-hour amendment (below), 16 of 16 in all.
 
 ## Family page
 
@@ -73,9 +73,9 @@ Authorized by the user ("Yes: push scamkaki/slice-5-guardian-loop, fast-forward 
 - The loop works on production data: `hi-mom-handoff-01` (spf, transfer) counted 3 Bait scripts and `en-ica-video-01` (china_official, transfer) counted 1, from the S4 Bait calls.
 - Family alerts JSON from Render: the two already-acted courier alerts (English and Hindi) are first and `urgent`; channel, warning signs and `acted` are stored; the newest 10 alerts all have `alert_status` `sent`, meaning Telegram accepted each message.
 - Deployed family page: its HTML and alerts were fetched from Render (the secret link was never printed) and replayed locally at 375 px and desktop width: the urgent Hindi courier alert on top with tag, card details and code, SMS, warning sign and bank instruction; 16 earlier alerts listed; no horizontal scroll.
-- Not seen by me: the Telegram messages on the family member's phone. `sent` is Telegram's acceptance, not a screenshot of delivery.
+- Telegram: the user confirmed on 2026-10-28 that the alerts arrived on the family phone, including the urgent courier ones.
 
 ## Open points
 
-- The family page lists urgent alerts first, as Gate 3 says. An old urgent alert stays on top and keeps flashing when a newer, non-urgent alert arrives (seen on Render: the S5 urgent fixtures now sit above every later alert). [hypothesis: worth limiting "urgent first" to recent alerts; needs a Gate 3 wording decision]
+- Resolved 2026-10-28 by the user's decision: urgent alerts go first only for 24 hours, then fall back into time order (`recent_alerts`). Two mutations, each alone: dropping the 24-hour limit fails `test_family_alerts_older_urgent_falls_back_into_time_order`; dropping the urgent sort fails `test_family_alerts_list_recent_urgent_first`. Committed on the branch; not deployed until the next push.
 - The Hindi act-now and call-back sentences need the Hindi listener check planned for S6.

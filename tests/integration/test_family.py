@@ -1,4 +1,5 @@
 from scamkaki.app.main import app
+from scamkaki.lib.db import connect
 from scamkaki.lib.env import get_settings
 
 
@@ -42,7 +43,7 @@ def test_family_alerts_lists_likely_scam_only(client):
     assert alerts[0]["language"] == "en"
 
 
-def test_family_alerts_list_urgent_first(client):
+def test_family_alerts_list_recent_urgent_first(client):
     check(client, "courier", "card_details", channel="sms", tactics="link_fee", acted="paid")
     check(client, "minlaw", "transfer", channel="call", tactics="stay_on_line,handoff")
 
@@ -58,3 +59,14 @@ def test_family_page_knows_the_new_labels(client):
 
     assert "Urgent: Ah Ma already acted" in page
     assert "Told to stay on the line" in page and "Card details on a website" in page
+
+
+def test_family_alerts_older_urgent_falls_back_into_time_order(client, db):
+    check(client, "courier", "card_details", acted="paid")
+    with connect(db) as conn:  # The urgent alert is now 25 hours old.
+        conn.execute("update guardian_checks set created_at = now() - interval '25 hours'")
+    check(client, "minlaw", "transfer", tactics="handoff")
+
+    alerts = client.get("/family/family-link/alerts").json()
+
+    assert [(a["agency"], a["urgent"]) for a in alerts] == [("minlaw", False), ("courier", True)]

@@ -149,7 +149,7 @@ def count_similar(conn, agency: Agency, demand: Demand, days: int = 7) -> int: .
 def log_guardian_check(conn, report: GuardianReport, language: Language, result: MatchResult) -> int: ...
 # alert_status starts as "pending" for likely_scam, else null
 def set_alert_status(conn, check_id: int, status: Literal["sent", "failed", "off"]) -> None: ...
-def recent_alerts(conn, limit: int = 20) -> list[AlertRow]: ...  # urgent first, then newest
+def recent_alerts(conn, limit: int = 20) -> list[AlertRow]: ...  # urgent from the last 24 h first, then newest
 def add_report(conn, call_id: int, draft: str) -> int: ...
 def mark_reviewed(conn, report_id: int) -> None: ...
 def recent_calls(conn, limit: int = 50) -> list[CallRow]: ...
@@ -238,7 +238,8 @@ Integration (`tests/integration`, Neon test branch, fake Bolna client):
 - `test_match_script_telegram_failure_still_answers`
 - `test_match_script_stores_channel_tactics_and_acted`
 - `test_match_script_without_new_fields_uses_defaults`
-- `test_family_alerts_list_urgent_first`
+- `test_family_alerts_list_recent_urgent_first`
+- `test_family_alerts_older_urgent_falls_back_into_time_order` (amendment 2026-10-28)
 - `test_family_page_rejects_wrong_link`
 - `test_family_alerts_lists_likely_scam_only`
 - `test_report_review_marks_reviewed_and_sends_nothing`

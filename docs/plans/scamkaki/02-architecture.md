@@ -33,7 +33,7 @@ Revised 2026-10-27 (reopened): Guardian also extracts how the senior was contact
 | `/reports/{id}` | GET | Reviewer | One report draft |
 | `/reports/{id}/review` | POST | Reviewer | Mark reviewed; sends nothing |
 | `/family/{link_token}` | GET | Family member | Family alert page; checks for new alerts every 5 seconds and flashes and beeps on a new one |
-| `/family/{link_token}/alerts` | GET | Family alert page | JSON list of recent `likely_scam` alerts, with channel, warning signs and acted, urgent first |
+| `/family/{link_token}/alerts` | GET | Family alert page | JSON list of recent `likely_scam` alerts, with channel, warning signs and acted; urgent ones from the last 24 hours first, then newest (amendment 2026-10-28) |
 | `/healthz` | GET | Warm-up ping | Liveness |
 
 Webhook auth: secret token in the path [hypothesis: Bolna documents webhook source IPs, not signatures; verify].

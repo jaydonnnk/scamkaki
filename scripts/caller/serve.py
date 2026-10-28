@@ -2,11 +2,11 @@
 
 Usage: uv run python scripts/caller/serve.py   then open http://127.0.0.1:8765
 
-Two modes per case: "bait" plays the scammer's caller_lines to Ah Ma Bait, "guardian" plays
-the senior's senior_lines to Ah Ma Guardian. Renders the lines with macOS `say` (Daniel for
-English, Lekha for Hindi), serves a local page that places a web call to the line's agent in
-the case's language with the case id as user_data, and appends each placed call to
-scripts/caller/runs.jsonl for scripts/check.py.
+Each case has one mode, set by its "for" field: "bait" plays the scammer's caller_lines to Ah Ma
+Bait, "guardian" plays the senior's senior_lines to Ah Ma Guardian. Renders the lines with
+macOS `say` (Daniel for English, Lekha for Hindi), serves a local page that places a web call
+to the line's agent in the case's language with the case id as user_data, and appends each
+placed call to scripts/caller/runs.jsonl for scripts/check.py.
 Every call it places costs Bolna credit. Binds to localhost only; the API key stays here.
 """
 

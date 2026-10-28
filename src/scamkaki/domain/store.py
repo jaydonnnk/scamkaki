@@ -171,14 +171,19 @@ def set_alert_status(conn: psycopg.Connection, check_id: int, status: AlertStatu
 
 
 def recent_alerts(conn: psycopg.Connection, limit: int = 20) -> list[dict[str, Any]]:
-    """Likely-scam checks for the family page: urgent ones (the senior already acted) first."""
+    """Likely-scam checks for the family page, newest first, except that urgent ones (the senior
+    already acted) from the last 24 hours go on top. Older urgent ones fall back into time order,
+    so they never sit above, or flash instead of, a newer alert for good."""
     return conn.execute(
         """
         select id, agency, demand, channel, tactics, acted,
                acted in ('paid', 'gave_code_or_card', 'installed_app') as urgent,
                language, similar_count, alert_status, created_at
         from guardian_checks where verdict = 'likely_scam'
-        order by urgent desc, created_at desc, id desc limit %s
+        order by (acted in ('paid', 'gave_code_or_card', 'installed_app')
+                  and created_at > now() - interval '24 hours') desc,
+                 created_at desc, id desc
+        limit %s
         """,
         (limit,),
     ).fetchall()
