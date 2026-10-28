@@ -7,7 +7,7 @@ Updated: 2026-10-27 (Asia/Singapore).
 - Gate 3 - Program Design: **APPROVED 2026-10-27** (re-approved after the sophisticated-scam revision) ([03-program-design.md](03-program-design.md)).
 - Gate 4 - Slice plan: **APPROVED 2026-10-28** (re-approved after the S5 split) ([04-slices.md](04-slices.md)).
 
-The revision lives on branch `scamkaki/gates-sophisticated-scams`, cut from `main`; not yet committed or merged.
+The sophisticated-scam revision (`scamkaki/gates-sophisticated-scams`, commit `023d97c`) and the S5 split (`scamkaki/gates-slice-replan`, commit `9be72d1`) were fast-forwarded into `main` and pushed on 2026-10-28; both branches are kept locally and were never pushed.
 
 The gate revision branch `scamkaki/gates-english-mandarin` was fast-forwarded into `main` (with S1) and deleted on 2026-10-22.
 
