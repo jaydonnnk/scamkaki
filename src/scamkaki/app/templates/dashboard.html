@@ -1,63 +1,108 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Scamkaki dashboard</title>
+{% include "_theme.html" %}
 <style>
-:root{--bg:#fbfaf7;--fg:#1d1d1b;--muted:#6b6a65;--line:#e4e2dc;--warn:#b3261e;--ok:#2e6b3a;--amber:#8a5a00}
-@media (prefers-color-scheme:dark){:root{--bg:#161614;--fg:#ecebe6;--muted:#a3a29c;--line:#2e2d2a;--warn:#f2b8b5;--ok:#9fd5a8;--amber:#f0c36a}}
-body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,sans-serif}
-main{max-width:960px;margin:0 auto;padding:16px}
-.fixture{border:1px dashed var(--muted);padding:6px 10px;font-size:13px;color:var(--muted)}
-h1{font-size:22px;margin:12px 0}h2{font-size:16px;margin:20px 0 8px}
-.scroll{overflow-x:auto}
-table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
-th{font-size:12px;color:var(--muted);font-weight:600}
-td:first-child,.nowrap{white-space:nowrap}
-.empty{color:var(--muted)}
-.v-likely_scam{color:var(--warn);font-weight:600}.v-unclear{color:var(--amber);font-weight:600}.v-no_scam_signs{color:var(--ok);font-weight:600}
-button{font:inherit;padding:10px 16px;border:1px solid var(--fg);background:transparent;color:var(--fg);border-radius:6px;cursor:pointer}button:disabled{opacity:.5;cursor:default}
-.talk{display:flex;flex-wrap:wrap;align-items:center;gap:10px}#call-state{color:var(--muted)}
-pre.draft{white-space:pre-wrap;font:13px/1.5 ui-monospace,monospace;margin:8px 0 0}summary{cursor:pointer;color:var(--muted)}
-.grid{display:grid;grid-template-columns:1fr;gap:16px}@media(min-width:760px){.grid{grid-template-columns:3fr 2fr}}
-</style></head><body><main>
+.below{display:grid;grid-template-columns:minmax(0,1fr);gap:0 24px;align-items:start}
+@media(min-width:960px){.below{grid-template-columns:minmax(0,2fr) minmax(0,3fr)}}
+.talk{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px}
+.talk p{flex-basis:100%;margin:0}
+#call-state{color:var(--muted)}
+#refresh{margin:8px 0 0;text-align:right}
+.feed td.time{white-space:nowrap}
+.feed tr.urgent{box-shadow:inset 6px 0 0 var(--danger);background:var(--danger-bg)}
+.feed td small{display:block}
+.did{display:block;font-weight:700;margin-top:4px}
+@media(max-width:719px){
+  .feed thead{position:absolute;left:-9999px}
+  .feed,.feed tbody,.feed td{display:block}
+  .feed tr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px 12px;padding:10px 12px;border-bottom:1px solid var(--ice-200)}
+  .feed td{border:0;padding:0;white-space:normal;min-width:0}
+  .feed td.time,.feed td.wide{grid-column:1/-1}
+  .feed td::before{content:attr(data-label);display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+  .feed td.time::before{display:none}
+  .feed td.time{font-weight:700}
+  .talk button{flex:1 1 100%}
+  .fixture{margin-left:0}
+}
+</style></head><body>
+<header class="bar"><div class="bar-inner">
+<h1 class="brand">Scamkaki<small>Reviewer dashboard</small></h1>
 <p class="fixture">Demo fixtures. Test calls, not real scammers.</p>
-<h1>Scamkaki</h1>
-<p class="talk"><button type="button" data-line="guardian" data-language="en" data-label="Talk to Guardian">Talk to Guardian</button>
+</div></header>
+<main>
+<section aria-labelledby="talk-h"><h2 id="talk-h">Test lines</h2>
+<div class="panel talk">
+<button type="button" data-line="guardian" data-language="en" data-label="Talk to Guardian">Talk to Guardian</button>
 <button type="button" data-line="guardian" data-language="hi" data-label="Guardian से हिंदी में बात करें" lang="hi">Guardian से हिंदी में बात करें</button>
-<button type="button" data-line="bait" data-language="en" data-label="Call Bait as a test scammer">Call Bait as a test scammer</button>
-<button type="button" data-line="bait" data-language="hi" data-label="Bait को हिंदी में कॉल करें" lang="hi">Bait को हिंदी में कॉल करें</button>
+<button type="button" class="secondary" data-line="bait" data-language="en" data-label="Call Bait as a test scammer">Call Bait as a test scammer</button>
+<button type="button" class="secondary" data-line="bait" data-language="hi" data-label="Bait को हिंदी में कॉल करें" lang="hi">Bait को हिंदी में कॉल करें</button>
+<p class="sub">Each button starts a real Bolna web call and uses account credit.
 <span id="call-state" aria-live="polite"></span></p>
-<section><h2>Scripts Ah Ma Bait heard</h2><div class="scroll">
-<table><tr><th>Time</th><th>Lang</th><th>Case</th><th>Claimed</th><th>Wants</th><th>Pay to</th><th>Leak check</th></tr>
-{% for s in scripts %}
-<tr><td>{{ s.created_at | sgt }}</td><td>{{ {"en": "EN", "hi": "हिंदी"}[s.language] }}</td><td class="nowrap">{{ s.fixture_case or "" }}</td>
-<td>{{ s.agency }}</td><td>{{ s.demand }}</td>
-<td>{{ [s.payee_bank, s.payee_account, s.paynow_id and "PayNow " ~ s.paynow_id] | select | join(" ") or "not heard" }}</td>
-<td class="{{ 'v-likely_scam' if s.leaks else 'v-no_scam_signs' }}">{{ "LEAK (%d)" % (s.leaks | length) if s.leaks else "No leaks" }}</td></tr>
-{% if s.draft %}<tr><td colspan="7"><details><summary>Draft report ({{ s.report_status }})</summary><pre class="draft">{{ s.draft }}</pre></details></td></tr>{% endif %}
+</div></section>
+
+<section aria-labelledby="feed-h"><h2 id="feed-h">Live feed</h2>
+<div class="panel scroll">
+<table class="feed"><thead><tr><th>Time</th><th>Line</th><th>Lang</th><th>Claimed</th><th>Wants</th><th>Warning signs</th><th>Result</th></tr></thead><tbody>
+{% for r in feed %}
+{% set lang = {"en": "EN", "hi": "हिंदी"}[r.language] %}
+{% if r.kind == "guardian" %}
+<tr{% if r.urgent %} class="urgent"{% endif %}>
+<td class="time" data-label="Time">{{ r.created_at | sgt }}</td>
+<td data-label="Line">Guardian</td>
+<td data-label="Language"><span{% if r.language == "hi" %} lang="hi"{% endif %}>{{ lang }}</span></td>
+<td data-label="Claimed">{{ agencies[r.agency] }}<small class="sub">{{ "Channel not clear" if r.channel == "other" else "via " ~ (channels[r.channel] | lower) }}</small></td>
+<td data-label="Wants">{{ demands[r.demand] }}</td>
+<td class="wide" data-label="Warning signs">{% if r.tactics %}<ul class="signs">{% for t in r.tactics %}<li>{{ tactics[t] }}</li>{% endfor %}</ul>{% else %}<span class="empty">None recorded</span>{% endif %}</td>
+<td class="wide" data-label="Result">
+{% if r.urgent %}<span class="urgent-tag">URGENT</span>{% endif %}<span class="badge v-{{ r.verdict }}">{{ {"likely_scam": "Likely scam", "unclear": "Unclear, talk to family", "no_scam_signs": "No scam signs found"}[r.verdict] }}</span>
+{% if r.urgent %}<span class="did">Ah Ma already: {{ acted[r.acted] }}</span>{% endif %}
+{% if r.verdict == "likely_scam" %}<small class="sub">{{ {"pending": "Telegram sending", "sent": "Telegram sent", "failed": "Telegram failed", "off": "Telegram not set up"}[r.alert_status] or "Alert not recorded" }}</small>{% endif %}
+{% if r.similar_count %}<small class="sub">Same script heard {{ r.similar_count }} time{{ "" if r.similar_count == 1 else "s" }} this week</small>{% endif %}
+</td></tr>
 {% else %}
-<tr><td colspan="7" class="empty">No Bait calls yet.</td></tr>
+<tr>
+<td class="time" data-label="Time">{{ r.created_at | sgt }}</td>
+<td data-label="Line">Bait{% if r.fixture_case %}<small class="mono">{{ r.fixture_case }}</small>{% endif %}</td>
+<td data-label="Language"><span{% if r.language == "hi" %} lang="hi"{% endif %}>{{ lang }}</span></td>
+<td data-label="Claimed">{{ agencies[r.agency] }}</td>
+<td data-label="Wants">{{ demands[r.demand] }}</td>
+<td class="wide" data-label="Warning signs"><span class="empty">Not collected</span></td>
+<td class="wide" data-label="Result">
+{% if r.report_id %}<a href="/reports/{{ r.report_id }}">{{ "Report reviewed" if r.report_status == "reviewed" else "Report draft" }}</a>{% endif %}
+{% if r.leaks %}<small class="leak">LEAK ({{ r.leaks | length }})</small>{% else %}<small class="sub">No leaks</small>{% endif %}
+</td></tr>
+{% endif %}
+{% else %}
+<tr><td colspan="7" class="empty">No calls or checks yet.</td></tr>
 {% endfor %}
-</table></div></section>
-<div class="grid">
-<section><h2>Calls</h2><div class="scroll">
-<table><tr><th>Time</th><th>Line</th><th>Lang</th><th>Status</th><th>Length</th><th>Case</th></tr>
+</tbody></table></div></section>
+
+<div class="below">
+<aside aria-labelledby="week-h"><h2 id="week-h">Scripts heard this week</h2>
+<div class="panel scroll">
+<table><thead><tr><th>Claimed</th><th>Wants</th><th>Seen</th></tr></thead><tbody>
+{% for w in week %}
+<tr><td>{{ agencies[w.agency] }}</td><td>{{ demands[w.demand] }}</td><td>{{ w.n }}</td></tr>
+{% else %}
+<tr><td colspan="3" class="empty">None in the last 7 days.</td></tr>
+{% endfor %}
+</tbody></table></div>
+<p class="sub">Bait calls only. Guardian compares what a senior describes with these counts.</p>
+</aside>
+
+<section aria-labelledby="log-h"><h2 id="log-h">Call log</h2>
+<div class="panel scroll">
+<table><thead><tr><th>Time</th><th>Line</th><th>Lang</th><th>Status</th><th>Length</th><th>Case</th></tr></thead><tbody>
 {% for c in calls %}
 <tr><td>{{ c.created_at | sgt }}</td><td>{{ c.line | capitalize }}</td><td>{{ {"en": "EN", "hi": "हिंदी"}[c.language] }}</td><td>{{ c.status }}</td>
-<td>{% if c.duration_s is not none %}{{ c.duration_s }} s{% endif %}</td><td>{{ c.fixture_case or "" }}</td></tr>
+<td>{% if c.duration_s is not none %}{{ c.duration_s }} s{% endif %}</td><td class="mono">{{ c.fixture_case or "" }}</td></tr>
 {% else %}
 <tr><td colspan="6" class="empty">No calls yet.</td></tr>
 {% endfor %}
-</table></div></section>
-<section><h2>Guardian checks</h2><div class="scroll">
-<table><tr><th>Time</th><th>Claimed</th><th>Wants</th><th>Result</th></tr>
-{% for k in checks %}
-<tr><td>{{ k.created_at | sgt }}</td><td>{{ k.agency }}</td><td>{{ k.demand }}</td>
-<td class="v-{{ k.verdict }}">{{ {"likely_scam": "Likely scam", "unclear": "Unclear, talk to family", "no_scam_signs": "No scam signs found"}[k.verdict] }}</td></tr>
-{% else %}
-<tr><td colspan="4" class="empty">No checks yet.</td></tr>
-{% endfor %}
-</table></div></section>
+</tbody></table></div></section>
 </div>
+<p id="refresh" class="sub" role="status"></p>
 </main>
 <script src="https://cdn.jsdelivr.net/gh/bolna-ai/web-call@v3.0.1/dist/bolna-web-call.min.js"></script>
 <script>
@@ -75,6 +120,12 @@ buttons.forEach((btn) => btn.onclick = () => {
   buttons.forEach((b) => { if (b !== btn) b.disabled = true; });
   call.start();
 });
-// Refresh results every 15 s, but never during a call.
-setInterval(() => { if (!inCall) location.reload(); }, 15000);
+// Refresh results every 15 s, but not during a call, and not while a control has focus,
+// so a reload never drops a keyboard user's place.
+const refresh = document.getElementById("refresh");
+const busy = () => inCall || (document.activeElement && document.activeElement !== document.body);
+const note = () => { refresh.textContent = busy() ? "Auto-refresh paused while a control is in use." : "Refreshes every 15 seconds."; };
+setInterval(() => { if (busy()) note(); else location.reload(); }, 15000);
+document.addEventListener("focusin", note); document.addEventListener("focusout", () => setTimeout(note));
+note();
 </script></body></html>

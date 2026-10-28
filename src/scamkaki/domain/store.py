@@ -17,6 +17,7 @@ from scamkaki.domain.types import (
     Line,
     MatchResult,
 )
+from scamkaki.domain.verdict import HARM_ACTED
 
 AlertStatus = Literal["sent", "failed", "off"]
 
@@ -95,11 +96,35 @@ def add_report(conn: psycopg.Connection, call_id: int, draft: str) -> int:
     return row["id"]
 
 
-def recent_scripts(conn: psycopg.Connection, limit: int = 50) -> list[dict[str, Any]]:
-    """Bait scripts with their call and draft report, newest first, for the dashboard."""
+def get_report(conn: psycopg.Connection, report_id: int) -> dict[str, Any] | None:
+    """One Bait report with its call and script, for the review page; None if there is none."""
     return conn.execute(
         """
-        select s.*, c.language, c.fixture_case, c.leaks, r.id as report_id, r.draft,
+        select r.id, r.draft, r.status, r.reviewed_at,
+               c.language, c.fixture_case, c.leaks, c.duration_s, c.created_at as call_at,
+               s.agency, s.demand, s.payee_bank, s.payee_account, s.paynow_id, s.url, s.summary
+        from reports r join calls c on c.id = r.call_id
+        left join scripts s on s.call_id = r.call_id
+        where r.id = %s
+        """,
+        (report_id,),
+    ).fetchone()
+
+
+def mark_reviewed(conn: psycopg.Connection, report_id: int) -> None:
+    """Record that a person reviewed the draft; a second review keeps the first time."""
+    conn.execute(
+        "update reports set status = 'reviewed', reviewed_at = now()"
+        " where id = %s and status = 'draft'",
+        (report_id,),
+    )
+
+
+def recent_scripts(conn: psycopg.Connection, limit: int = 50) -> list[dict[str, Any]]:
+    """Bait scripts with their call and report state, newest first, for the dashboard."""
+    return conn.execute(
+        """
+        select s.*, c.language, c.fixture_case, c.leaks, r.id as report_id,
                r.status as report_status
         from scripts s join calls c on c.id = s.call_id
         left join reports r on r.call_id = s.call_id
@@ -199,3 +224,16 @@ def recent_checks(conn: psycopg.Connection, limit: int = 50) -> list[dict[str, A
     return conn.execute(
         "select * from guardian_checks order by created_at desc limit %s", (limit,)
     ).fetchall()
+
+
+def recent_feed(conn: psycopg.Connection, limit: int = 50) -> list[dict[str, Any]]:
+    """Guardian checks and Bait scripts in one list, newest first, tagged by `kind`. A Guardian
+    check is not linked to its call (Bolna leaves the execution id unfilled), so the feed joins
+    the two lines by time only and never merges a check with a call."""
+    feed = [
+        {**row, "kind": "guardian", "urgent": row["acted"] in HARM_ACTED}
+        for row in recent_checks(conn, limit)
+    ]
+    feed += [{**row, "kind": "bait"} for row in recent_scripts(conn, limit)]
+    feed.sort(key=lambda row: (row["created_at"], row["id"]), reverse=True)
+    return feed[:limit]

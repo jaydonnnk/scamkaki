@@ -9,11 +9,12 @@ from functools import partial
 from hmac import compare_digest
 from pathlib import Path
 from typing import Annotated, Any
+from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo
 
 from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Request, Response
 from fastapi.concurrency import run_in_threadpool
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.templating import Jinja2Templates
 
@@ -54,6 +55,24 @@ EXECUTION_ID = re.compile(r"[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}")
 app = FastAPI(title="Scamkaki")
 templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
 templates.env.filters["sgt"] = lambda ts: ts.astimezone(SGT).strftime("%d %b %H:%M")
+
+
+def _duration(seconds: int | None) -> str:
+    if seconds is None:
+        return "not recorded"
+    minutes, rest = divmod(seconds, 60)
+    return f"{minutes} min {rest} s" if minutes else f"{rest} s"
+
+
+templates.env.filters["duration"] = _duration
+LABELS = {
+    "agencies": verdict.AGENCY_LABELS,
+    "demands": verdict.DEMAND_LABELS,
+    "channels": verdict.CHANNEL_LABELS,
+    "tactics": verdict.TACTIC_LABELS,
+    "acted": verdict.ACTED_LABELS,
+    "languages": verdict.LANGUAGE_LABELS,
+}
 
 SettingsDep = Annotated[Settings, Depends(get_settings)]
 
@@ -256,14 +275,7 @@ def family_page(request: Request) -> HTMLResponse:
     response = templates.TemplateResponse(
         request,
         "family.html",
-        {
-            "agencies": verdict.AGENCY_LABELS,
-            "demands": verdict.DEMAND_LABELS,
-            "channels": verdict.CHANNEL_LABELS,
-            "tactics": verdict.TACTIC_LABELS,
-            "acted": verdict.ACTED_LABELS,
-            "languages": verdict.LANGUAGE_LABELS,
-        },
+        LABELS,
     )
     # Keep the secret link out of Referer headers and search engines.
     response.headers["Referrer-Policy"] = "no-referrer"
@@ -306,9 +318,32 @@ async def web_call_session(
 @app.get("/", response_class=HTMLResponse, dependencies=[AdminDep])
 def dashboard(request: Request, settings: SettingsDep) -> HTMLResponse:
     with connect(settings.database_url) as conn:
+        feed = store.recent_feed(conn)
+        week = store.scripts_this_week(conn)
         calls = store.recent_calls(conn)
-        checks = store.recent_checks(conn)
-        scripts = store.recent_scripts(conn)
     return templates.TemplateResponse(
-        request, "dashboard.html", {"calls": calls, "checks": checks, "scripts": scripts}
+        request, "dashboard.html", {"feed": feed, "week": week, "calls": calls, **LABELS}
     )
+
+
+@app.get("/reports/{report_id}", response_class=HTMLResponse, dependencies=[AdminDep])
+def report_page(report_id: int, request: Request, settings: SettingsDep) -> HTMLResponse:
+    with connect(settings.database_url) as conn:
+        report = store.get_report(conn, report_id)
+    if report is None:
+        raise HTTPException(status_code=404)
+    return templates.TemplateResponse(request, "report.html", {"report": report, **LABELS})
+
+
+@app.post("/reports/{report_id}/review", dependencies=[AdminDep])
+def review_report(report_id: int, request: Request, settings: SettingsDep) -> RedirectResponse:
+    """Records that a person read the draft. It files and sends nothing."""
+    # Browsers resend Basic credentials on any site's form post, so refuse a foreign Origin.
+    origin = request.headers.get("origin")
+    if origin and urlsplit(origin).netloc != request.headers.get("host"):
+        raise HTTPException(status_code=403, detail="cross-site request")
+    with connect(settings.database_url) as conn:
+        if store.get_report(conn, report_id) is None:
+            raise HTTPException(status_code=404)
+        store.mark_reviewed(conn, report_id)
+    return RedirectResponse(f"/reports/{report_id}", status_code=303)

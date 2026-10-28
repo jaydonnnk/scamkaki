@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Report draft</title>
+{% include "_theme.html" %}
+<style>
+.back{display:inline-block;margin:0 0 4px;padding:8px 0}
+h1{font-size:24px;margin:4px 0 12px}
+.status{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 0 16px}
+.draft{color:var(--caution);background:var(--caution-bg);border:2px dashed var(--caution);font-weight:800;padding:4px 10px;border-radius:4px}
+.draft::before{content:"\25C6  ";content:"\25C6  " / ""}
+.done{background:var(--midnight);color:var(--ice-50);font-weight:700;padding:4px 10px;border-radius:4px}
+.done::before{content:"\2713  ";content:"\2713  " / "";color:var(--chartreuse)}
+dl{display:grid;grid-template-columns:minmax(120px,170px) minmax(0,1fr);margin:0}
+dt,dd{margin:0;padding:10px 14px;border-bottom:1px solid var(--ice-100)}
+dt{color:var(--muted);font-weight:600;font-size:14px}
+dd{overflow-wrap:anywhere}
+dt:last-of-type,dd:last-of-type{border-bottom:0}
+@media(max-width:480px){dl{grid-template-columns:1fr}dt{border-bottom:0;padding-bottom:0}}
+blockquote{margin:0;padding:12px 14px;border-left:6px solid var(--electric);background:#fff}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;margin:0;padding:12px 14px}
+.act{padding:14px;margin-top:24px}
+.act p{margin:0 0 12px}
+</style></head><body>
+<header class="bar"><div class="bar-inner">
+<p class="brand">Scamkaki<small>Report review</small></p>
+<p class="fixture">Demo fixture. Draft only; nothing is sent automatically.</p>
+</div></header>
+<main class="narrow">
+<a class="back" href="/">&larr; Back to dashboard</a>
+<h1>Bait call report, {{ report.call_at | sgt }}</h1>
+<p class="status">
+{% if report.status == "reviewed" %}<span class="done">Reviewed {{ report.reviewed_at | sgt }} SGT</span>
+{% else %}<span class="draft">DRAFT, not reviewed</span>{% endif %}
+<span class="sub">{% if report.fixture_case %}Demo fixture case <span class="mono">{{ report.fixture_case }}</span>: a scripted test call, not a real scammer.{% else %}Test call with no fixture case: not verified as a real scam call.{% endif %}</span>
+</p>
+
+<h2>What Ah Ma Bait heard</h2>
+<div class="panel"><dl>
+<dt>Claimed agency</dt><dd>{{ agencies[report.agency] if report.agency else "not recorded" }}</dd>
+<dt>Demand</dt><dd>{{ demands[report.demand] if report.demand else "not recorded" }}</dd>
+<dt>Payee bank</dt><dd>{{ report.payee_bank or "not heard" }}</dd>
+<dt>Payee account</dt><dd>{{ report.payee_account or "not heard" }}</dd>
+<dt>PayNow ID</dt><dd>{{ report.paynow_id or "not heard" }}</dd>
+<dt>Link</dt><dd>{{ report.url or "not heard" }}</dd>
+<dt>Call length</dt><dd>{{ report.duration_s | duration }}</dd>
+<dt>Line</dt><dd><span{% if report.language == "hi" %} lang="hi"{% endif %}>{{ languages[report.language] }}</span></dd>
+<dt>Ah Ma leaks</dt><dd>{% if report.leaks %}<span class="leak">LEAK CHECK FAILED: {{ report.leaks | length }} found</span>{% else %}None found{% endif %}</dd>
+</dl></div>
+
+{% if report.summary %}<h2>Summary from the call</h2>
+<div class="panel"><blockquote>{{ report.summary }}</blockquote></div>{% endif %}
+
+<h2>Draft text</h2>
+<div class="panel"><pre>{{ report.draft }}</pre></div>
+
+<section class="panel act" aria-labelledby="review-h">
+<h2 id="review-h" style="margin-top:0">Review</h2>
+{% if report.status == "reviewed" %}
+<p>A person marked this draft reviewed. Scamkaki sent nothing to ScamShield, the police or a bank; filing, if any, is a separate human step.</p>
+{% else %}
+<p>Marking reviewed records that you read this draft. It sends nothing to ScamShield, the police or a bank.</p>
+<form method="post" action="/reports/{{ report.id }}/review"><button type="submit">Mark reviewed</button></form>
+{% endif %}
+</section>
+</main>
+</body></html>
