@@ -1,6 +1,6 @@
 # Progress
 
-Current goal: publish the verified current tree to main under the user's explicit request; S7 implementation and S6 live proof remain deferred.
+Current goal: S7 (dashboard, report review, demo) built and checked locally on `scamkaki/slice-7-dashboard-demo`, uncommitted; open items: backup video unavailable, full live demo not run. S6 live validation plan drafted in docs/plans/scamkaki/s6-live-validation-plan.md (not authority). Evidence: docs/plans/scamkaki/evidence/s7-dashboard-demo.md. Scratch (ignored): work/scamkaki-s7/.
 Historical research and the superseded build plan below are context only; current authority is in docs/plans/scamkaki/00-status.md.
 
 - [x] Read AGENTS.md and the user-authored Evidence check - Claude.md; preserve the source report.

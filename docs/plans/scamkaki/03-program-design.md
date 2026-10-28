@@ -75,7 +75,7 @@ uv run python scripts/check.py bait|guardian [--language hi]
 | `src/scamkaki/integrations/bolna.py` | Bolna REST client: get execution, start test call |
 | `src/scamkaki/integrations/telegram.py` | Sends one Telegram message; never raises |
 | `src/scamkaki/app/main.py` | FastAPI app and routes |
-| `src/scamkaki/app/templates/*.html` | Dashboard, report and family alert pages, from the Gate 1 mockups |
+| `src/scamkaki/app/templates/*.html` | Dashboard, report and family alert pages, from the Gate 1 mockups; `_theme.html` is the shared stylesheet partial, included by all three (S7 amendment, wording only) |
 | `migrations/0001_init.sql` | Tables from Gate 2 |
 | `migrations/0003_family_alerts.sql` | `guardian_checks.language` and `guardian_checks.alert_status` |
 | `migrations/0005_guardian_signs.sql` | `guardian_checks.channel`, `guardian_checks.tactics`, `guardian_checks.acted`, with defaults |
@@ -186,9 +186,11 @@ def log_guardian_check(conn, report: GuardianReport, language: Language, result:
 def set_alert_status(conn, check_id: int, status: Literal["sent", "failed", "off"]) -> None: ...
 def recent_alerts(conn, limit: int = 20) -> list[AlertRow]: ...  # urgent from the last 24 h first, then newest
 def add_report(conn, call_id: int, draft: str) -> int: ...
-def mark_reviewed(conn, report_id: int) -> None: ...
+def get_report(conn, report_id: int) -> dict | None: ...   # report with its call and script, for GET /reports/{id}
+def mark_reviewed(conn, report_id: int) -> None: ...  # draft to reviewed once; a second call keeps the first time
 def recent_calls(conn, limit: int = 50) -> list[CallRow]: ...
 def scripts_this_week(conn) -> list[ScriptGroup]: ...
+def recent_feed(conn, limit: int = 50) -> list[dict]: ...  # Guardian checks and Bait scripts by time, tagged by kind (S7)
 
 # lib/env.py
 def agent_line(agent_id: str) -> tuple[Line, Language] | None: ...  # maps the four agent ids; unknown id -> None
