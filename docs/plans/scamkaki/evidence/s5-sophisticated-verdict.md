@@ -77,5 +77,5 @@ Authorized by the user ("Yes: push scamkaki/slice-5-guardian-loop, fast-forward 
 
 ## Open points
 
-- Resolved 2026-10-28 by the user's decision: urgent alerts go first only for 24 hours, then fall back into time order (`recent_alerts`). Two mutations, each alone: dropping the 24-hour limit fails `test_family_alerts_older_urgent_falls_back_into_time_order`; dropping the urgent sort fails `test_family_alerts_list_recent_urgent_first`. Committed on the branch; not deployed until the next push.
+- Resolved 2026-10-28 by the user's decision: urgent alerts go first only for 24 hours, then fall back into time order (`recent_alerts`). Two mutations, each alone: dropping the 24-hour limit fails `test_family_alerts_older_urgent_falls_back_into_time_order`; dropping the urgent sort fails `test_family_alerts_list_recent_urgent_first`. Published to `main` at `59b918d` on 2026-10-28; Render ordering not re-probed during S6.
 - The Hindi act-now and call-back sentences need the Hindi listener check planned for S6.

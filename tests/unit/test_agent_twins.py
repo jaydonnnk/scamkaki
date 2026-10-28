@@ -68,3 +68,45 @@ def test_bait_extracts_every_field_and_valid_enums(name):
     assert tuple(extractions["agency"]) == BAIT_AGENCIES
     assert tuple(extractions["demand"]) == BAIT_DEMANDS
     assert set(BAIT_AGENCIES) <= set(AGENCIES) and set(BAIT_DEMANDS) <= set(DEMANDS)
+
+
+@pytest.mark.parametrize("name", ["guardian.json", "guardian_hi.json"])
+def test_guardian_sends_all_five_values_with_domain_enums(name):
+    from scamkaki.domain.types import ACTED, AGENCIES, CHANNELS, DEMANDS, TACTICS
+
+    agent = json.loads((ROOT / "agents" / name).read_text())
+    tools = agent["agent_config"]["tasks"][0]["tools_config"]["api_tools"]
+    schema = tools["tools"][0]["parameters"]
+    assert set(schema["required"]) == {"agency", "demand", "channel", "tactics", "acted"}
+    for field, values in {
+        "agency": AGENCIES,
+        "demand": DEMANDS,
+        "channel": CHANNELS,
+        "acted": ACTED,
+    }.items():
+        assert schema["properties"][field]["enum"] == list(values)
+    assert schema["properties"]["tactics"]["type"] == "string"
+    for tactic in TACTICS:
+        assert tactic in schema["properties"]["tactics"]["description"]
+    payload = json.loads(tools["tools_params"]["match_script"]["param"])
+    for field in ("agency", "demand", "channel", "tactics", "acted"):
+        assert payload[field] == f"%({field})s"
+
+
+@pytest.mark.parametrize("name", ["guardian.json", "guardian_hi.json"])
+def test_guardian_prompt_covers_new_questions_and_confirmation(name):
+    agent = json.loads((ROOT / "agents" / name).read_text())
+    prompt = agent["agent_prompts"]["task_1"]["system_prompt"]
+    for instruction in ("channel", "warning-sign", "already", "repeat", "confirm", "once"):
+        assert instruction in prompt.lower()
+
+
+@pytest.mark.parametrize("name", ["guardian.json", "guardian_hi.json"])
+def test_guardian_interview_settings_and_confirmation_rule(name):
+    agent = json.loads((ROOT / "agents" / name).read_text())
+    config = agent["agent_config"]["tasks"][0]["tools_config"]["llm_agent"]["llm_config"]
+    assert config["max_tokens"] == 300
+    assert config["temperature"] == 1
+    prompt = agent["agent_prompts"]["task_1"]["system_prompt"]
+    assert "NO TOOL CALL BEFORE AN EXPLICIT YES" in prompt
+    assert "Never refuse to help" in prompt

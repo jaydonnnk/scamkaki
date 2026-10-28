@@ -77,3 +77,17 @@ def test_each_guardian_case_has_senior_lines_ending_in_a_yes():
         assert lines[-1].lower().startswith(CONFIRM[case["language"]]), case["id"]
         # The senior describes the call; no identifiers ride along.
         assert not re.search(r"\d{3,}", normalize_spoken_digits(" ".join(lines))), case["id"]
+
+
+def test_approved_guardian_story_signs_are_in_expected_reports():
+    by_id = {case["id"]: case for case in GUARDIAN}
+    assert "knew_details" in by_id["en-telco-minlaw-01"]["expect"]["tactics"]
+    assert "urgency_threat" in by_id["hi-mom-handoff-01"]["expect"]["tactics"]
+
+
+def test_ica_fixture_explicitly_denies_threat_and_known_details():
+    case = next(case for case in GUARDIAN if case["id"] == "en-ica-video-01")
+    story = " ".join(case["senior_lines"])
+    assert "did not threaten arrest or freezing my funds or give a deadline" in story
+    assert "did not already know my IC or card details" in story
+    assert set(case["expect"]["tactics"]) == {"handoff", "channel_move"}

@@ -1,4 +1,4 @@
-"""Synthetic caller: plays a fixture case's scripted lines into a Bolna web call.
+"""Fixture caller: scripted clips or a human role-playing a Guardian senior.
 
 Usage: uv run python scripts/caller/serve.py   then open http://127.0.0.1:8765
 
@@ -7,12 +7,14 @@ Bait, "guardian" plays the senior's senior_lines to Ah Ma Guardian. Renders the 
 macOS `say` (Daniel for English, Lekha for Hindi), serves a local page that places a web call
 to the line's agent in the case's language with the case id as user_data, and appends each
 placed call to scripts/caller/runs.jsonl for scripts/check.py.
-Every call it places costs Bolna credit. Binds to localhost only; the API key stays here.
+Guardian also has live microphone mode, with no clip timing or automatic final-sentence hang-up.
+Both modes retain the fixture case id. Every call costs credit. Localhost only; key stays here.
 """
 
 import json
 import subprocess
 from datetime import UTC, datetime
+from hashlib import sha256
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
@@ -39,7 +41,13 @@ def load_cases() -> dict[str, dict]:
 
 def clip_names(case: dict, line: str) -> list[str]:
     field, suffix = LINES[line]
-    return [f"{case['id']}{suffix}-{i}.wav" for i in range(len(case.get(field) or []))]
+    # Preserve historical probe audio when a Guardian fixture's wording changes.
+    return [
+        f"{case['id']}{suffix}-{i}"
+        + (f"-{sha256(text.encode()).hexdigest()[:12]}" if line == "guardian" else "")
+        + ".wav"
+        for i, text in enumerate(case.get(field) or [])
+    ]
 
 
 def rate(language: str) -> list[str]:
@@ -86,6 +94,8 @@ class Handler(SimpleHTTPRequestHandler):
                         "id": case["id"],
                         "language": case["language"],
                         "line": line,
+                        "label": case["label"],
+                        "senior_lines": case.get("senior_lines", []),
                         "clips": [f"/clips/{name}" for name in names],
                     }
                     for line in LINES
@@ -103,6 +113,9 @@ class Handler(SimpleHTTPRequestHandler):
             query = parse_qs(url.query)
             case = self.cases.get(query.get("case", [""])[0])
             line = query.get("line", ["bait"])[0]
+            mode = query.get("mode", ["clips"])[0]
+            if mode not in ("clips", "live") or (mode == "live" and line != "guardian"):
+                return self._json(400, {"error": "live microphone is for Guardian fixtures only"})
             if case is None or line not in LINES or not clip_names(case, line):
                 return self._json(404, {"error": "unknown case or line"})
             settings = get_settings()

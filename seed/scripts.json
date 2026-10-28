@@ -183,7 +183,8 @@
         "tactics": [
           "handoff",
           "secrecy",
-          "stay_on_line"
+          "stay_on_line",
+          "knew_details"
         ],
         "acted": "none",
         "verdict": "likely_scam"
@@ -192,6 +193,7 @@
         "A lady from Singtel called me. Very polite, she knew my IC number. She said a phone line under my name was used for a crime.",
         "Then she passed me to an officer from the Ministry of Law. He said I must move my savings to an account for checking, and I must not tell my son, and I must stay on the line until it is done.",
         "He sounded very professional, so I think it is real. I just want to check with you first.",
+        "They did not move me to WhatsApp or video, pay me first, or send a small fee link. I have not moved the savings, shared a code or card, or installed anything yet.",
         "Yes, that's right."
       ]
     },
@@ -215,6 +217,7 @@
       "senior_lines": [
         "Someone from my bank's fraud team called. He knew the last four digits of my card and a shop I paid at yesterday.",
         "He said someone is trying to use my card overseas. To cancel it, I must read him the code that the bank sends to my phone.",
+        "No one passed me to anyone else or asked for secrecy or to keep the phone on. No other channel, early payment or fee link. I have not read the code or done anything yet.",
         "Yes, that's right."
       ]
     },
@@ -239,6 +242,7 @@
         "I got an SMS from the courier. It said my parcel cannot be delivered because the address is wrong.",
         "I clicked the link and paid the redelivery fee, one dollar sixty-four, with my credit card. Then I typed in the code the bank sent me.",
         "The website looked exactly like the real one. Is that a problem?",
+        "Nobody passed me to another person or asked for secrecy or to stay on the phone. It was just the SMS link with the small fee. I already paid with my card and entered the code.",
         "Yes, that's right."
       ]
     },
@@ -262,6 +266,7 @@
       "senior_lines": [
         "I joined a WhatsApp group with a teacher who gives stock tips. Many members share their profits every day.",
         "I tried with a small amount first, and I really could take out a small profit. Now the assistant says I should top up more to join the VIP group for bigger returns.",
+        "No handoff, secrecy, keeping a call on or fee link. They contacted me on WhatsApp. I received a profit first, but have not paid the new VIP top-up or shared a code or card or installed an app.",
         "Yes, that's right."
       ]
     },
@@ -286,6 +291,7 @@
       "senior_lines": [
         "My old friend messaged me on WhatsApp. He said his bank transfer got stuck and he needs to borrow eight hundred dollars today.",
         "He asked me to send it to his cousin's account because his own account has a problem. He will pay me back next week.",
+        "Nobody passed me to anyone else or asked me to keep it secret or stay on a call. No video, payment to me first or fee link. I have not sent the money or shared anything yet.",
         "Yes, that's right."
       ]
     },
@@ -309,6 +315,7 @@
       "senior_lines": [
         "A police officer called me about an investigation. He said my money must be checked.",
         "He told me to withdraw my cash and take out my gold jewellery, and a colleague will come to my house to collect them for checking. He said not to tell anyone because the case is confidential.",
+        "He did say to keep it secret, but no handoff, staying on the phone, WhatsApp, video, early payment or fee link. I have not withdrawn or handed over anything, shared a code or installed an app.",
         "Yes, that's right."
       ]
     },
@@ -332,6 +339,7 @@
       "senior_lines": [
         "A company messaged me on WhatsApp about a part-time job, liking videos from home.",
         "They really paid me thirty dollars for the first tasks. Now they say I must put in some money first to unlock the better tasks that pay more.",
+        "No handoff, secrecy, staying on a call or fee link. They contacted me on WhatsApp and paid me first. I have not paid the deposit, shared a code or card, or installed an app.",
         "Yes, that's right."
       ]
     },
@@ -357,6 +365,7 @@
         "Someone from ICA called. He said a parcel with fake passports was sent under my name.",
         "He passed me to the China police, and they asked me to continue on a WhatsApp video call. The officer showed me his uniform and a document.",
         "He said I must declare my assets by moving my savings to an account they give me, so they can clear my name.",
+        "They passed me to China police and moved me to video. They did not ask for secrecy, keeping the call on, a fee link or a different payee, and did not pay me first. I have not moved any money, shared a code or card, or installed an app yet. They did not threaten arrest or freezing my funds or give a deadline, and they did not already know my IC or card details.",
         "Yes, that's right."
       ]
     },
@@ -380,6 +389,7 @@
       "senior_lines": [
         "My bank called me about a purchase on my card. My bank app showed a message that the bank was calling me.",
         "They knew my name and the last four digits of my card. They only asked if I made the purchase, yes or no. They did not ask for any code or money.",
+        "No handoff, secrecy, staying on the line, change of channel, early payment or fee link. I only answered yes about the purchase. I did not send money, give a code or card details, or install an app.",
         "Yes, that's right."
       ]
     },
@@ -401,6 +411,7 @@
       "senior_lines": [
         "I got an SMS from SingPost.",
         "It said my parcel is ready at the POPStation near my block. There was no link and no fee.",
+        "It was only the SMS. No handoff, secrecy, staying on a call, channel change, early payment or fee link. I have not paid, given a code or card details, or installed an app.",
         "Yes, that's right."
       ]
     },
@@ -422,6 +433,7 @@
       "senior_lines": [
         "My grandson called me from his usual number.",
         "He bought groceries for me yesterday, and he asked me to PayNow him fifty dollars for them.",
+        "No handoff, secrecy, staying on the line, channel change, early payment, fee link or different payee. I have not sent him the money or shared any details or installed anything yet.",
         "Yes, that's right."
       ]
     },
@@ -443,6 +455,7 @@
       "senior_lines": [
         "I got an SMS from gov.sg about my CPF.",
         "It reminded me to update my CPF nomination by logging in myself with Singpass. There was no link inside.",
+        "It was only the SMS. No handoff, secrecy, staying on a call, channel change, early payment or fee link. I have not sent money, shared a code or card, or installed anything.",
         "Yes, that's right."
       ]
     },
@@ -459,7 +472,8 @@
         "channel": "call",
         "tactics": [
           "handoff",
-          "secrecy"
+          "secrecy",
+          "urgency_threat"
         ],
         "acted": "none",
         "verdict": "likely_scam"
@@ -467,6 +481,7 @@
       "senior_lines": [
         "अभी MOM, यानी मानव संसाधन मंत्रालय से एक बहुत विनम्र आदमी का फ़ोन आया। उसने कहा कि मेरे बेटे के वर्क पास में समस्या है।",
         "फिर उसने मुझे सिंगापुर पुलिस के एक अफ़सर से बात करवाई। अफ़सर ने कहा कि आज ही जुर्माने के पैसे एक खाते में भेजने होंगे, और यह बात बेटे को भी नहीं बतानी है।",
+        "दूसरे अफ़सर से बात करवाई और बेटे को न बताने को कहा। फ़ोन चालू रखने, वीडियो, पहले मुझे पैसे देने या लिंक की फ़ीस की बात नहीं हुई। मैंने अभी पैसे नहीं भेजे, कोई कोड या कार्ड की जानकारी नहीं दी और ऐप नहीं लगाया।",
         "हाँ, यही बात है।"
       ]
     },
@@ -490,6 +505,7 @@
       "senior_lines": [
         "मुझे कूरियर कंपनी का एक SMS आया कि पता गलत होने की वजह से मेरा पार्सल नहीं पहुँच सकता।",
         "मैंने लिंक खोलकर अपने क्रेडिट कार्ड से दोबारा डिलीवरी की छोटी सी फ़ीस भर दी, और बैंक से आया कोड भी डाल दिया।",
+        "किसी दूसरे आदमी से बात नहीं करवाई। परिवार से छिपाने या फ़ोन चालू रखने को नहीं कहा। बस SMS का लिंक और छोटी फ़ीस थी। मैंने कार्ड की जानकारी और बैंक का कोड पहले ही डाल दिया है।",
         "हाँ, यही बात है।"
       ]
     },
@@ -513,6 +529,7 @@
       "senior_lines": [
         "मेरे बैंक से फ़ोन आया, और मेरे बैंक ऐप में भी दिखा कि बैंक ही फ़ोन कर रहा है।",
         "उन्हें मेरा नाम और कार्ड के आख़िरी चार अंक पता थे। उन्होंने बस पूछा कि क्या यह खरीदारी मैंने की थी। कोई कोड या पैसे नहीं माँगे।",
+        "दूसरे अफ़सर, परिवार से छिपाने, फ़ोन चालू रखने, वीडियो, पहले मुझे पैसे देने या लिंक की फ़ीस की बात नहीं हुई। मैंने सिर्फ़ खरीदारी के बारे में हाँ कहा। पैसे नहीं भेजे, कोड या कार्ड की जानकारी नहीं दी और ऐप नहीं लगाया।",
         "हाँ, यही बात है।"
       ]
     }

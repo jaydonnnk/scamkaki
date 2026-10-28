@@ -1,35 +1,61 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Scamkaki synthetic caller</title>
+<title>Scamkaki fixture caller</title>
 <style>
 :root{--bg:#fbfaf7;--fg:#1d1d1b;--muted:#6b6a65;--line:#e4e2dc}
 @media (prefers-color-scheme:dark){:root{--bg:#161614;--fg:#ecebe6;--muted:#a3a29c;--line:#2e2d2a}}
 body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,sans-serif}
 main{max-width:720px;margin:0 auto;padding:16px}
 .fixture{border:1px dashed var(--muted);padding:6px 10px;font-size:13px;color:var(--muted)}
-select,button{font:inherit;padding:8px 12px;border:1px solid var(--fg);background:transparent;color:var(--fg);border-radius:6px}button:disabled{opacity:.4}
+select,button{font:inherit;padding:8px 12px;border:1px solid var(--fg);background:transparent;color:var(--fg);border-radius:6px}button:disabled{opacity:.4}select{max-width:100%}
 #log{font:13px/1.5 ui-monospace,monospace;white-space:pre-wrap;border-top:1px solid var(--line);margin-top:16px;padding-top:8px}
 </style></head><body><main>
-<p class="fixture">Test harness. Plays scripted fixture lines into a Bolna web call: a scammer to Ah Ma Bait, or a senior to Ah Ma Guardian. Every call costs credit.</p>
-<h1>Synthetic caller</h1>
-<p><select id="case"></select> <button id="start" type="button">Place call</button> <button id="stop" type="button" disabled>Hang up</button></p>
+<p class="fixture">Demo fixtures only. A human role-plays a Guardian senior, or scripted clips play a scammer. This is not evidence from real seniors or scammers. Every call costs credit.</p>
+<h1>Fixture caller</h1>
+<p><label for="case">Fixture</label> <select id="case"></select></p>
+<p><label for="mode">Caller input</label> <select id="mode"><option value="live">Live microphone</option><option value="clips">Scripted clips</option></select></p>
+<section id="roleplay" hidden>
+<h2>Role-play this senior</h2>
+<p>Use the facts below to answer the question Guardian actually asks. Do not read them in a fixed sequence. Say yes only after an accurate repeat-back. Use no real identifiers.</p>
+<ol id="facts"></ol>
+<p>Keep your microphone on. Wait for the full verdict and repeat count before hanging up. The 180-second cap still applies.</p>
+</section>
+<p><button id="start" type="button">Place call</button> <button id="stop" type="button" disabled>Hang up</button></p>
 <div id="log" aria-live="polite"></div>
 </main>
 <script src="https://cdn.jsdelivr.net/gh/bolna-ai/web-call@v3.0.1/dist/bolna-web-call.min.js"></script>
 <script>
 const LOUD = 0.02;
 // Guardian pauses while it checks the script, so it gets a longer quiet gap and call cap.
-const QUIET_MS = { bait: 1000, guardian: 1500 }, MAX_CALL_MS = { bait: 75000, guardian: 100000 };
+const QUIET_MS = { bait: 1000, guardian: 1500 }, MAX_CALL_MS = { bait: 75000, guardian: 180000 };
 // After the senior's last line, keep listening until Guardian has been silent this long.
 const TAIL_QUIET_MS = 8000;
 const $ = (id) => document.getElementById(id);
 const log = (msg) => { $("log").textContent += new Date().toISOString().slice(11, 19) + " " + msg + "\n"; };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 let cases = [], call = null, agentLoudAt = 0, agentSpoke = false, quietMs = 1000;
+const nativeGetUserMedia = navigator.mediaDevices.getUserMedia;
+
+function showFacts() {
+  const c = cases.find((x) => x.line + ":" + x.id === $("case").value);
+  $("roleplay").hidden = !c || $("mode").value !== "live";
+  $("facts").replaceChildren();
+  for (const text of (c?.senior_lines || []).slice(0, -1)) {
+    const item = document.createElement("li"); item.textContent = text; $("facts").appendChild(item);
+  }
+}
+$("case").onchange = () => {
+  const c = cases.find((x) => x.line + ":" + x.id === $("case").value);
+  $("mode").value = c?.line === "guardian" ? "live" : "clips";
+  $("mode").disabled = c?.line !== "guardian";
+  showFacts();
+};
+$("mode").onchange = showFacts;
 
 fetch("/cases").then((r) => r.json()).then((list) => {
   cases = list;
   for (const c of list) $("case").add(new Option(`${c.line}: ${c.id} (${c.language}, ${c.clips.length} lines)`, c.line + ":" + c.id));
+  $("case").onchange();
 });
 
 // Waits until Ah Ma has said something and then been quiet for QUIET_MS, or until maxMs.
@@ -44,35 +70,50 @@ async function agentTurnDone(maxMs) {
 
 $("start").onclick = async () => {
   const c = cases.find((x) => x.line + ":" + x.id === $("case").value);
+  const mode = $("mode").value, live = mode === "live";
   quietMs = QUIET_MS[c.line];
   $("start").disabled = true; $("stop").disabled = false;
-  const ctx = new AudioContext();
-  await ctx.resume();
-  const buffers = await Promise.all(c.clips.map((u) => fetch(u).then((r) => r.arrayBuffer()).then((b) => ctx.decodeAudioData(b))));
-  const dest = ctx.createMediaStreamDestination();
-  // A near-silent constant keeps caller packets flowing, so Bolna records the whole call.
-  const keep = ctx.createConstantSource(); keep.offset.value = 0.001; keep.connect(dest); keep.start();
-  // The SDK's microphone preflight stops the tracks it gets, so hand out a fresh clone each time.
-  navigator.mediaDevices.getUserMedia = async () => new MediaStream(dest.stream.getAudioTracks().map((t) => t.clone()));
+  $("case").disabled = true; $("mode").disabled = true;
+  let ctx = null, keep = null, dest = null, buffers = [];
+  navigator.mediaDevices.getUserMedia = nativeGetUserMedia;
+  if (!live) {
+    ctx = new AudioContext();
+    await ctx.resume();
+    buffers = await Promise.all(c.clips.map((u) => fetch(u).then((r) => r.arrayBuffer()).then((b) => ctx.decodeAudioData(b))));
+    dest = ctx.createMediaStreamDestination();
+    // A near-silent constant keeps caller packets flowing, so Bolna records the whole call.
+    keep = ctx.createConstantSource(); keep.offset.value = 0.001; keep.connect(dest); keep.start();
+    // The SDK's microphone preflight stops the tracks it gets, so hand out a fresh clone each time.
+    navigator.mediaDevices.getUserMedia = async () => new MediaStream(dest.stream.getAudioTracks().map((t) => t.clone()));
+  }
   const play = (buf) => new Promise((resolve) => {
     const src = ctx.createBufferSource(); src.buffer = buf; src.connect(dest); src.connect(ctx.destination);
     src.onended = resolve; src.start();
   });
 
-  const record = { case: c.id, line: c.line, language: c.language, started_at: new Date().toISOString(), clips_played: 0 };
-  call = new BolnaWebCall({ sessionUrl: `/session?line=${c.line}&case=${encodeURIComponent(c.id)}` });
+  const record = { case: c.id, line: c.line, language: c.language, caller_mode: mode,
+    caller_kind: live ? "human_roleplay" : "synthetic_clips", started_at: new Date().toISOString(), clips_played: 0 };
+  call = new BolnaWebCall({ sessionUrl: `/session?line=${c.line}&case=${encodeURIComponent(c.id)}&mode=${mode}` });
   const cap = setTimeout(() => { log("time cap reached, hanging up"); call.stop(); }, MAX_CALL_MS[c.line]);
   call.on("volume-level", (v) => { if (v > LOUD) { agentLoudAt = Date.now(); agentSpoke = true; } });
   call.on("error", (e) => log("error: " + (e.code || "") + " " + (e.message || "")));
   call.on("call-end", async (e) => {
-    clearTimeout(cap); keep.stop();
+    clearTimeout(cap);
+    if (keep) keep.stop();
+    if (ctx) await ctx.close();
+    navigator.mediaDevices.getUserMedia = nativeGetUserMedia;
     record.ended_at = new Date().toISOString(); record.reason = e.reason; record.run_id = call.getRunId();
     log(`call ended (${e.reason}), execution ${record.run_id}`);
     await fetch("/log", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(record) });
     $("start").disabled = false; $("stop").disabled = true;
+    $("case").disabled = false; $("mode").disabled = c.line !== "guardian";
   });
   call.on("call-start", async () => {
     log(`connected: ${c.id}, execution ${call.getRunId()}`);
+    if (live) {
+      log("Live microphone: answer Guardian's questions. Wait for the complete verdict before Hang up.");
+      return;
+    }
     agentSpoke = false;
     log(await agentTurnDone(15000) ? "greeting done" : "no greeting heard");
     for (const [i, buf] of buffers.entries()) {
