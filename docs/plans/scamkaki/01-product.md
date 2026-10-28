@@ -73,6 +73,15 @@ Every report is a draft that a person checks; nothing is filed automatically.
 - [`mockups/family.html`](mockups/family.html): the family alert page, opened from a secret link the family member bookmarks; shows warning signs and an urgent state when the senior already acted.
 - Guardian and Bait are phone-only; no screen.
 
+## S7 visual direction, user-selected 2026-10-28
+
+Claude is to use its relevant design skills for S7, with an appropriate combination of
+midnight blue, ice blue, electric blue and chartreuse. Exact shades and proportions are design
+choices, not approved measurements. Keep the reviewer workflow and the existing mockup screens.
+This direction supersedes the mockups' old color treatment, not their functional content.
+Use the palette with readable contrast, clear focus and danger/urgent meaning beyond color alone.
+Mockups and visualization files stay plain HTML; this adds no framework or new product feature.
+
 ## Out of scope
 
 Hokkien and other dialects; Mandarin until every slice is done (stretch); one agent that switches language mid-call; transferring the senior's call to a family phone (blocked on our Bolna account, see S3 evidence); automatic filing to ScamShield, SPF or banks; Guardian contacting a bank or freezing a card for the senior; checking website addresses or reading screenshots, because a link spoken aloud cannot be checked reliably; business email and invoice scams; blocking or intercepting calls on a senior's phone; real scam-number seeding; multi-family accounts; Singapore number provisioning beyond what Bolna offers.

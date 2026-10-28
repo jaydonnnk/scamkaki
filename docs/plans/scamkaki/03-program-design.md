@@ -5,6 +5,41 @@ Revised 2026-10-22: English and Hindi agents; the Modal TTS service and its file
 Revised 2026-10-24: family alert page and Telegram replace call transfer.
 Revised 2026-10-27 (reopened): `GuardianReport`, warning signs (`Tactic`), `Channel` and `Acted`; `decide` takes the report; new act-now and call-back sentences; migration 0005; Guardian fixtures rewritten. Bait code is unchanged.
 
+## Approved S6 fixture-table amendment, 2026-10-28
+
+[verified] The first fixed-clip probe failed. It does not isolate Guardian from caller timing
+or ambiguous fixture wording. Keep that attempt and its three accepted alert sends.
+The user re-approved the following table corrections on 2026-10-28; verdict rules stay unchanged:
+
+- `en-telco-minlaw-01`: include `knew_details`, since the story says she knew the senior's IC.
+- `hi-mom-handoff-01`: include `urgency_threat`, since the fine is due today.
+- `en-ica-video-01`: explicitly deny arrest, freezing funds, a deadline, and knowing IC/card
+  details in the story; expected tactics stay `handoff+channel_move`.
+
+Caller repair comes first: add a human live-microphone mode that preserves `fixture_case` and
+records `caller_mode=live`; it plays no clips and does not infer when the operator should answer
+or hang up. A human reads the full verdict before ending the call, within the 180-second cap.
+The fixture role-play method changes no success threshold and is never real-senior evidence.
+
+The user approved keeping `gpt-5.4-mini`, temperature 1, `max_tokens=300`, continued help
+without refusal, and an explicit yes before a tool call. Both Guardian updates were accepted
+and read back on 2026-10-28 [verified]. The user proposed temperature 0.3, but
+[Bolna's provider guide](https://www.bolna.ai/docs/openai-llm) documents that GPT-5 models require
+1 and reject other values [vendor claim, checked 2026-10-28]. No changed-model cost is authorized.
+
+Behavior improvements remain hypotheses. The user deferred all further live calls for credit
+reasons. Offline completion does not satisfy S6's live exit checks. Per-turn tool withholding
+on `simple_llm_agent` is unverified and not planned. Call-end alert fallback is not approved:
+it changes urgent timing and the truth of "I have alerted your family". Ask again if repeats persist.
+
+## S7 handoff direction, user-directed 2026-10-28
+
+Claude uses its relevant design skills and Gate 1's midnight blue, ice blue, electric blue and
+chartreuse direction. S7 retains FastAPI, Jinja/server-rendered HTML and the approved screen
+functions; no TSX visualization or framework migration. S6 remains open for live evidence.
+After S7, prepare the costed S6 validation plan described in Gate 4 and stop before paid work.
+No call-end alert fallback, voice-agent or verdict-rule change is included in S7.
+
 ## Toolchain
 
 Python 3.12 managed by `uv` (uv 0.13.0 is installed; Python 3.12 is not, `uv` would fetch it).
@@ -47,7 +82,7 @@ uv run python scripts/check.py bait|guardian [--language hi]
 | `agents/{bait,bait_hi,guardian,guardian_hi}.json` | Bolna agent exports, versioned; `_hi` files are the Hindi agents; Bait files also carry their Bolna extraction (disposition) definitions |
 | `seed/scripts.json` | Labeled fixture cases, each with `language` and `for` (`bait` or `guardian`). Bait: the existing 5 English scam and 2 Hindi scam cases, unchanged. Guardian: 12 new English cases (8 sophisticated scams, 4 legit look-alikes) and 3 new Hindi cases (2 scam, 1 legit), listed below; the old easy Guardian cases and the `senior_lines` on Bait cases are removed |
 | `scripts/check.py` | Reads the stored fixture calls, compares them with each case and prints pass rates |
-| `scripts/caller/` | Synthetic caller: renders each case's caller lines with macOS `say` and serves a local page that plays them into a Bolna web call |
+| `scripts/caller/` | Fixture caller: human microphone mode for Guardian, with legacy scripted clips retained; logs the input mode and fixture id. Guardian audio filenames include a text digest so changed stories cannot reuse stale audio; Bait paths stay unchanged |
 | `scripts/migrate.py` | Applies migrations |
 | `scripts/bolna_agent.py` | Creates or updates a Bolna agent from `agents/<name>.json` |
 | `tests/support/fakes.py` | Fake Bolna client and payload builders |
@@ -255,19 +290,19 @@ Guardian fixtures (`for: guardian`), paraphrasing public SPF advisories; the sen
 
 | Case | Story the senior tells | Expected report | Verdict |
 |---|---|---|---|
-| `en-telco-minlaw-01` | Singtel said a number in my name was used for crime, passed me to a MinLaw officer, keep it secret, stay on the line, move savings for checking | minlaw, transfer, call, handoff+secrecy+stay_on_line, none | likely_scam |
+| `en-telco-minlaw-01` | Singtel knew my IC and said a number in my name was used for crime, passed me to a MinLaw officer, keep it secret, stay on the line, move savings for checking | minlaw, transfer, call, handoff+secrecy+stay_on_line+knew_details, none | likely_scam |
 | `en-bank-otp-01` | Bank fraud team knew my last four card digits, asked me to read the code to cancel a purchase | bank, otp, call, knew_details, none | likely_scam |
 | `en-courier-paid-01` | SMS said parcel address invalid; I paid S$1.64 on the website with my card and typed the code | courier, card_details, sms, link_fee, gave_code_or_card | likely_scam, urgent |
 | `en-investment-01` | WhatsApp group teacher's stock tips; I took out a small profit; now top up for the VIP group | investment, transfer, whatsapp, paid_first, none | likely_scam |
 | `en-whatsapp-friend-01` | Old friend on WhatsApp needs S$800 today, pay to his cousin's account | friend_family, transfer, whatsapp, new_payee+urgency_threat, none | likely_scam |
 | `en-cash-handover-01` | Police officer said to withdraw cash and gold so a colleague can collect and check it | spf, cash_handover, call, secrecy, none | likely_scam |
 | `en-job-task-01` | Paid S$30 for liking videos; now deposit to unlock better tasks | employer, transfer, whatsapp, paid_first, none | likely_scam |
-| `en-ica-video-01` | ICA said a parcel with fake passports is in my name, moved me to a WhatsApp video call with China police, declare my assets | china_official, transfer, video, handoff+channel_move, none | likely_scam |
+| `en-ica-video-01` | ICA said a parcel with fake passports is in my name, moved me to a WhatsApp video call with China police, declare my assets; explicitly no threat, deadline or known IC/card details | china_official, transfer, video, handoff+channel_move, none | likely_scam |
 | `en-legit-bank-app-01` | Bank called about a card purchase, my bank app showed they were calling, they only asked yes or no | bank, none, call, knew_details, none | unclear (not likely_scam) |
 | `en-legit-singpost-01` | SingPost SMS said my parcel is at the POPStation, no link, no fee | courier, none, sms, none, none | no_scam_signs |
 | `en-legit-grandson-01` | My grandson called from his usual number, asked me to PayNow him S$50 for groceries he bought me | friend_family, transfer, call, none, none | unclear |
 | `en-legit-cpf-01` | gov.sg SMS reminded me to update my CPF nomination by logging in myself with Singpass, no link | cpf, none, sms, none, none | no_scam_signs |
-| `hi-mom-handoff-01` | MOM said my son's work pass has a problem, passed me to a police officer, keep it secret, pay the fine | spf, transfer, call, handoff+secrecy, none | likely_scam |
+| `hi-mom-handoff-01` | MOM said my son's work pass has a problem, passed me to a police officer, keep it secret, pay the fine today | spf, transfer, call, handoff+secrecy+urgency_threat, none | likely_scam |
 | `hi-courier-paid-01` | Hindi version of the courier fee case, already paid with card and code | courier, card_details, sms, link_fee, gave_code_or_card | likely_scam, urgent |
 | `hi-legit-bank-app-01` | Hindi version of the bank-app-confirmed call | bank, none, call, knew_details, none | unclear (not likely_scam) |
 

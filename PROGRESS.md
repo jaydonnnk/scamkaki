@@ -1,6 +1,7 @@
 # Progress
 
-Current goal: Brainstorm voice AI products founded on Singapore-specific technology and infrastructure, rather than Singapore as a buyer/seller setting.
+Current goal: publish the verified current tree to main under the user's explicit request; S7 implementation and S6 live proof remain deferred.
+Historical research and the superseded build plan below are context only; current authority is in docs/plans/scamkaki/00-status.md.
 
 - [x] Read AGENTS.md and the user-authored Evidence check - Claude.md; preserve the source report.
 - [x] Verify TRAI amendment text, commencement dates, complaint thresholds and enforcement statistics. Verified 30/60/90-day phases; actual commencement date remains uncertified.
@@ -113,3 +114,61 @@ Test runner `scripts/check.mjs`: pulls executions over the Bolna API and prints 
 - 2026-10-22 Gates 1-4 APPROVED by user; no slice authorized yet.
 - 2026-10-22 skeleton committed (7e41056) and pushed to private origin jaydonnnk/no-scamkaki main, verified with git ls-remote.
 - 2026-10-22 S1: Render live at https://scamkaki.onrender.com (/healthz ok). Guardian agent created a2cf7af2-1902-4abd-8bac-71b5a4d75d2a; GET /v2/agent confirms webhook_url, match_script tool (POST, bearer set), gpt-5.4-mini.
+
+
+## S6 execution, 2026-10-28
+
+Authority/spec: docs/plans/scamkaki/00-status.md and 04-slices.md.
+S6 branch scamkaki/slice-6-guardian-live, from original main 59b918d; offline code/evidence committed as b5eb2b3 under the later publication request.
+Inherited .claude/, 33 obsolete clips and all original S6 audio remain untouched.
+Spent US$0.1375; remaining S6 cap US$0.8625, user deferred all further calls.
+
+- [x] First five-field implementation and checker; original failed probe retained.
+- [x] Caller live microphone mode, fixture id/mode labeling, no clip-timed turns, 180 s cap.
+- [x] Approved three fixture corrections applied; verdict rules/expectations unchanged.
+- [x] Guardian clip cache uses text digests; 91 current WAVs valid, old audio preserved.
+- [x] Both Guardian updates PUT/read back: gpt-5.4-mini, temperature 1, max_tokens 300,
+      stronger help and explicit yes. Wallet before/after 277.25 cents, delta zero.
+- [x] Fresh full suite 244 passed (183 unit, 61 integration), one existing warning.
+- [x] Ruff lint/format, Node offline caller check and diff whitespace pass.
+- [!] S6 live exit checks unmet. User declined role-play/testing for credit reasons.
+- [ ] Pravesh text review pending; packet ready, no outreach or Hindi live call.
+
+Probe cd987c05-777a-48df-bfed-59381f9ea8cd: 135.6 s, rows 46-48, three successful tool calls
+and alert_status=sent; arrival unverified. Timing/fixture ambiguity confound the other failures.
+No sample, follow-up or retry ran. Preserve the first call, transcript and frozen fixture hash.
+Safe receipts: work/scamkaki-s6/. Canonical evidence: evidence/s6-guardian-live.md in gate folder.
+Scoped fault receipts: original checker/params 23; caller 8; config literals 8; fixtures/cache 4.
+Initial scanner mutation targeted Bait by mistake; retained invalid receipt, corrected proof caught.
+Whole-object read-back initially rejected backend defaults; supplied values matched recursively.
+Temperature 0.3 was rejected by documentation, not by a paid attempt; supported 1 approved by user.
+
+No tool-withholding feature verified. Call-end alert fallback needs separate approval because it
+changes urgent timing and "I have alerted your family". No Bait, dashboard or domain-code edits.
+No installs, migrations or clip deletion. Current-tree publication was later authorized; S7 implementation remains unauthorized.
+Offline preview on 8766, PID 9291, and real caller on 8765 are stopped.
+
+
+## S7 handoff, 2026-10-28
+
+- [x] Read user-supplied Envoi S22 reference and re-verify main/HEAD 59b918d, dirty S6 tree.
+- [x] Record Claude design-skill/palette direction in Gates 1/3 and status; no UI implementation.
+- [x] Record S7-before-S6-validation-planning exception in Gate 4; no live-proof waiver.
+- [x] Write s7-handoff.md and the independent s7-handoff-review.md prompt.
+- [!] S7 implementation remains unauthorized. The user later authorized current-tree main publication.
+After S7, only a priced S6 validation plan is requested. No calls, spend or S7 code came from
+the handoff. Its later Git publication is covered by the user's separate request. PROGRESS grants no approval.
+
+
+## Main publication, 2026-10-28
+
+User requested the current working tree be pushed to main. Prior no-publication notes above
+are historical. S6 remains incomplete live; S7 implementation remains unauthorized.
+- [x] Verify branch/main/remote at 59b918d and empty index before staging.
+- [x] Source hashes match, lint/format/Node caller checks pass, value-free pattern scan passes.
+- [x] Fresh full pytest: 244 passed, one existing warning. Source commit b5eb2b3; launcher ac34285.
+Final gate/handoff records are the publication's documentation concern. Main is fast-forwarded
+and pushed only under this request; the task reports exact final HEAD and ls-remote verification
+in chat after publishing. A fresh session resolves current Git state directly, not from old SHAs.
+Reviewed .claude/launch.json: only uv caller-server launch settings, no credentials; preserved
+it unchanged in configuration commit ac34285. No ignored clips, logs, work receipts or env files staged.

@@ -24,6 +24,29 @@ Branch per slice: `scamkaki/slice-<N>-<slug>`.
 S2 needs S1; S3 needs S1; S4 needs S1, and its Hindi half needs S2's provider choice; S5 needs S3 and S4; S6 needs S5; S7 needs S6.
 If S2 is no-go, the Hindi parts of S3, S4, S5 and S6 drop and those slices run English only.
 
+## Execution and design amendment, user-directed 2026-10-28
+
+S6's offline implementation is ready, but its live exit checks are unmet and further calls are
+deferred for credit reasons. The user directed the order: prepare S7, finish S7, then plan an
+appropriate S6 live-validation run with current costs. S7 can therefore be planned and, once
+separately authorized, built on S6's offline work without claiming that S6 passed live.
+The original S6 targets and failed attempt stay in the record. This is not an S6 closure.
+
+S7 uses Claude's relevant design skills and the midnight blue, ice blue, electric blue and
+chartreuse direction in Gate 1. Existing screen content, fixture labels and human report review
+remain required. The S7 row above is otherwise unchanged.
+
+After S7, the follow-up is a written S6 validation plan, not an automatic paid run. It covers
+current account access and wallet, current billing units/rounding and model/provider prices,
+probe-first stop conditions, essential cases, optional wider English/Hindi samples, a conservative
+per-call ceiling and total cap, rerun treatment, human/listener availability and evidence limits.
+The earlier US$0.8625 unspent S6 cap is historical context, not new authority to spend it.
+No session mint, agent update, call, paid hosting, top-up or other charge follows from this plan.
+
+S7 demo rehearsals and backup capture must not silently place new Bolna calls. Label fixture
+walkthroughs and replays accurately; record an unavailable demo check instead of claiming it ran.
+Preparing this handoff does not authorize S7 implementation, branch creation, commits or pushes.
+
 ## Never cut
 
 S1, S3, S4's leak guard, S5's already-acted path and offline fixture check, and the fixture labels on every screen.
