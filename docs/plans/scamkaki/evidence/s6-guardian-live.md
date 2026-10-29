@@ -335,3 +335,15 @@ Read from the production database in a read-only transaction (transcript and the
 ## Prompt fix applied, 2026-10-29
 
 The drafted prompt wording was applied to Guardian EN as a prompt-only PATCH (HTTP 200). Read-back: the stored prompt equals the local `agents/guardian.json` prompt; model, temperature and max_tokens unchanged; wallet 222.25 before and after. Not yet tested live: whether the agent now treats denials as absent, repeats every sign back, and calls the tool once. A prompt rule is not an enforced guard. The retry probe is waiting for a human operator and a restart of the caller server, which still serves the pre-edit story.
+
+## Retry after the prompt fix, 2026-10-29: FAIL
+
+Two human role-play calls on `en-ica-video-01` after the prompt PATCH and the story edit (caller restarted; the story served was the reworded one, not independently re-verified here). `check.py guardian --case en-ica-video-01` evaluates the latest, exits 1 with `tactics` and `tool_count`. Wallet 222.25 to 208.5: 13.75 cents for both. Total S6 spend 68.75 cents; 81.25 cents of the 150 remain. Both calls are kept; the 38 s call is partial and ended by the operator after the first few lines.
+
+- Call `23b495be` (38 s): one tool call at about 22 s, after the senior had said only "someone from ICA called... a parcel with fake passports". Stored `ica`, demand `none`, channel `call`, signs `handoff, urgency_threat, knew_details`, verdict `likely_scam`. No repeat-back and no yes had happened.
+- Call `d9d9a42a` (71 s, the one `check.py` scores): two tool calls, at about 23 s (`ica`, `none`, `call`, `urgency_threat, knew_details`, `unclear`) and about 64 s (`china_official`, `transfer`, `video`, `handoff, channel_move, urgency_threat, knew_details`, `likely_scam`). The transcript has no repeat-back and no "yes". The agent's own spoken summary said "handoff and channel_move" yet it stored four signs, then spoke the verdict. The senior never reached the denial lines in this call, so `urgency_threat` and `knew_details` were not "denied signs stored as present" this time: nobody said them.
+- Across all three tool calls in the two calls, `urgency_threat` and `knew_details` were sent every time, with no support in the transcript. [hypothesis] the model fills the last enum values by default; not tested.
+- Spoken verdict was the new template ("This is likely a China official impersonation scam. I have alerted your family. Same script heard 1 time this week."), so that part of the earlier failure is resolved.
+- The agent asked questions twice in call `23b495be` and an unfinished "This is" / "Not" appears in both: fragments of its own turns.
+
+Reading: the prompt rule "NO TOOL CALL BEFORE AN EXPLICIT YES" was not followed, in a call where the operator had given no yes. The rule is an instruction, not a guard, which the plan said before this retry. The stored extraction is not trustworthy on this agent as configured. No further prompt edit is proposed without the user's decision.
