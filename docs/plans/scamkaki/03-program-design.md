@@ -1,5 +1,9 @@
 # Program Design: Scamkaki
 
+Current amendment: website redesign, Gate 3 APPROVED 2026-10-30.
+The original sections below describe the prior contract; the dated redesign section at the end
+is the approved amendment. Status and approval authority remain in [00-status.md](00-status.md).
+
 Compact gate draft, 2026-10-22.
 Revised 2026-10-22: English and Hindi agents; the Modal TTS service and its files are removed.
 Revised 2026-10-24: family alert page and Telegram replace call transfer.
@@ -328,3 +332,186 @@ Guard coverage: for each rule in `decide` (including each new branch: harmful ac
 10. A money request from friend or family with no red sign is `unclear`, not `likely_scam`, so a real grandson is not reported as a scammer; a hijacked WhatsApp that asks for the same amount to the same person would also pass as `unclear`.
 11. Warning signs travel as one comma-separated string through Bolna's param template; five LLM-filled values per call is [unknown until S6].
 12. The act-now advice (call the bank on the number on the card, then 1799) follows SPF's "report to your bank immediately" guidance [verified, SPF advisory 15 Jul 2026]; the Hindi wording needs a listener check.
+
+## Website redesign program design, 2026-10-30
+
+**Gate 3 amendment, APPROVED 2026-10-30.** Read with Gate 2's redesign route/data contract. This section
+supersedes earlier screen-file and dashboard-rendering descriptions under this approved amendment.
+No application functions or tests below have been implemented by this planning work.
+
+### Files and ownership
+
+All paths below are repository-relative. Keep the existing Python/Jinja stack.
+
+| File | Planned change |
+|---|---|
+| `src/scamkaki/app/main.py` | New read routes, query validation and page context; retain existing auth, review and session contracts |
+| `src/scamkaki/domain/store.py` | Extend call listing; add detail reads and bounded report queue; no write-model change |
+| `src/scamkaki/app/presentation.py` | New pure stored-transcript-to-turn projection, no persistence or provider calls |
+| `src/scamkaki/app/templates/_theme.html` | Shared palette, typography, status/diagram styles, focus and responsive layout |
+| `src/scamkaki/app/templates/_reviewer.html` | New Jinja reviewer shell, active navigation and fixture/provenance treatment |
+| `src/scamkaki/app/templates/_error.html` | New reusable 503 content with a local retry link |
+| `src/scamkaki/app/templates/dashboard.html` | Overview, priority alert, short review queue, activity and matching diagram |
+| `src/scamkaki/app/templates/calls.html` | New query form, call table/phone records, paging, empty and no-match states |
+| `src/scamkaki/app/templates/call.html` | New stored call facts, transcript turns, missing-transcript state and Bait report link |
+| `src/scamkaki/app/templates/check.html` | New independent check detail, recorded-input diagram and alert state |
+| `src/scamkaki/app/templates/patterns.html` | New seven-day bars and expandable agency/request explanations |
+| `src/scamkaki/app/templates/report.html` | Focused review with empty entry state, required checkbox and persisted reviewed state |
+| `src/scamkaki/app/templates/voice.html` | New room; move existing SDK/controller here, with explicit start and lifecycle states |
+| `src/scamkaki/app/templates/family.html` | Standalone family restyle, retain existing IDs/access/polling, clear successful empty results |
+| `tests/unit/test_presentation.py` | Transcript projection cases, including continuation/unlabelled/Hindi text |
+| `tests/integration/test_dashboard.py` | Move existing claims to owning pages; preserve warnings, urgency, provenance and activity assertions |
+| `tests/integration/test_calls.py` | New list/detail/search/page boundaries, failed records, escaping and honest missing fields |
+| `tests/integration/test_checks.py` | New independent check detail, verdict/status mappings and absence of inferred links |
+| `tests/integration/test_patterns.py` | New actual seven-day grouping, EN/HI aggregation, empty and zero-safe bars |
+| `tests/integration/test_reports.py` | Entry choice, new layout, same persisted review guarantees and all existing guard tests |
+| `tests/integration/test_voice.py` | New room/auth/configuration handling and fake session contracts |
+| `tests/integration/test_family.py` | Preserve secret-link, ordering, labels, headers and safe family output |
+| `tests/support/fakes.py` | Only scoped additions needed for UI fixture records; no live fallback |
+| `scripts/preview_ui.py` | Local synthetic preview using existing dependencies and explicit test settings/fake providers |
+| `scripts/check_ui.mjs` | Offline DOM/controller checks with Node built-ins and small fake elements/events; no session mint or browser dependency |
+| `docs/plans/scamkaki/evidence/s8-workspace.md` through `s12-family-ui.md` | One factual evidence record per slice, including failures, screenshots and unavailable checks |
+| `docs/plans/scamkaki/00-status.md`, `PROGRESS.md` | Slice state and operational continuation, with approvals held only in status |
+
+Do not change `agents/`, fixture expectations, verdict/extraction/leak/alert/report-draft rules,
+migrations, CI, dependency manifests or lockfiles. Keep old mockups and failed evidence.
+No installation is implied. Remove moved dashboard call-controller code when Voice owns it;
+do not leave duplicate event handlers or unused queries. Preserve every behavior assertion
+when its content moves to a different screen rather than weakening it to accept the old page.
+
+### Types and signatures
+
+Proposed signatures, no implementation bodies. Existing rows stay dictionaries, matching the
+store convention. No generic repository or UI service layer is introduced.
+
+```python
+# app/presentation.py
+@dataclass(frozen=True)
+class TranscriptTurn:
+    speaker: Literal["ah_ma", "caller", "unlabelled"]
+    text: str
+
+def transcript_turns(transcript: str) -> list[TranscriptTurn]: ...
+
+# domain/store.py, additions/extension
+# List projection excludes transcript, extracted payload and raw payee details.
+def recent_calls(
+    conn: psycopg.Connection, limit: int = 50, *,
+    query: str = "", line: Line | None = None, offset: int = 0,
+) -> list[dict[str, Any]]: ...
+def get_call(conn: psycopg.Connection, call_id: int) -> dict[str, Any] | None: ...
+def get_check(conn: psycopg.Connection, check_id: int) -> dict[str, Any] | None: ...
+def recent_reports(
+    conn: psycopg.Connection, limit: int = 5, *, drafts_only: bool = True,
+) -> list[dict[str, Any]]: ...
+# get_call: call row plus optional report_id; never joins a Guardian check.
+# get_check: check row plus urgent = acted in HARM_ACTED; no synthetic call relation.
+# Extend existing get_report projection with call_id for its source-call link.
+# recent_reports: id, call_id, status, reviewed_at, created_at, agency, demand,
+# language, fixture_case. Drafts first, then created_at DESC, id DESC.
+# Existing scripts_this_week, recent_feed, recent_alerts and get_report are reused.
+
+# app/main.py, all reviewer endpoints have dependencies=[AdminDep]
+def calls_page(request: Request, settings: SettingsDep,
+               q: str = "", line: Line | None = None, page: int = 1) -> HTMLResponse: ...
+def call_page(call_id: int, request: Request, settings: SettingsDep) -> HTMLResponse: ...
+def check_page(check_id: int, request: Request, settings: SettingsDep) -> HTMLResponse: ...
+def patterns_page(request: Request, settings: SettingsDep) -> HTMLResponse: ...
+def reports_entry(request: Request, settings: SettingsDep) -> Response: ...
+def voice_page(request: Request, settings: SettingsDep) -> HTMLResponse: ...
+# Annotate q with max_length=100 and page with ge=1, le=1000 at the request boundary.
+# Positive record IDs; invalid inputs -> 422, missing positive IDs -> 404.
+# Page size is fixed at 50; query 51 rows and expose only the first 50.
+```
+
+No route-specific data object is needed beyond explicit template context. Use existing
+label dictionaries and `duration`/`sgt` filters. Order ties by id for stable navigation.
+One helper may render reviewer 503s if duplication merits it; no global error framework.
+
+### Call stacks and state
+
+- Overview GET: admin check, existing feed/week/alerts and five drafts, render Overview.
+  Priority uses only a likely-scam harmful-acted alert from the last 24 hours. Activity links
+  Guardian rows to checks and Bait rows to reports. It never links checks to calls by time.
+- Calls GET: validate query, parameterized filtered SQL with offset and one-row lookahead,
+  format list facts and URLs, render Calls. Detail GET reads by primary key and projects the
+  stored transcript; Jinja escapes every turn. Missing durations never display as zero.
+- Check GET: read by primary key, label stored fields and urgent state, render Check.
+  Alert states are sending/sent/failed/not configured/not recorded. Sent never reads Delivered.
+- Patterns GET: existing seven-day grouping, compute largest count or zero, render bars with
+  adjacent numeric text. No extra aggregation, new matching logic or invented pattern story.
+- Reports GET: choose newest draft, else newest reviewed row; 303 to the existing detail URL;
+  empty data renders an empty Reports screen. Report GET uses existing `get_report`. Browser
+  requires a checked acknowledgment to submit; the existing POST retains its auth/origin,
+  first-review timestamp and reviewed-draft semantics. No new server confirmation field.
+- Voice GET: read configured agent availability, render selected persona/language and explicit
+  credit/microphone disclosure. Missing agent configuration disables Start with explanation.
+  `idle -> connecting -> connected -> ended`, with `error` returning controls to usable state.
+  One SDK instance per attempt; ignore callbacks from superseded attempts. Selection and GET
+  produce zero provider calls. Only Start invokes the existing session flow. After call end,
+  show a link to Calls rather than automatically taking the user away.
+- Family GET: existing private-link check and headers, render standalone shell. Poll JSON
+  through existing path only. Render with `textContent`/DOM nodes, never untrusted innerHTML.
+  Successful empty data clears old content; a fetch failure retains it with a stale marker.
+  Preserve earlier alerts, sound opt-in and reduced-motion behavior.
+
+State transitions and guards belong to the owning template/controller. Use native form and
+button semantics; no controller framework. Calls search and review work with native forms.
+Voice requires JS; its no-JS message explains that. Family no-JS explains that alerts cannot
+refresh. Reviewer read errors return 503. Detail-not-found is distinct from an empty collection.
+
+### Test plan and guard proof
+
+Planned tests exercise real routes and database rows with fake providers. Names are proposed;
+existing behavior tests remain unless their assertions move to the owning page.
+
+| Test or group | Observable assertion |
+|---|---|
+| `test_reviewer_routes_require_admin` | Every new read route/redirect returns 401 without credentials or with wrong credentials; no record output |
+| `test_calls_search_and_line_filter_apply_before_paging` | Matching row beyond the first unfiltered 50 is found; query and line combine, links retain state |
+| `test_calls_paging_is_bounded_and_stable` | 51+ fixtures, equal timestamps, no duplicate rows across first/second page; invalid query/line/page is 422 |
+| `test_calls_keep_failed_records_and_missing_duration` | Failed, stopped and other stored statuses remain visible; None and zero durations differ |
+| `test_call_details_use_saved_time_and_escape_transcript` | Recorded label, original text, speaker/continuation handling, escaped hostile text, no invented times |
+| `test_call_and_check_are_not_joined_by_time_or_fixture` | Conflicting nearby rows never place a check verdict on a call |
+| `test_check_page_preserves_verdict_urgency_and_alert_states` | Every verdict/status, urgent/none/unsure and missing signs have literal expected labels |
+| `test_overview_priority_excludes_old_urgent` | Recent urgent priority, old urgent retained in history and no inflated priority count |
+| `test_patterns_show_only_seven_day_bait_groups` | EN+HI same-pair count, different demand separate, eight-day row excluded, empty has no divide-by-zero |
+| `test_report_entry_chooses_draft_then_reviewed_then_empty` | Correct destination or empty view; stable ties and auth |
+| Existing report review tests | Database status/timestamp survives reload; second review preserves time, redelivery preserves draft; no Telegram or Bolna side effects |
+| `test_reviewer_read_failure_is_not_empty_data` | Injected database read error gives 503/Retry; no false No calls yet result |
+| `test_voice_room_requires_explicit_start` | Fake SDK/session counters zero before Start; one on Start; selection alone never calls; connecting locks selection |
+| Offline voice/family controller cases | Call end/error/repeated click/late event handling, safe text rendering, stale and successful-empty states |
+| Existing family guard/order tests | Wrong or unset link stays 404; likely scam only; 24-hour urgent-first and headers persist |
+
+Guard claims require independent mutations: remove each new route's admin dependency; remove
+filter before paging; remove harmful-acted/24-hour condition; force missing transcript/duration
+into fabricated values; infer call/check linkage; bypass escaping; flatten alert status; bypass
+review auth/origin/idempotency; start voice on load/selection; leave stale family alert on empty.
+Run each relevant check, retain failures, restore exact bytes. Avoid claiming whole-system coverage.
+
+Inject representative hostile HTML and secret-like synthetic needles on the actual rendered
+HTML and family JSON/text surface for the claimed absence/escaping checks. Do not change or
+relabel the existing Ah Ma leak scanner's separate scope as full transcript privacy protection.
+
+### Verification and least confident decisions
+
+Use focused tests during each slice, then existing full unit/integration, Ruff lint/format,
+`node scripts/caller/check-live.mjs`, new offline UI checks and `git diff --check`. Use only the
+verified test branch with fake providers when separately authorized; integrations migrate and
+truncate that branch. A local preview must pass explicit test settings and cannot fall back
+to production. Do not run it with default `.env.local` application settings.
+
+Browser-check actual pages at 1280 and 375 px, keyboard order/focus, Hindi, expanded text,
+empty/error/missing states and all reachable links. Record screenshots, HTTP responses and
+measured overflow. Verify Overview-to-urgent/report/call paths in at most two navigation steps.
+Human comprehension remains [unknown] until someone performs a walkthrough; automated navigation
+is not a usability result. Missing tools/checks are recorded, with no automatic installation.
+
+1. [hypothesis] A Reports navigation entry that opens the newest draft is sufficient. If a
+   full report-list screen is needed, return to Gate 1 rather than silently add a ninth screen.
+2. [verified] Call/check linkage is incomplete. This plan deliberately displays no Guardian
+   verdict on a call, even if an individual nullable execution id happens to be populated.
+3. [hypothesis] Fixed 50-row pages and a page cap of 1000 suit the fixture-scale project. No
+   performance or production-load result is claimed; do not add indexes without evidence.
+4. [unknown] Real transcript variants may differ from the stored fixture strings. Keep
+   unlabelled fallback readable and never infer missing turns or identities.

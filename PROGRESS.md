@@ -172,3 +172,52 @@ and pushed only under this request; the task reports exact final HEAD and ls-rem
 in chat after publishing. A fresh session resolves current Git state directly, not from old SHAs.
 Reviewed .claude/launch.json: only uv caller-server launch settings, no credentials; preserved
 it unchanged in configuration commit ac34285. No ignored clips, logs, work receipts or env files staged.
+
+## Website redesign preview, 2026-10-30
+
+Current UI request only; earlier S6/S7 notes above are historical. Authority remains in
+`docs/plans/scamkaki/00-status.md`, never this progress record.
+- [x] Verified clean main at 154d1d72fc1518b1f5f29ec53024207cdf141a28; created scamkaki/gates-ui-redesign.
+- [x] Built eight standalone HTML screen proposals, preserving existing application code.
+- [x] Browser checks at 1280 and 375 px; search, filter, empty/error, review and mock voice controls.
+- [x] Mirrored pending amendment in Gates 1-4 and status; checks/ui-redesign-preview.md records limits.
+- [x] Reconcile subsequent user direction with status authority and draft the three remaining gate amendments together.
+- [x] Synchronize the later user decision in the authority documents; no implementation started.
+Preview on 127.0.0.1:8782, server session 75911; Ctrl-C stops it. Retained browser tab is the output.
+Generator and screenshots are scratch in work/ui-redesign/. No application tests, calls,
+provider access, database actions, installs, commits, pushes or deployments occurred.
+
+
+## Website redesign gate drafting, 2026-10-30
+
+- [x] Re-verified branch/HEAD and retained all prior in-scope dirty files/previews.
+- [x] Read current routes, queries, schema and tests; drafted route/data, signature/test and S8-S12 contracts.
+- [x] Preserved known evidence limits: recorded time, no inferred call/check link, sent vs received.
+- [ ] S8 implementation remains unstarted; its separate authority is pending in 00-status.md.
+Local drafting only. No credentials, database, providers, installs or Git publication used.
+
+
+## S8 handoff preparation, 2026-10-30
+
+- [x] Read the user-supplied Envoi reference as a structural example only.
+- [x] Synchronize the current authority state across gate/status mirrors.
+- [x] Re-verify local main/HEAD and remote main at 154d1d7, empty index, no S8 branch.
+- [x] Inventory installed tools and known local files without reading credential values.
+- [ ] S8 code and destructive test-branch checks remain unstarted pending named authority.
+Authority is only in 00-status.md. Handoff and review prompt are in the gate folder.
+- [x] Wrote s8-handoff.md and the independent read-only s8-handoff-review.md prompt.
+- [x] Documentary checks: approval mirrors, exact copied contract, eight-section order, source boundary and whitespace pass.
+No S8 branch/code, test-database mutation, installation or Git publication occurred.
+
+
+## Redesign publication preparation, 2026-10-30
+
+Current request covers committing this session's documentation/preview/handoff package and
+fast-forwarding/pushing main. Scope and exact user words are recorded only in 00-status.md.
+- [x] Re-verify branch, empty index, local/remote source baseline 154d1d7 and known file inventory.
+- [x] Update handoff/review/Gate 4 mirrors so the old uncommitted snapshot is clearly historical.
+Final publication completion is evidenced by Git refs and the task's reported remote SHA;
+no hash or successful push is predicted within the commit being published.
+S8 code and destructive test-branch work remain unstarted; ignored scratch/audio/env stay local.
+- [x] Fresh documentary/HTML/contract/whitespace checks passed for the 17-file package.
+- [x] Bounded credential-pattern scan found no matches; no application suite/database reset run.

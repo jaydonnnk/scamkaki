@@ -66,7 +66,7 @@ If the money or the code is already gone, Ah Ma tells you to call your bank righ
 Behind it, Ah Ma Bait picks up scam calls herself, plays along, and keeps Guardian's list of phone scripts current.
 Every report is a draft that a person checks; nothing is filed automatically.
 
-## Screens
+## Previously approved screens
 
 - [`mockups/dashboard.html`](mockups/dashboard.html): live call feed and "scripts this week".
 - [`mockups/report.html`](mockups/report.html): one Bait call's report draft with a "Mark reviewed" action.
@@ -77,7 +77,7 @@ Every report is a draft that a person checks; nothing is filed automatically.
 
 Claude is to use its relevant design skills for S7, with an appropriate combination of
 midnight blue, ice blue, electric blue and chartreuse. Exact shades and proportions are design
-choices, not approved measurements. Keep the reviewer workflow and the existing mockup screens.
+choices, not approved measurements. Keep the reviewer workflow. The 2026-10-30 screen amendment below supersedes the original three-screen layout scope.
 This direction supersedes the mockups' old color treatment, not their functional content.
 Use the palette with readable contrast, clear focus and danger/urgent meaning beyond color alone.
 Mockups and visualization files stay plain HTML; this adds no framework or new product feature.
@@ -85,3 +85,63 @@ Mockups and visualization files stay plain HTML; this adds no framework or new p
 ## Out of scope
 
 Hokkien and other dialects; Mandarin until every slice is done (stretch); one agent that switches language mid-call; transferring the senior's call to a family phone (blocked on our Bolna account, see S3 evidence); automatic filing to ScamShield, SPF or banks; Guardian contacting a bank or freezing a card for the senior; checking website addresses or reading screenshots, because a link spoken aloud cannot be checked reliably; business email and invoice scams; blocking or intercepting calls on a senior's phone; real scam-number seeding; multi-family accounts; Singapore number provisioning beyond what Bolna offers.
+
+## Website redesign proposal, 2026-10-30
+
+**Gate 1 amendment, APPROVED 2026-10-30.** User: "Looks good. I approve gate 1." The earlier product goals, languages, verdicts,
+fixture labels, private family access and human-only report review remain unchanged.
+
+### Problem and intended result
+
+[verified] The current dashboard puts call controls, a live feed, weekly scripts and a second
+call-log table on one page (`src/scamkaki/app/templates/dashboard.html`). The user described
+it as one dimensional, basic, wordy and too much like a test website.
+[hypothesis] A separate screen for each task, clear navigation and visual explanations will
+make the product easier to use. More screens alone do not establish usability.
+
+Design target, not a measured user result: from Overview, reach an urgent Guardian check,
+a report draft or a call's details in at most two navigation actions. At phone width, each
+call reads as a labeled record without horizontal table scrolling. A future human walkthrough
+must establish whether people understand the result and next action without explanation.
+
+### Announcement
+
+Scamkaki puts the next useful action first. See urgent checks on Overview, browse conversations
+in Calls, and understand repeated requests in Script patterns. Review a report on its own
+screen. Family members get a simpler alert page with the immediate next steps.
+
+### Approved screen direction
+
+One self-contained HTML file per screen, under `mockups/redesign/`:
+
+- [Overview](mockups/redesign/overview.html): urgent check, draft queue, recent activity and a Bait-to-Guardian flow diagram.
+- [Calls](mockups/redesign/calls.html): search, line filter, aligned status/duration fields and readable phone records; empty and unavailable states.
+- [Call details](mockups/redesign/call-detail.html): call facts, conversation record availability and a record trail; no inferred verdict.
+- [Guardian check](mockups/redesign/check.html): claimed agency, request, warning signs, already-acted state and alert progress, with a cause-and-result diagram.
+- [Script patterns](mockups/redesign/patterns.html): seven-day Bait counts by agency/request as bars, expandable explanations and the matching flow.
+- [Reports](mockups/redesign/reports.html): focused report review, source limitations and explicit confirmation before marking reviewed; sends nothing.
+- [Voice room](mockups/redesign/voice.html): choose persona and language away from the call history; clearly disclose microphone and credit use before a real connection.
+- [Family alerts](mockups/redesign/family.html): separate private-link experience with urgent guidance, compact reasons and no reviewer navigation.
+
+### Visual direction and limits
+
+Retain the user-selected midnight blue, ice blue, electric blue and chartreuse palette.
+Use a midnight navigation rail, light reading areas, clear status labels and restrained icons.
+Keep chartreuse for fixture labeling, never for a claim that a call is safe. Move secondary
+explanations into details disclosures. Do not remove failed calls or uncertainty to look polished.
+
+[verified] S7 evidence records that Guardian checks cannot reliably be tied to calls. The
+approved design keeps them separate. A completed call is not a passed check. Telegram sent is not
+confirmed receipt. Script counts are not confirmed scams, unique scammers or success rates.
+
+All sample counts, durations, dates and stories in these mockups are illustrative fixtures,
+not extracted results. Missing transcripts are explicitly unavailable; none are fabricated.
+Only the first sample call has a detail preview. Reports shows one sample draft, not a built
+report-list feature. Review confirmation changes this page only and resets on reload. Voice
+controls never request a microphone, mint a session or start a call. Family remains a standalone
+preview, outside reviewer navigation. No automatic filing, settings, account management,
+identity matching, new voice behavior or real-world effectiveness claim is added.
+
+The old mockups remain historical. Gate 1 approval selects this product direction. Gates 2-4
+were drafted together and approved 2026-10-30. They resolve routes, access checks,
+data availability, transcript handling, real review persistence and tests before implementation.

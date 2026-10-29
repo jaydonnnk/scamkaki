@@ -1,5 +1,9 @@
 # Slice plan: Scamkaki
 
+Current amendment: website redesign, Gate 4 APPROVED 2026-10-30.
+The original sections below describe the prior contract; the dated redesign section at the end
+is the approved amendment. Status and approval authority remain in [00-status.md](00-status.md).
+
 Compact gate draft, 2026-10-22.
 Revised 2026-10-22: S2 is the Hindi voice slice; Hokkien is dropped; Mandarin is a stretch after S7 (was S6 before the 2026-10-28 split).
 Revised 2026-10-24: S3 alerts the family by Telegram and a family alert page instead of transferring the call.
@@ -66,3 +70,163 @@ Bait extracts warning signs so the 7-day count can match on tactics; Mandarin Gu
 - No slice starts without your authorization by ID.
 - Every pass rate is reported with its sample size, as fixture results.
 - A failed live run keeps its evidence; reruns are reported as reruns.
+
+## Website redesign slices, 2026-10-30
+
+**Gate 4 amendment, APPROVED 2026-10-30.** Gate 1's eight-screen direction and Gates 2-4 are approved; the user requested
+the latter three together. S8-S12 below are planned and still need per-slice authorization.
+S1-S7 retain their historical contracts and evidence. S6 remains open for live proof; S7's
+backup video and full live demo remain open. The redesign does not waive or rerun either.
+
+### Build order and shared authority
+
+[verified] Approved design: Build S8, S9, S10, S11, then S12 on the existing local S7 implementation.
+These are offline UI slices, independent of S6's deferred live calls. Approval of this amendment
+accepts that dependency order; it does not authorize any slice, call or spend.
+
+Create `scamkaki/slice-<N>-<slug>` from the verified then-current tip of `main` before each
+slice's first application edit. Per-slice implementation authority covers the required branch
+and local code only. It must name permission for the existing destructive test-branch checks
+if those are to run: migrations/truncation on the verified `TEST_DATABASE_URL` branch, fake
+Bolna and Telegram, never production. No real sessions, calls, account changes or notifications.
+
+The planning boundary was `scamkaki/gates-ui-redesign` at `154d1d7`, with approved documents
+and previews uncommitted. The user later authorized their commit, main fast-forward and push
+on 2026-10-30. These files are included in that publication package. Re-verify current refs
+and tracked documents before S8; do not assume the pre-publication dirty state still applies.
+Preserve any newly discovered dirty work and resolve its scope before editing.
+Before each later slice, verify main includes its prerequisites. If it does not, stop for the
+separately authorized commit/fast-forward step; do not silently stack branches or discard work.
+Commit, main integration, push, deployment, installation and provider use need named authority.
+
+Every slice delivers a reachable working page with synthetic fixture data and fake providers.
+Keep navigation limited to implemented destinations. Original report/family URLs remain usable
+throughout. On the Overview, show only implemented diagrams/links; never ship dead controls.
+Every new list/detail handles its populated, empty/missing and unavailable states. S11/S12
+include the actual asynchronous loading/error states for calls and family polling.
+
+### S8: Reviewer workspace and records
+
+- **Branch:** `scamkaki/slice-8-reviewer-workspace`.
+- **Visible result:** Overview leads to a readable Calls history and actual call/check detail
+  pages at desktop and phone widths. The reviewer can find failed calls and read stored
+  transcripts. Guardian checks remain separate records with the recorded reasons and alert state.
+- **Builds:** shared reviewer shell/theme/error content; Overview activity, priority alert and
+  short draft queue; `/calls`, `/calls/{call_id}`, `/checks/{check_id}`; filtered SQL with bounded
+  pagination; detail/queue reads; transcript projection. The Overview matching diagram is static
+  explanatory content. Existing report and family routes keep working with shared-theme changes.
+- **Assigned tests:** `test_reviewer_routes_require_admin` for routes built here; Calls search,
+  pre-page filtering, stable paging, failed/missing-duration cases; call transcript and no-inferred-
+  linkage tests; Check verdict/status/urgent matrix; recent-vs-old urgent priority; 503 vs empty.
+  Existing dashboard assertions move to their owning routes without losing behavioral coverage.
+- **Evidence:** `evidence/s8-workspace.md`; local fake-provider preview URL/port and stop command,
+  HTTP 401/404/422/503 checks, populated/empty/error screenshots at 1280 and 375 px; real filter,
+  Next/Previous and transcript disclosure walkthrough; independent guard mutations and restores.
+- **Falsifiers:** a result attached by time/fixture instead of a verified relationship; false
+  Started timestamp; an old urgent row promoted as new; lost failure records; missing values
+  fabricated as zero; unescaped transcript; search applied only to the first unfiltered page.
+- **Exit decision:** go only when the assigned checks and reachable page walkthrough pass.
+  Human usability remains unmeasured. Stop for S9 authorization, not automatic continuation.
+- **Authorizations to request:** S8 local implementation/branch and named test-branch checks.
+  No call, production mutation or Git publication follows from this slice.
+
+### S9: Visual script patterns
+
+- **Branch:** `scamkaki/slice-9-script-patterns`; depends on S8 in main.
+- **Visible result:** Script patterns shows seven-day Bait groups as labeled bars and expandable
+  explanations. Reviewer navigation and Overview links reach the actual page.
+- **Builds:** `/patterns`, pattern template and shared diagram styling, reusing
+  `scripts_this_week`; no new aggregation store or expanded Bait extraction.
+- **Assigned tests:** `test_patterns_show_only_seven_day_bait_groups`; EN/HI aggregation,
+  different requests remaining separate, numeric labels/bar scaling, no-data state and database
+  failure state; route auth. Verify Overview's summary and Patterns use the same source meaning.
+- **Evidence:** `evidence/s9-script-patterns.md`; fixture group inputs/expected counts, screenshots
+  and expanded-content walkthrough, route/SQL evidence and affected guard mutation receipts.
+- **Falsifiers:** mixing Guardian rows into Bait counts; counting an eight-day script; invented
+  scam-network relationships or success percentages; bars contradicting their text labels.
+- **Exit decision:** go when count boundaries, labels, links and responsive layout pass; stop
+  for S10 authorization. No claim of real scam detection performance.
+- **Authorizations to request:** S9 local implementation/branch and named test-branch checks.
+
+### S10: Focused report review
+
+- **Branch:** `scamkaki/slice-10-report-review`; depends on S8/S9 in main.
+- **Visible result:** Reports navigation opens the newest draft or the latest reviewed report,
+  or explains that there are no reports. Each real report uses the approved focused layout.
+  Review is acknowledged in the browser and persists across reload without sending anything.
+- **Builds:** `/reports` entry, report template restyle and native required checkbox; existing
+  report GET/POST routes and review SQL reused. Preserve all reports' access through Overview
+  activity and Bait call detail; show review timestamp/status distinctly from original draft text.
+- **Assigned tests:** report-entry draft/reviewed/empty and auth cases; all existing report guard,
+  first-review timestamp, redelivery, escaping, leak-label and no-send assertions. Browser test
+  required checkbox, real POST/303, reload and repeat review with fake providers only.
+- **Evidence:** `evidence/s10-report-review.md`; before/after database review state on test branch,
+  real request/redirect evidence, screenshots, zero fake provider effects and guard mutations.
+- **Falsifiers:** reviewed state disappears on reload; a second review changes its timestamp;
+  redelivery rewrites the reviewed draft; any provider call/send; hiding leak findings; review
+  styled as filed or delivered. Checkbox is UI acknowledgment, not a new server guard claim.
+- **Exit decision:** go when persistent review and existing protections hold; stop for S11.
+- **Authorizations to request:** S10 local implementation/branch and named test-branch checks.
+
+### S11: Voice room
+
+- **Branch:** `scamkaki/slice-11-voice-room`; depends on S8-S10 in main.
+- **Visible result:** Voice room lets a reviewer select Guardian/Bait and English/Hindi, read the
+  microphone/credit disclosure and explicitly start. Connection, hang-up and failure are clear.
+- **Builds:** `/voice`, owning template/controller, existing pinned SDK and session endpoint.
+  Move call UI/controller out of Overview. No agent, model, price, prompt, tool or transcript change.
+  State machine and configured-agent availability follow Gate 3; no duplicated SDK/controller.
+- **Assigned tests:** route auth and configuration handling; fake-provider session contract;
+  offline controller explicit-start/one-at-a-time/end/error/late-event checks. Selection and page
+  load counters must remain zero; Start increments exactly once under the fake SDK.
+- **Evidence:** `evidence/s11-voice-room.md`; fake-provider browser connection lifecycle and
+  offline checks, screenshots at both widths, SDK/controller guard mutation receipts. Run no
+  real microphone/provider session to make this evidence.
+- **Falsifiers:** session minted on load/selection/navigation; double click creates two sessions;
+  selectors change during connection; stale events reset a newer call; hidden account credit use.
+- **Exit decision:** local fake lifecycle passes. Actual provider audio/connection remains
+  unverified by this slice; stop for S12 authorization.
+- **Authorizations to request:** S11 local implementation/branch and named test-branch checks.
+  Any real web call or microphone/provider validation needs a separate named scope and budget.
+
+### S12: Family view and completed website flow
+
+- **Branch:** `scamkaki/slice-12-family-ui`; depends on S8-S11 in main.
+- **Visible result:** Family gets concise urgent guidance, expandable reasons and earlier
+  alerts through the existing private link. All eight screen types work together with real
+  stored fixture data, safe fake providers and the approved responsive design.
+- **Builds:** standalone family restyle, safe renderer/state feedback and stale/empty handling.
+  Retain five-second poll, 24-hour urgent-first order, opt-in sound, reduced-motion flashing,
+  secret-link checks and response headers. No reviewer access or navigation is granted to family.
+- **Assigned tests:** family link/list/order/header tests; offline renderer safe text, empty,
+  stale/error and new-alert transitions. Browser walkthrough all eight screens, each verdict,
+  urgent/non-urgent, Hindi, empty/error, keyboard focus, responsive overflow and query navigation.
+  Verify the three Gate 1 tasks take at most two navigation actions from Overview.
+- **Evidence:** `evidence/s12-family-ui.md`; genuine browser screenshots and request log against
+  local synthetic fixtures, complete task walkthrough, full relevant suite and guard receipts.
+  Record missing tooling or named assistive-technology/human checks as unavailable, never passed.
+- **Falsifiers:** wrong/private link exposed; family sees non-likely-scam records; changed 24-hour
+  ordering; a successful empty response leaves an old alert; failure masks stale data as fresh;
+  user text becomes HTML; lost opt-in sound or reduced-motion behavior; broken path to any screen.
+- **Exit decision:** redesign go only when its assigned tests and full fake-provider walkthrough
+  pass. Human comprehension and S6 live efficacy remain distinct. This does not close S7's
+  unrecorded backup video or unrun live demo.
+- **Authorizations to request:** S12 local implementation/branch and named test-branch checks.
+  Any user walkthrough, real-device/screen-reader check or recording is evidence only if performed.
+  No recording install, outreach, commit, deployment or live call is implied.
+
+### Never cut, cut order and completion
+
+Keep fixture/no-fixture labeling, failed attempts, honest missing fields, independent call/check
+records, warning/urgent meanings, auth, human report review and family isolation. Keep the eight
+approved screen functions unless the user re-steers. The original never-cut S1-S7 rules persist.
+Cut optional motion, extra decoration and duplicate explanatory copy before any functional
+screen or safety/provenance requirement. Original live-validation sample cuts remain unchanged.
+
+After each slice: fresh focused/full checks as appropriate, actual local page walkthrough,
+evidence/status update and `architect-reviewer` post-slice cleanup. Preserve historical
+mockups/evidence and in-scope dirty work; do not install or publish implicitly. Ask
+`Continue to slice N+1, or re-steer?` using S9 after S8, S10 after S9, S11 after S10 and S12
+after S11. There is no S13 plan. After S12, report the redesign result and remaining evidence
+limits, then stop for the user's next instruction. A fresh-session continuation requires the
+self-contained slice handoff specified in AGENTS.md.

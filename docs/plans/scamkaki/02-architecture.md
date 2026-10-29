@@ -1,5 +1,9 @@
 # Architecture: Scamkaki
 
+Current amendment: website redesign, Gate 2 APPROVED 2026-10-30.
+The original sections below describe the prior contract; the dated redesign section at the end
+is the approved amendment. Status and approval authority remain in [00-status.md](00-status.md).
+
 Compact gate draft, 2026-10-22.
 Greenfield repo; no existing code to fit.
 Revised 2026-10-22: English and Hindi through Bolna's stock providers; the Modal Hokkien TTS is removed; Mandarin is a stretch.
@@ -89,3 +93,114 @@ Free instances sleep when idle, and a cold start during a Guardian tool call may
 - Guardian's call grows by about four questions; keeping it under three minutes for a senior is [unknown until S6].
 - The verdict is only as good as what the senior tells Guardian and what speech-to-text hears; a senior who hides the secrecy instruction defeats the warning-sign rule.
 - Bait's extraction and `scripts` are unchanged, so the 7-day count still matches on agency and demand only; Bait never produces the new agency and demand values (telco, MAS, MinLaw, cash handover and others), so those always count 0 until Bait is extended.
+
+## Website redesign architecture, 2026-10-30
+
+**Gate 2 amendment, APPROVED 2026-10-30.** Gate 1's eight-screen direction is approved. This section
+supersedes earlier dashboard/screen-layout descriptions under this approved amendment.
+The preceding voice, verdict, extraction, alert-delivery and persistence contracts still apply.
+
+### Fit and evidence
+
+[verified] Inspected `app/main.py`, `domain/store.py`, the existing templates, migrations
+0001-0005 and integration tests on local HEAD `154d1d7`. FastAPI, Jinja and Postgres already
+store the records needed. Guardian checks have a nullable `execution_id`; existing code does
+not reliably link them to calls. `calls.created_at` is a database insertion timestamp.
+[unknown] Current deployed revision, account access and live provider behavior. None is needed
+to approve the local UI design; no external account was queried during this drafting.
+
+[verified] Approved design: Keep the existing app and dependencies. Add server-rendered reviewer pages and
+small local browser interactions. Reuse HTTP Basic admin access, Postgres queries, the report
+review POST, family-link checks and the current web-call session endpoint. No database migration,
+new framework, chart library, external font, account provisioning or background service.
+Diagrams use HTML/CSS and inline SVG; chart counts also appear as text.
+
+### Routes and access
+
+Every reviewer route below uses `AdminDep`, including redirects and missing-record responses.
+Family routes keep `FamilyDep`; the family page has no reviewer navigation or private-link
+shortcut from admin screens. All eight screen types have populated, empty/missing and error
+handling appropriate to their record type.
+
+| Route | Verb | Screen or action |
+|---|---|---|
+| `/` | GET | Overview: recent checks/scripts, recent urgent alert, short draft queue and matching diagram |
+| `/calls?q=&line=&page=1` | GET | Calls: search, line filter and 50-record pages; all call statuses retained |
+| `/calls/{call_id}` | GET | Call details: stored facts and transcript when present; Bait report link when present |
+| `/checks/{check_id}` | GET | Separate Guardian check: stored verdict, signs, acted and alert status |
+| `/patterns` | GET | Script patterns: complete seven-day agency/request grouping, bars and matching diagram |
+| `/reports` | GET | Navigation entry: 303 to newest draft, else newest reviewed report; empty Reports view if none |
+| `/reports/{report_id}` | GET | Focused Reports screen for the selected report; existing URL preserved |
+| `/reports/{report_id}/review` | POST | Existing idempotent review, same-origin check and 303 preserved; records review and sends nothing |
+| `/voice` | GET | Voice room: select Guardian/Bait and EN/HI, then explicitly start the existing web-call SDK |
+| `/web-call/session` | POST | Existing authenticated session mint; same provider contract and line/language mapping |
+| `/family/{link_token}` | GET | Standalone Family alerts, retaining secret-link access and headers |
+| `/family/{link_token}/alerts` | GET | Existing polling JSON; likely scam only, recent urgent first |
+
+Reports entry and report detail use the same screen design. This adds no report-list screen.
+Overview exposes a bounded draft queue; the Bait call detail and activity retain individual
+report links, so the entry redirect does not hide the existence of other reports.
+
+### Data and page behavior
+
+- Calls search runs in parameterized SQL before paging, over fixture case, status and language
+  label. An optional `line` filter combines with search. Fixed page size 50, fetch one extra
+  to determine Next; order `created_at DESC, id DESC`. State and Previous/Next live in the URL.
+  Search treats typed `%` and `_` literally. Do not search transcripts or load them in lists.
+- Overview uses bounded existing feeds, up to five drafts and the first recent urgent alert
+  from the family query. An old urgent record keeps its recorded urgent badge but is not the
+  Overview priority after 24 hours. Empty means no matching records, never a failed query.
+- Patterns uses all `scripts_this_week` groups across EN/HI. Each bar's label and numeric
+  count remain visible; widths are relative to the largest group. No data yields no bars.
+  Counts describe Bait records, not unique callers, confirmed scams or accuracy. Expanded
+  descriptions use recorded agency/demand and existing labels, not generated stories.
+- Call detail retrieves one call by primary key, plus an optional Bait report id. Label the
+  timestamp Recorded, not Started. Show duration only when stored, including zero accurately.
+  Do not invent call-start/end times, event timings or a Guardian outcome. Guardian details
+  say that no verified check link is available; link back to Overview rather than guess.
+- Guardian detail reads the stored check directly. Derive urgent display only from the
+  existing harmful-acted values; preserve all three stored verdicts and every alert status.
+  Diagrams explain recorded inputs. They do not claim to reconstruct the conversation or
+  establish why the model extracted them. Missing signs read None recorded.
+- Reports reads the existing draft and review state, with a link to its stored source call.
+  The required confirmation checkbox is
+  a browser acknowledgment, not a new security barrier. The existing POST remains compatible
+  and preserves its first-review time and reviewed draft on webhook redelivery.
+- Voice room loads the existing pinned SDK only on `/voice`. Page load, selection, navigation
+  and polling never mint a session. Only Start conversation triggers microphone/SDK work.
+  During Connecting/Connected, lock the persona/language and prevent a second start. Hang up,
+  call end and connection failure restore controls; late events cannot reset a newer call.
+- Family keeps five-second polling, 24-hour urgent-first order, prior-alert list, opt-in sound,
+  bounded flashing with reduced-motion support, and urgent bank guidance. New styling uses
+  safe text nodes. Failed requests show a stale/error message without hiding the previous
+  alert; a successful empty response clears stale alert content and shows No alerts yet.
+
+### Transcript, failures and refresh
+
+[verified] Approved design: Show only the stored transcript, escaped. Known `assistant:` and `user:` markers
+become Ah Ma and Caller turns. Retain continuation lines; unlabelled content stays unlabelled.
+Empty transcript is unavailable. No audio player, summarization, guessed speaker or timestamps.
+No raw execution payload is exposed. Existing fixture/no-fixture provenance remains visible.
+
+Missing detail records return 404. Invalid query values return 422 before SQL. A database
+read failure returns an HTML 503 with Retry, not an empty page; catch database exceptions at
+reviewer read routes only. Do not change webhook/tool error handling. Keep record pages and
+family responses non-cacheable; retain no-referrer/noindex on family access. Retry URLs stay
+local and retain filters. Overview alone can retain the existing 15-second refresh, paused
+for focused controls. Calls uses explicit refresh; Voice never reloads during a conversation.
+
+### Boundaries and alternatives
+
+[verified] Approved design: Reuse existing stored rows instead of inventing a call/check join or adding a new
+schema. A client-side app would duplicate routing/state without resolving missing evidence.
+Keep CSS in the shared HTML theme and small scripts in their owning templates. A pure helper
+in `app/presentation.py` handles transcript turns; SQL stays in `domain/store.py` as it does today.
+
+Production templates omit the mockup state-switch buttons, illustrative hardcoded rows and
+preview-only reset controls. Loading/error/empty states arise from actual route/controller state.
+Keep the required fixture badge compact and place detail limits beside the affected records.
+
+No new provider integration, voice prompt, matching rule, notification, filing action or
+language is proposed. External capabilities and published medical/financial guidance are not
+re-researched or changed by this UI amendment. Local previews use synthetic rows and fake
+providers; they cannot load production settings or mint real sessions.

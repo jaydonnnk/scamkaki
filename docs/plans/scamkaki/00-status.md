@@ -1,11 +1,11 @@
 # Status: Scamkaki
 
-Updated: 2026-10-29 (Asia/Singapore).
+Updated: 2026-10-30 (Asia/Singapore).
 
-- Gate 1 - Product: **APPROVED 2026-10-27** (re-approved after the sophisticated-scam revision) ([01-product.md](01-product.md), [mockups](mockups/)).
-- Gate 2 - Architecture: **APPROVED 2026-10-27** (re-approved after the sophisticated-scam revision) ([02-architecture.md](02-architecture.md)).
-- Gate 3 - Program Design: **APPROVED 2026-10-28**, re-approved for the S6 fixture-table amendment; remaining design retains its 2026-10-27 approval ([03-program-design.md](03-program-design.md)).
-- Gate 4 - Slice plan: **APPROVED 2026-10-28** (re-approved after the S5 split) ([04-slices.md](04-slices.md)).
+- Gate 1 - Product: **APPROVED 2026-10-30** for the eight-screen website redesign; prior product scope approved 2026-10-27 ([01-product.md](01-product.md), [mockups](mockups/)).
+- Gate 2 - Architecture: **APPROVED 2026-10-30** for the website redesign; existing application contract approved 2026-10-27 ([02-architecture.md](02-architecture.md)).
+- Gate 3 - Program Design: **APPROVED 2026-10-30** for the website redesign; existing contract approved 2026-10-28 for the S6 fixture-table amendment, otherwise 2026-10-27 ([03-program-design.md](03-program-design.md)).
+- Gate 4 - Slice plan: **APPROVED 2026-10-30** for website slices S8-S12; existing S1-S7 plan approved 2026-10-28 ([04-slices.md](04-slices.md)).
 
 The sophisticated-scam revision (`scamkaki/gates-sophisticated-scams`, commit `023d97c`) and the S5 split (`scamkaki/gates-slice-replan`, commit `9be72d1`) were fast-forwarded into `main` and pushed on 2026-10-28; both branches are kept locally and were never pushed.
 
@@ -126,3 +126,82 @@ S2 was authorized and closed 2026-10-22 (see approval history). S3 authorized 20
 - 2026-10-29 Guardian EN prompt fix applied (user: "Yes to all"): prompt-only `PATCH /v2/agent/{id}` returned 200 and the read-back prompt equals the local one ([draft](s6-guardian-prompt-draft.md), four wording changes). Wallet 222.25 before and after, delta zero; model gpt-5.4-mini, temperature 1 and max_tokens 300 read back unchanged. `agents/guardian.json` updated; the Hindi agent was not changed; the earlier prompt is kept locally in `work/scamkaki-s7/guardian-before-prompt-fix.json`. `48daf96` pushed to `main` (verified). The probe has NOT run: it needs a human at the microphone, and the caller server on port 8765 (pid 35071, started 21:30) predates the story edit and still serves the old `en-ica-video-01` story. S6 open; 95 cents remaining; Option B not authorized.
 
 - 2026-10-29 S6 retry after the prompt fix FAILED: `check.py guardian --case en-ica-video-01` exits 1 (`tactics`, `tool_count`) on `d9d9a42a`. The agent called `match_script` before any repeat-back or yes in both new calls, and every call carried unsupported `urgency_threat` and `knew_details`. Spend 13.75 cents (wallet 222.25 to 208.5); total 68.75; 81.25 cents of the cap remain. Evidence in the S6 file. S6 open; Option B not authorized; no further call, prompt edit or agent change without the user's decision.
+
+## Website redesign, 2026-10-30
+
+[verified] The user requested more screens, diagrams, less copy and better call-log formatting.
+Gate 1 was reopened for this screen/navigation amendment and approved 2026-10-30. The eight-screen HTML
+preview is in [mockups/redesign/overview.html](mockups/redesign/overview.html), with the full
+screen contract in [01-product.md](01-product.md#website-redesign-proposal-2026-10-30).
+Gates 2-4 were drafted together and approved 2026-10-30. Their earlier approvals remain
+historical evidence for the existing application. S8 implementation still needs authorization
+by slice ID and named test-branch scope; no slice has started from these approvals.
+The S7 existing implementation and its two open evidence items are unchanged; S6 remains open.
+
+[verified] Started from clean `main` at `154d1d72fc1518b1f5f29ec53024207cdf141a28`.
+Prepared on `scamkaki/gates-ui-redesign`. At the drafting boundary this was local
+documentation and HTML previews only. The later publication authorization is recorded below.
+No application edit, call, session mint, database operation, install or manual deployment.
+All four redesign gates are approved; S8 remains unstarted. Preview verification is in [checks/ui-redesign-preview.md](checks/ui-redesign-preview.md).
+
+
+### Redesign approval and bundled drafting authority
+
+- [verified] 2026-10-30 user: "Looks good. I approve gate 1. Give the other gates all at once, ill approve them as well".
+  Gate 1's eight-screen direction is approved. The user explicitly requests a combined Gates 2-4
+  presentation, overriding the usual separate drafting/presentation sequence for this amendment.
+  "ill approve" is future intent, not an approval of drafts that did not yet exist.
+- [verified] At the preceding drafting boundary, Gates 2-4's amendments were draft proposals. No S8-S12 branch,
+  application implementation, test-database mutation, commit, push, deployment or paid action
+  is authorized by this message. Planning continues on `scamkaki/gates-ui-redesign`.
+- [verified] Rechecked branch and HEAD `154d1d72fc1518b1f5f29ec53024207cdf141a28`.
+  The dirty files are the preceding redesign proposal and previews; retained without staging.
+  Read source, schema and tests locally. No account access or live provider verification.
+
+### Approved website build order, 2026-10-30
+
+- [ ] S8 - Reviewer workspace, call history and separate call/check details.
+- [ ] S9 - Visual script patterns from stored seven-day Bait counts.
+- [ ] S10 - Focused report review and persistent review state.
+- [ ] S11 - Voice room with explicit start and existing EN/HI lines.
+- [ ] S12 - Family view and complete redesign verification.
+
+The full contracts and authority limits are in [04-slices.md](04-slices.md#website-redesign-slices-2026-10-30).
+These are approved plans, not started work or replacements for the open S6/S7 evidence obligations.
+
+
+### Redesign Gates 2-4 approved and S8 handoff requested
+
+- [verified] 2026-10-30 user: "Yes i approve them all, then give a copy paste prompt for s8. Thanks. use this as reference on how to structure the prompt:"
+  Explicitly approves the presented Gate 2 architecture, Gate 3 program design and Gate 4
+  S8-S12 plan, with their limits. Gate 1 was approved earlier the same day. No gate reopened.
+- [verified] This instruction requests an S8 handoff, not S8 implementation. S8 local code,
+  its required branch and named test-branch migrations/truncation remain unauthorized. No
+  commit, merge, push, deploy, install, real session/call, agent update or spend is authorized.
+- [verified] Local main and HEAD remain `154d1d72fc1518b1f5f29ec53024207cdf141a28`; remote
+  `refs/heads/main` matched via `git ls-remote` on 2026-10-30. Empty index; S8 branch absent.
+  At that handoff boundary, approved redesign documents/previews were uncommitted on
+  `scamkaki/gates-ui-redesign` and absent from main. The later publication authorization below
+  covers bringing them into main; verify the current Git refs and files rather than reuse that snapshot.
+- [verified] [S8 handoff](s8-handoff.md) and [independent handoff review](s8-handoff-review.md)
+  carry the current approved contracts, inherited-file boundary and pending implementation
+  authority. The Envoi S25/S26 reference supplies structure only, never Scamkaki state.
+
+
+### Redesign publication authority, 2026-10-30
+
+- [verified] User: "PLs push also commit the working tree and push to main once ure done".
+  Authorizes committing the current redesign gate documents, eight HTML previews, checks,
+  progress record and S8 handoff/review prompt, fast-forwarding main and pushing origin/main.
+  This covers this publication package only, not S8 code, its branch, destructive test-branch
+  checks, later slices, installations, provider actions, calls or spending.
+- [verified] Before publication: branch `scamkaki/gates-ui-redesign`, local main/HEAD and remote
+  main all at `154d1d72fc1518b1f5f29ec53024207cdf141a28`; empty index. No unrelated tracked or
+  untracked work was present. Ignored `work/`, audio and environment files stay outside the package.
+- [verified] The S8 handoff and Gate 4's inherited-work note were updated for this publication.
+  Once the commit is on main, a receiving session reads the tracked approved documents from
+  main and re-verifies refs. The source-code baseline remains `154d1d7`; publication changes
+  documentation and standalone previews only. S6/S7 evidence gaps and S8's unstarted state persist.
+- The exact publication head, successful fast-forward/push and clean-tree result are verified
+  from Git after the operations, not predicted inside their own commit. A fresh session uses
+  `git log -1 main` and `git ls-remote origin refs/heads/main` to resolve the current published head.
