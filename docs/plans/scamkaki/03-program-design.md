@@ -32,6 +32,10 @@ reasons. Offline completion does not satisfy S6's live exit checks. Per-turn too
 on `simple_llm_agent` is unverified and not planned. Call-end alert fallback is not approved:
 it changes urgent timing and the truth of "I have alerted your family". Ask again if repeats persist.
 
+## S6 story-wording amendment, user-approved 2026-10-29
+
+`en-ica-video-01` line 3 said the savings go "to an account they give me", which reads as a different payee while the denial line says there was none. The user approved removing that phrase: "moving my savings so they can clear my name". Expected report, tactics (`handoff+channel_move`) and verdict are unchanged. Story wording only.
+
 ## S7 handoff direction, user-directed 2026-10-28
 
 Claude uses its relevant design skills and Gate 1's midnight blue, ice blue, electric blue and

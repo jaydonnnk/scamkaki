@@ -320,3 +320,14 @@ Total spend is now 55 cents; wallet 222.25; remaining cap 95. The probe has not 
 tactics and tool_count failures are real and would persist with the new verdict text. A new
 call is needed to validate the new sentence, but the extraction and exactly-once tool call must
 also be fixed. No Option B authorization.
+
+
+## Read-only review of call `eb4b7e5f`, 2026-10-29
+
+Read from the production database in a read-only transaction (transcript and the two check rows); no call, no write, no agent change.
+
+- Check row 51 (16:13:09 UTC) stored `handoff, channel_move, new_payee, urgency_threat, knew_details`. Row 52 (16:13:59) stored `handoff, channel_move, new_payee`. The first row contains `urgency_threat` and `knew_details`, which the senior had denied ("they didn't threaten or freeze my funds", "they don't know my ic card"): the agent stored denied signs as present.
+- [hypothesis] Row 51 was called after the denials but before the final repeat-back and "yeah"; the transcript has no timestamps, so the order is inferred from row 51's content and from the single repeat-back followed by the single "One moment" line. [unknown] whether Bolna fired it before the explicit yes.
+- `new_payee` has two likely sources. The story said the savings go "to an account they give me" (fixed by the approved wording amendment above), and the speech-to-text turned the long denial sentence into "keeping the call on a fee link or different payee and did not pay me first", dropping the "did not ask for". The agent's repeat-back also never mentioned the payee. [hypothesis] The spoken denial is a long list that the transcript split into fragments; a shorter, one-denial-per-sentence story would survive transcription better. Not changed: only line 3 was approved.
+- The agent repeated whole sentences inside one turn in four assistant turns of this call. The "say each sentence once" patch had been applied to the agent before this call.
+- Real failures to fix: stored denied signs as present, and two tool calls. Neither is a fixture problem.
