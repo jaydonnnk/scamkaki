@@ -33,10 +33,7 @@ _HI_WARNINGS = " पैसे मत भेजिए। ओटीपी, या�
 
 SAY: dict[Language, dict[Verdict, str]] = {
     "en": {
-        "likely_scam": (
-            "This is likely a scam. Do not transfer money or share any code."
-            " I have alerted your family. Please wait for their call."
-        ),
+        "likely_scam": "This is likely a {scam_type}. I have alerted your family.",
         "unclear": "Not sure. Please call your family before doing anything.",
         "no_scam_signs": (
             "No scam signs found in what you told me. Still, never move money or share"
@@ -110,7 +107,10 @@ def decide(report: GuardianReport, similar_count: int) -> Verdict:
 def sentence_for(
     verdict: Verdict, report: GuardianReport, similar_count: int, language: Language = "en"
 ) -> str:
-    say = SAY[language][verdict]
+    if verdict == "likely_scam" and language == "en":
+        say = SAY["en"]["likely_scam"].format(scam_type=scam_type(report))
+    else:
+        say = SAY[language][verdict]
     if report.acted in HARM_ACTED:
         say = ACT_NOW[language] + say
     if verdict == "unclear" and _friend_money(report):
@@ -195,6 +195,27 @@ ACTED_LABELS: dict[Acted, str] = {
     "installed_app": "Installed an app",
     "unsure": "Not sure",
 }
+
+
+def scam_type(report: GuardianReport) -> str:
+    """Short plain label for the kind of scam, used in the spoken verdict."""
+    label = AGENCY_LABELS[report.agency]
+    if label.startswith("A "):
+        label = label[2:]
+    elif label.startswith("An "):
+        label = label[3:]
+    label = label.split(" (")[0]
+    if report.agency in GOV_AGENCIES or report.agency in {"bank", "telco", "courier"}:
+        return f"{label} impersonation scam"
+    if report.agency == "investment":
+        return "investment scam"
+    if report.agency == "employer":
+        return "job scam"
+    if report.agency == "friend_family":
+        return "friend or family money scam"
+    return "scam"
+
+
 LANGUAGE_LABELS: dict[Language, str] = {"en": "English", "hi": "Hindi"}
 
 

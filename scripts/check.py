@@ -30,7 +30,8 @@ from pathlib import Path
 from scamkaki.domain import store
 from scamkaki.domain.extraction import parse_extraction
 from scamkaki.domain.leaks import agent_turns, find_leaks, normalize_spoken_digits
-from scamkaki.domain.verdict import ACT_NOW, CALL_BACK, HARM_ACTED, SAY
+from scamkaki.domain.types import GuardianReport
+from scamkaki.domain.verdict import ACT_NOW, CALL_BACK, HARM_ACTED, SAY, scam_type
 from scamkaki.integrations.bolna import BolnaClient
 from scamkaki.lib.db import connect
 from scamkaki.lib.env import get_settings
@@ -183,7 +184,18 @@ def guardian_errors(case: dict, check: dict, link: str, transcript: str, secs: f
         errors.append("duration")
     language = case["language"]
     text = spoken(" ".join(turns))
-    if spoken(SAY[language][check["verdict"]]) not in text:
+    report = GuardianReport(
+        agency=check["agency"],
+        demand=check["demand"],
+        channel=check["channel"],
+        tactics=frozenset(check.get("tactics") or []),
+        acted=check["acted"],
+    )
+    if check["verdict"] == "likely_scam" and language == "en":
+        expected_say = SAY["en"]["likely_scam"].format(scam_type=scam_type(report))
+    else:
+        expected_say = SAY[language][check["verdict"]]
+    if spoken(expected_say) not in text:
         errors.append("spoken_verdict")
     certainty = {
         "en": ("definitely safe", "certainly safe", "this call is safe", "this is safe"),
@@ -193,7 +205,7 @@ def guardian_errors(case: dict, check: dict, link: str, transcript: str, secs: f
         errors.append("unsafe_certainty")
     if expected["acted"] in HARM_ACTED:
         markers = {
-            "en": ("likely a scam", "not sure", "no scam signs", "safe"),
+            "en": ("This is likely a", "not sure", "no scam signs", "safe"),
             "hi": ("धोखाधड़ी", "पक्का नहीं", "सुरक्षित"),
         }
         first_verdict = next(

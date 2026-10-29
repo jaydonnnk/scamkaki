@@ -11,6 +11,7 @@ from scamkaki.domain.verdict import (
     alert_text,
     decide,
     match,
+    scam_type,
     sentence_for,
 )
 from tests.conftest import ROOT
@@ -142,15 +143,17 @@ def test_sentence_says_same_script_heard_this_week():
     ],
 )
 def test_sentence_for_harmful_act_says_bank_and_1799_first(language, first):
-    result = match(
-        report("courier", "card_details", "sms", ["link_fee"], "gave_code_or_card"), 0, language
-    )
+    senior = report("courier", "card_details", "sms", ["link_fee"], "gave_code_or_card")
+    result = match(senior, 0, language)
 
     assert result.verdict == "likely_scam"
     assert result.urgent is True
     assert result.say.startswith(first)
     assert ("1799" if language == "en" else "एक सात नौ नौ") in result.say
-    assert result.say.endswith(SAY[language]["likely_scam"])
+    base = SAY[language]["likely_scam"]
+    if language == "en":
+        base = base.format(scam_type=scam_type(senior))
+    assert result.say.endswith(base)
 
 
 def test_sentence_for_no_harmful_act_is_not_urgent():

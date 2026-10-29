@@ -58,10 +58,7 @@ def test_match_script_decides_and_logs_check(client, db):
     assert response.json() == {
         "verdict": "likely_scam",
         "similar_count": 0,
-        "say": (
-            "This is likely a scam. Do not transfer money or share any code."
-            " I have alerted your family. Please wait for their call."
-        ),
+        "say": "This is likely a Police impersonation scam. I have alerted your family.",
         "urgent": False,
     }
     with connect(db) as conn:

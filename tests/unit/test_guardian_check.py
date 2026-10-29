@@ -26,8 +26,8 @@ def courier():
     transcript = (
         "user: I already paid the courier fee with my card and the code.\n"
         "assistant: Call your bank now on the number on the back of your card, and call "
-        "ScamShield at one seven nine nine. This is likely a scam. Do not transfer money "
-        "or share any code. I have alerted your family. Please wait for their call.\n"
+        "ScamShield at one seven nine nine. This is likely a courier impersonation scam. "
+        "I have alerted your family.\n"
     )
     return case, check, transcript
 
