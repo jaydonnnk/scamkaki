@@ -91,3 +91,15 @@ def test_ica_fixture_explicitly_denies_threat_and_known_details():
     assert "did not threaten arrest or freezing my funds or give a deadline" in story
     assert "did not already know my IC or card details" in story
     assert set(case["expect"]["tactics"]) == {"handoff", "channel_move"}
+
+
+def test_ica_fixture_denies_each_sign_in_its_own_short_sentence():
+    """One denial per sentence: a long spoken list lost its "did not ask for" in transcription."""
+    case = next(case for case in GUARDIAN if case["id"] == "en-ica-video-01")
+    story = " ".join(case["senior_lines"])
+    sentences = [part.strip() for part in re.split(r"(?<=[.!?])\s+", story)]
+    for sign in ("secrecy", "keep the call on", "fee link", "different payee", "pay me first"):
+        mentions = [s for s in sentences if sign in s]
+        assert mentions, sign
+        assert all(s.startswith("They did not") and len(s.split()) <= 12 for s in mentions), sign
+    assert "an account they give" not in story
