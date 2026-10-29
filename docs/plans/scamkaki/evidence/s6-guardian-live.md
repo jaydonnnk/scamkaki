@@ -222,3 +222,101 @@ The user requested "Can.u push the current working tree to main first thanks". T
 committing and publishing the current offline repair and evidence package, not a live pass.
 The failed probe, remaining live checks, deferred spending and pending Hindi review remain as
 recorded. Actual commit and remote state are taken from Git and the latest 00-status.md record.
+
+
+## 2026-10-29 live probe attempts and prompt fix
+
+The user authorized the live probe ("Can u run the probe thankjs") under the existing 150-cent
+cap, with Mr Tan named as the English role-play operator. Six `en-ica-video-01` live calls ran
+and all are invalid; they are preserved in `scripts/caller/runs.jsonl` and on Bolna:
+
+| Execution | Duration | Cost | End | Transcript |
+|---|---|---|---|---|
+| `9dcc06bd` | 28.7s | 2.75 | `user_hung_up` | Echo; the agent's own TTS transcribed as the user |
+| `07171a5f` | 16.1s | 2.75 | `inactivity_timeout` | Greeting only; no user audio captured |
+| `7f63fd1c` | 16.0s | 2.75 | `inactivity_timeout` | Greeting only; no user audio captured |
+| `4f6c1016` | 16.0s | 2.75 | `inactivity_timeout` | Greeting only; no user audio captured |
+| `2def2d7e` | 64.9s | 8.25 | `user_hung_up` | Echo loop; "I heard this" repeated between agent and mic |
+| `e3d65395` | 62.0s | 8.25 | `user_hung_up` | Clean user audio; the model duplicated its own sentences |
+
+Total spend 27.5 cents; wallet 277.25 to 249.75. Remaining cap 122.5 of 150. No call reached a
+tool call or verdict; `check.py` has not been run on a valid attempt.
+
+The echo calls show the operator must use headphones or a headset so Ah Ma's voice does not
+re-enter the microphone. The sixth call had clean user audio, so the transport is usable.
+
+The sixth call's duplication is in the model output, not TTS or echo: the transcript contains
+each assistant sentence twice, and Bolna's usage data shows 176 output tokens and 660
+synthesized characters, matching the duplicated text. The agent is `gpt-5.4-mini` at
+temperature 1, max_tokens 300, the settings approved for S6.
+
+The user authorized a one-line prompt fix ("go ahead and apply the fix"). Added to Guardian EN
+only: "Say each sentence once. Never repeat the same sentence in one turn." No model,
+temperature, max_tokens, tool or `hangup_after_silence` change. `agents/guardian.json` updated;
+`tests/unit/test_agent_twins.py` passes. A full `PUT /v2/agent/{id}` was rejected with
+"Agent Config > Webhook URL: Must be a valid URL", so `PATCH /v2/agent/{id}` was used with only
+`agent_prompts.task_1.system_prompt`. PATCH returned HTTP 200; the GET read-back matches the
+local prompt exactly. Wallet before and after: 249.75 cents, delta zero. No call was placed
+during the fix.
+
+The 10-second `hangup_after_silence` is unchanged. If a clean retry still ends on silence, a
+timeout change needs separate permission. A retry is pending; no Option B calls are authorized
+until Option A passes `check.py`.
+
+Two further calls ran after the first fix, before the shortening change:
+
+- `1e59a081` 72.0s, 8.25c, `inactivity_timeout`. The repeat-back was still duplicated, and the
+  agent did not call `match_script` after the operator's "yes yes yes yes"; tool logs are empty.
+  LLM output 210 tokens and synthesizer 793 characters match the duplicated text, so the
+  repetition is model output, not TTS or echo.
+- `5d1aeb95` 2.4s, 2.75c, `user_hung_up`, greeting only.
+
+Total spend is now 38.5 cents; wallet 238.75; remaining cap 111.5 of 150.
+
+The user then asked to shorten the replies ("Can u shorten the replies... The agent just needs
+to reiterate the key points"). Authorized and applied to Guardian EN only: "Speak short phrases,
+not full sentences", the repeat-back becomes one short phrase with a terse example, and the
+final style line changes to short phrases. `agents/guardian.json` updated; the keywords required
+by `tests/unit/test_agent_twins.py` are preserved. PATCH returned HTTP 200; the GET read-back
+matches the local prompt exactly. Wallet before and after: 238.75 cents, delta zero. No model,
+temperature, max_tokens, tool or silence-timeout change.
+
+The duplication and the missing tool call are not yet proven fixed. A retry is pending. If the
+model still duplicates or fails to call the tool after confirmation, a model change or further
+prompt work needs separate permission.
+
+
+## 2026-10-29 verdict text change
+
+The user asked for a one-line scam summary at the end: "This is likely a <type of scam>. I have
+alerted your family." Authorized and implemented in `src/scamkaki/domain/verdict.py`: the
+English `likely_scam` say is now a template formatted with `scam_type(report)`, which derives a
+short label from the agency, for example "China official impersonation scam" or "courier
+impersonation scam". The urgent ACT_NOW prefix and the similar-count suffix are unchanged.
+Hindi is unchanged. `scripts/check.py` now builds the expected say from the stored report and
+uses "This is likely a" as the verdict marker. Tests updated; full suite 261 passed. No Bolna
+agent change was needed because the agent speaks the tool's say word for word. A live retry is
+needed to validate the new sentence.
+
+
+## 2026-10-29 probe attempt after the shortening fix
+
+Call `eb4b7e5f` (152s, 16.5 cents, `local-hangup`) ran with the shortened prompt but before the
+verdict text change. `check.py guardian --case en-ica-video-01` exits 1 with errors `tactics`,
+`tool_count`, `spoken_verdict`.
+
+- Stored tactics: `handoff, channel_move, new_payee`; expected `handoff, channel_move`. The
+  agent added `new_payee` despite the fixture's explicit denial.
+- Link `time x2`: two `guardian_checks` rows in the call's time window, so `match_script` was
+  called twice. The prompt requires exactly once after confirmation.
+- Spoken verdict: the transcript has the old say, "This is likely a scam. Do not transfer money
+  or share any code. I have alerted your family. Please wait for their call. Same script heard
+  1 time this week." The expected say is now the new one-line template, so this error is
+  expected for a call placed before the text change.
+- Alert `sent`, verdict `likely_scam`, agency `china_official`, demand `transfer`,
+  channel `video`, acted `none`, similar_count 1.
+
+Total spend is now 55 cents; wallet 222.25; remaining cap 95. The probe has not passed. The
+tactics and tool_count failures are real and would persist with the new verdict text. A new
+call is needed to validate the new sentence, but the extraction and exactly-once tool call must
+also be fixed. No Option B authorization.
