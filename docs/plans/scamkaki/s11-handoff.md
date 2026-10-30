@@ -1,12 +1,13 @@
 # S11 handoff
 
-Prepared 2026-10-30, Asia/Singapore. S10 is complete locally but uncommitted and absent from main.
-The S11 prerequisite and execution/test authority are pending. Background only.
+Updated 2026-10-30, Asia/Singapore, for authorized S10 publication. S10 implementation
+729000b is committed and in main. S11 execution/test authority remains pending. Background only.
 
 ```text
 You are receiving background for Scamkaki S11 in /Users/jayd0/Desktop/bolna on macOS arm64.
 Prepared 2026-10-30, Asia/Singapore, from published main and actual Git/source state.
-This handoff is background only. S10 publication and S11 execution authority remain pending.
+This handoff is background only. S10 commit/main integration/push is authorized. Its implementation
+729000b is in main. Re-verify final refs after publication. S11 execution/test authority remains pending.
 
 Skeleton: docs/plans/scamkaki/s8-handoff.md and AGENTS.md's eight-section Slice handoff prompts.
 Historical S8-S10 prompts supply structure/context, not new execution authority. The gate
@@ -58,9 +59,9 @@ Approved build order, with current status from working 00-status.md:
 - S8: Reviewer workspace, Overview, Calls history and separate call/check detail. Published in main.
 - S9: Visual seven-day Bait script patterns and shared matching explanation. Published in main.
 - S10: Focused Reports entry/review with persistent first-review time and original draft.
-  Complete locally, uncommitted and absent from main.
+  Complete and committed at 729000b, fast-forwarded into main. Main push is authorized.
 - S11: Voice room and explicit-start lifecycle using the existing session endpoint/SDK.
-  Approved plan, unstarted; its main prerequisite and execution authority are pending.
+  Approved plan, unstarted; its main prerequisite is met. Execution/test authority is pending.
 - S12: Family restyle, safe stale/empty polling, and full eight-screen redesign checks.
   Approved plan, unstarted; depends on S8-S11 in main. There is no S13 plan.
 
@@ -68,10 +69,10 @@ Gate 4 allows the offline UI sequence S8 -> S9 -> S10 -> S11 -> S12 on existing 
 without closing S6/S7 gaps. S11 moves the existing test-call controls into a clear dedicated
 room; it does not establish that real voice works or repair the agents.
 
-S11 requires S8-S10 in main. This is currently NOT MET because S10 is dirty on its own branch.
-S10 needs a separately authorized commit and fast-forward into main before S11 branch creation.
-Push is a separate action, not an extra prerequisite. No silent stacking, dirty-work discard
-or branching from main without S10.
+S11 requires S8-S10 in main. This is met by S10 implementation 729000b and its verified
+fast-forward into main. Re-verify the final main tip, committed contents and remote refs after
+the publication task. Push is not an extra S11 prerequisite. Do not create the S11 branch or
+run its destructive checks until the named S11 local/test grant exists.
 
 Build plan after those prerequisites and the named S11 local/test grant exist:
 A. Verify the committed S10 package/main tip, create scamkaki/slice-11-voice-room from it,
@@ -149,20 +150,23 @@ transfer, embeddings, filing, identity matching, network tracking or broad clean
 
 No production write, real microphone/provider session/call, wallet read, agent update,
 Telegram message, spending, provisioning, installation, S6 rerun or S7 completion claim.
-S10 publication, S11 publication/deployment and S12 each remain separately scoped.
+The S10 commit/main integration/push is authorized. S11 publication/deployment and S12
+remain separately scoped.
 
 5. Current state
 
-[verified 2026-10-30] Current branch scamkaki/slice-10-report-review. HEAD, local main,
-origin/main and remote refs/heads/main are 6565bc40ae10c6d8d41a64739251c10e8b63ff8b,
-the published S9 commit. S8 is its parent implementation at 87739f0. Index empty.
-No scamkaki/slice-11-voice-room branch exists. S10 source/tests/preview/evidence/screenshots
-and documentary work are dirty; a clone of main contains S8/S9 and lacks S10.
+[verified 2026-10-30] S10 implementation commit 729000bd9b639fb19903b9d186d2c5ba4858b2e7 contains
+the reviewed 33-file package and was fast-forwarded into main from S9 6565bc4. HEAD/main/
+retained S10 branch matched with clean tree/index at that integration snapshot. The later
+documentation follow-up advances the tip. Verify actual branch/HEAD/main/origin/main and
+ls-remote after publication, and require 729000b to be an ancestor of main. Do not use the
+old S9 SHA as the expected current tip. No S11 branch exists.
 
-The known S10 package changes main.py, report.html, reviewer shell/theme, preview_ui.py,
-report/auth/error/navigation tests and status/progress. New files include evidence/s10-report-review.md, 17 JPEG screenshots,
-s10-session-transfer.md and s10-session-review.md. Preserve all of it. This
-handoff preparation adds documents only; it grants no staging or publication instruction.
+S10 source/tests/preview/evidence and 17 JPEG screenshots are committed. Session records and
+this handoff are included. Preserve them. Source/test/screenshot bytes match the reviewed
+package. Fresh publication suite: 316 passed, one existing warning in 62.22 seconds. Ruff
+lint/format, offline Node caller, bounded credential/configuration scan and diff checks pass.
+The prior 35 independent fault receipts match current source hashes; faults were not rerun.
 
 [verified from retained S10 records] Final full suite 316 passed, one existing Starlette/httpx
 warning. Ruff lint/format, offline caller and diff checks passed. Final 35/35 independent faults
@@ -175,8 +179,8 @@ Invalid test-ID/request-count assumptions, patch/lint and leak-label corrections
 
 [verified] The user questioned screenshot formatting and requested the live design. The actual
 preview was opened at a normal 620x737 pane; its responsive panels stack and scrollWidth was
-620. No source/design change followed that inspection. The latest request asks for this S11
-handoff, not a new design decision, publication or implementation grant.
+620. No source/design change followed that inspection. The later user request authorizes
+S10 publication only. It does not grant S11 execution or change an approved design decision.
 
 [verified] /voice, voice.html, test_voice.py and scripts/check_ui.mjs do not exist yet. Existing
 S7 buttons/controller and SDK remain in dashboard.html. Source pins Bolna Web Call v3.0.1 at
@@ -191,18 +195,18 @@ updating that preview owner risks loading the real SDK. The existing fake cannot
 new happy/late-event lifecycle until controlled fake events/counters are added.
 
 [verified] Python 3.12.15, uv 0.13.0 and Node v24.21.0 are installed. .env.local exists and
-was neither printed nor hashed. S10 previously used a privately verified distinct test
-endpoint. Fresh S11 endpoint/access remains unchecked and destructive checks unauthorized.
+was neither printed nor hashed. S10 publication checks privately re-verified the distinct test
+endpoint and test-only connection. This is not an S11 test grant; re-verify before S11 checks.
 Integration fixtures migrate/truncate the test branch. TEST_DATABASE_URL alone does not
 redirect a normally launched app's DATABASE_URL.
 
-[verified] The user inspection preview still listens on 127.0.0.1:8783, PID 6813, owned terminal
-session 81053, serving synthetic test rows and fake providers. Start command was:
-UV_PYTHON_DOWNLOADS=never uv run --offline --no-sync python scripts/preview_ui.py --state populated --reset-test-db --port 8783
-Current stop is Ctrl-C through that owned session. If it is unavailable, only after verifying
-PID/command/port ownership, the equivalent is kill -INT 6813. Re-verify before stopping any
-PID. Tests/resets cannot run while this preview owns the same test database. No test/database
-or provider check was performed to prepare this handoff; the listener check is read-only.
+[verified] The inspection preview on 127.0.0.1:8783 is stopped. Session 81053 was unavailable
+in the publication chat, so PID 6813's exact command and listener ownership were re-verified
+before SIGINT. No listener remained. The first database preflight detected another client
+and stopped before a reset. Subsequent read-only inspection and the unchanged preflight found
+no other test clients. The full suite then ran under existing S10 isolated-test authority.
+Do not stop historical PIDs or restart/reset a preview implicitly. S11 tests/previews require
+their named grant and exclusive test-database ownership. No real provider or microphone ran.
 
 [unknown] Live credential validity, wallet/available credit, deployed Render revision,
 real audio/SDK connection, Telegram receipt, human comprehension, physical devices, named
@@ -217,8 +221,12 @@ truncation/review fixture writes with fake Bolna/Telegram, never production. It 
 S10 publication, S11 or live/provider actions.
 
 User, 2026-10-30: "Okay make the copy paste handoff prompt for slice 11. Rememeber to include the slices and the build plan thanks".
-This requests the S11 handoff only. S10 commit/fast-forward into main, any push, S11 local
-implementation/required branch and named S11 destructive test-branch checks remain pending.
+That requested the S11 handoff only.
+
+User, 2026-10-30: "Please commit slice 10 and push to main so that s11 can start cleanly. I authorize".
+This authorizes the S10 package commit, main fast-forward and push. Implementation 729000b
+is committed and in main. It grants no S11 implementation/required branch or named S11
+destructive test-branch checks; those remain pending.
 Proposed S11 test scope is migrations/truncation and fixture writes on the freshly verified
 TEST_DATABASE_URL branch, with fake Bolna/Telegram and controlled fake browser SDK only,
 never production or a real microphone/session. Once granted, that exact scope persists
@@ -229,8 +237,8 @@ paid/live actions, deployment and S12 remain separate named actions.
 
 AGENTS.md including Slice handoff prompts; ~/.agents/skills/software-factory/SKILL.md;
 current main-tip 00-status.md and 01-product.md through 04-slices.md, especially the redesign
-sections and exact S11 contract. Working 00-status.md/PROGRESS.md carry the uncommitted S10
-outcome. The S8 handoff is the structural skeleton; s10-session-transfer.md is background.
+sections and exact S11 contract. 00-status.md/PROGRESS.md carry S10 integration and publication
+checks. The S8 handoff is the structural skeleton; s10-session-transfer.md is historical background.
 The visual reference is mockups/redesign/voice.html, illustrative only. Use functional-ui
 and frontend-design within the approved design; no repeat gate approval unless a decision changes.
 
@@ -245,8 +253,8 @@ All these document/evidence/mockup paths are under docs/plans/scamkaki/ unless o
 
 Re-verification commands: git status --short; git diff --cached --name-only;
 git branch --show-current; git log -5 --oneline main; git rev-parse HEAD main;
-git ls-remote origin refs/heads/main. After separately authorized S10 publication, the
-committed contents and new main tip need verification before S11 branch creation.
+git ls-remote origin refs/heads/main; git merge-base --is-ancestor 729000b main.
+Verify committed S10 contents and the final main tip before separately authorized S11 branch creation.
 No command may print credential values.
 
 8. Done means

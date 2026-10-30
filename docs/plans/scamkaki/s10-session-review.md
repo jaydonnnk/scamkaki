@@ -1,5 +1,13 @@
 # S10 local completion review prompt
 
+Publication update, 2026-10-30: S10 implementation 729000b is committed and fast-forwarded
+into main. The user separately authorized its commit/main integration/push. Fresh publication
+checks passed 316 tests with one existing warning; Ruff/format/offline caller/diff passed.
+The inspection preview is stopped. Final refs are verified after the documentation follow-up.
+The local-exit snapshot below is historical. Its dirty/unpublished/preview statements do not
+describe the current continuation state. Use s11-handoff.md and 00-status.md for that state.
+S11 execution/test authority remains pending.
+
 Review Scamkaki S10 in /Users/jayd0/Desktop/bolna independently and adversarially. Be unbiased,
 thorough and honest. Assume the work may be flawed. Do not pass tests for the sake of passing.
 Green output is not proof of every claim. Judge quality, scope and evidence against AGENTS.md,
@@ -28,7 +36,8 @@ and raw-label copy repair. The read-only auxiliary reviewer inspected seven scre
 source/receipts but did not independently run runtime checks. Human/live/deployment claims
 remain unknown, and S6/S7 remain open.
 
-Inspect the actual dirty diff, source, literal fixture tests and evidence/s10-report-review.md.
+For a current review, inspect committed range 6565bc4..729000b, source, literal fixture tests
+and evidence/s10-report-review.md. The following local-exit instructions retain their historical context.
 Stress-test edge cases and failure-capability against named guards. Fresh runtime verification
 requires Git/source/private endpoint verification, the already granted S10 isolated test scope,
 and exclusive DB ownership. The evidence lists commands and owned runner receipts. Concurrent

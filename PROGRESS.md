@@ -1,6 +1,6 @@
 # Progress
 
-Current state: S9 published at 6565bc4. Local/remote main and retained S9 branch verified equal, tree/index clean before creating `scamkaki/slice-10-report-review`. S10 complete locally and uncommitted, local/test only. Authority is in `docs/plans/scamkaki/00-status.md`. Scratch: `work/scamkaki-s10/`; plan/baseline hashes retained there without environment files. S6 live proof and S7 video/live demo remain open. Earlier pending-authority notes below are historical.
+Current state: S10 implementation 729000b is committed and fast-forwarded into main. Fresh publication checks pass. The final documentation follow-up and authorized main push are verified from Git after execution. S11 local/test authority remains pending in docs/plans/scamkaki/00-status.md. No preview listener remains on 8783. Scratch: work/scamkaki-s10-publication/. Earlier dirty/unpublished and preview notes below are historical. S6 live proof and S7 video/live demo remain open.
 Historical research and the superseded build plan below are context only; current authority is in docs/plans/scamkaki/00-status.md.
 
 - [x] Read AGENTS.md and the user-authored Evidence check - Claude.md; preserve the source report.
@@ -18,7 +18,10 @@ Historical research and the superseded build plan below are context only; curren
 - [x] Retain refused first preflight, then verify no other test clients and distinct test endpoint before tests.
 - [x] Fresh suite 316 passed, one existing warning in 62.22 s. Ruff/format/offline caller/diff pass.
 - [x] Source/tests/screenshots unchanged; 17 JPEGs match prior hashes. Guard receipts checked before staging.
-- [ ] Commit explicit S10 package, fast-forward main, push only main and verify remote refs/clean state.
+- [x] Commit explicit 33-file S10 package as 729000b and fast-forward main; refs match and tree/index are clean.
+- [x] Update current S11 handoff and mark older session prompts as historical snapshots.
+- [x] Prepare the documentation follow-up and explicit main-only push. Final execution is evidenced by Git refs and receipts generated after this commit.
+Final completion receipts are saved in work/scamkaki-s10-publication/ after these operations.
 Authority is recorded only in 00-status.md. No S11 branch/code/test scope follows from publication.
 Receipts: work/scamkaki-s10-publication/ and work/scamkaki-s10/publication-*.log.
 Earlier dirty/unpublished S10 and active-preview notes below are historical snapshots.

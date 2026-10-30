@@ -21,7 +21,12 @@ The 35 earlier fault receipts remain prior guard evidence, not a fresh mutation 
 browser, microphone, provider, production, installation or deployment check ran.
 Receipts: work/scamkaki-s10/publication-*.log and work/scamkaki-s10-publication/.
 Earlier uncommitted/non-publication statements below describe the local-completion snapshot.
-Final commit/push success is verified from Git after those operations, never predicted here.
+S10 implementation commit 729000bd9b639fb19903b9d186d2c5ba4858b2e7 was created and fast-forwarded
+into main. Refs matched and tree/index were clean at that integration snapshot. The separate
+documentation follow-up updates the current S11 handoff before the final authorized push.
+Final remote equality is verified after execution, never predicted here. The first broad
+configuration-value scan matched historical public agent-ID/application-URL text. Full-file
+credential checks and comparison with S9 confirmed no newly introduced configured values.
 
 ## Prerequisite and scope
 

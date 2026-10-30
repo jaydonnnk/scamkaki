@@ -163,16 +163,16 @@ authorized below. Preview verification is in [checks/ui-redesign-preview.md](che
 
 - [x] S8 - Reviewer workspace, call history and separate call/check details. Done locally 2026-10-30 on `scamkaki/slice-8-reviewer-workspace`; [evidence](evidence/s8-workspace.md). Full suite 290 passed, lint/format and offline caller checks passed. 37 distinct faults caught across a recorded test correction; 1280/375 px populated/empty/error walkthrough passed. Human usability remains unmeasured. Published to main at 87739f0; deployment unverified.
 - [x] S9 - Visual script patterns from stored seven-day Bait counts. Done locally 2026-10-30 on `scamkaki/slice-9-script-patterns`; [evidence](evidence/s9-script-patterns.md). Final suite 303 passed, one existing warning; Ruff lint/format, offline caller and diff checks passed. Final 26/26 independent faults caught with exact source restoration; 1280/375 px populated/empty/503, links, disclosures, escaping and keyboard/overflow checks passed. Thirteen screenshots retain two initial captures with disclosed limits. No in-scope cleanup finding from auxiliary source/screenshot review. Published to main at 6565bc4 after separately authorized commit, fast-forward and push; S6/S7 gaps and human/live/deployment limits persist.
-- [x] S10 - Focused report review and persistent review state. Done locally 2026-10-30 on `scamkaki/slice-10-report-review`; [evidence](evidence/s10-report-review.md). Final suite 316 passed, one existing warning; Ruff/format, offline caller and diff checks pass. Final 35/35 independent faults caught with exact restores. Actual browser POST/303, database persistence/reload, HTTP repeat review and zero fake effects verified at 1280/375 px. Seventeen screenshots retain two initial captures. Scoped architecture/source/screenshot review found no unresolved S10 issue or cleanup deletion. Uncommitted, absent from main; human/live/deployment limits persist.
+- [x] S10 - Focused report review and persistent review state. Done locally 2026-10-30 on `scamkaki/slice-10-report-review`; [evidence](evidence/s10-report-review.md). Final suite 316 passed, one existing warning; Ruff/format, offline caller and diff checks pass. Final 35/35 independent faults caught with exact restores. Actual browser POST/303, database persistence/reload, HTTP repeat review and zero fake effects verified at 1280/375 px. Seventeen screenshots retain two initial captures. Scoped architecture/source/screenshot review found no unresolved S10 issue or cleanup deletion. Committed at 729000b and fast-forwarded into main under the publication grant below; human/live/deployment limits persist.
 - [ ] S11 - Voice room with explicit start and existing EN/HI lines.
 - [ ] S12 - Family view and complete redesign verification.
 
 The full contracts and authority limits are in [04-slices.md](04-slices.md#website-redesign-slices-2026-10-30).
-S9 and S10 local exit decisions: **go**. S9 is published to main at 6565bc4. S10 is complete
-locally and uncommitted under the authority below; S11-S12 remain unstarted. No redesign slice replaces
-the open S6/S7 evidence obligations. [Session transfer](s10-session-transfer.md) and
-[fresh review prompt](s10-session-review.md) preserve the S10 local boundary; the S11 handoff
-preparation below records the later documentary request.
+S9 and S10 local exit decisions: **go**. S10 implementation commit 729000b is now in main.
+S11's S8-S10-in-main prerequisite is met; S11 implementation/branch and named test scope
+remain unauthorized. S11-S12 remain unstarted. No redesign slice replaces the open S6/S7
+evidence obligations. The [S11 handoff](s11-handoff.md) carries this updated boundary.
+The S10 session prompts retain their explicitly historical local-exit snapshot.
 
 ### S9 publication and S10 execution authority, 2026-10-30
 
@@ -222,6 +222,16 @@ preparation below records the later documentary request.
   62.22 seconds. Ruff lint passed, 92 files already formatted, offline caller and diff checks
   passed. Source/test bytes remain unchanged from the reviewed S10 package. All 17 JPEGs and
   the retained 35 fault restoration receipts are checked against current bytes before staging.
+
+- [verified] S10 implementation committed as `729000bd9b639fb19903b9d186d2c5ba4858b2e7`, containing the exact
+  reviewed 33-file package. Main was fast-forwarded to it; HEAD/main/retained S10 branch
+  matched and tree/index were clean. This documentation follow-up records that integration
+  and updates the current S11 handoff. The final main push and remote equality are checked
+  after the follow-up commit; no remote success is claimed in advance.
+- [verified] Bounded scan refinement: the initial all-configuration scan matched pre-existing
+  public agent-ID and application-URL text in PROGRESS.md. No credential was exposed.
+  Full-file credential/pattern checks and comparison against the S9 baseline confirm no
+  configured value was newly introduced. All 35 prior restoration hashes and 17 JPEG hashes match.
 
 ### S11 handoff preparation, 2026-10-30
 
