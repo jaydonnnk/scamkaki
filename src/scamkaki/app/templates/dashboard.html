@@ -17,7 +17,7 @@
 {% if r.verdict == "likely_scam" %}<p>{{ alert_states.get(r.alert_status, "Alert not recorded") }}. Receipt unknown.</p>{% endif %}
 {% if r.similar_count %}<p>Same script heard {{ r.similar_count }} time{{ "" if r.similar_count == 1 else "s" }} this week</p>{% endif %}
 {% else %}
-<h3>Bait script · {{ agencies[r.agency] }}</h3><p>{{ demands[r.demand] }} · {% if r.fixture_case %}Demo fixture: {{ r.fixture_case }}{% else %}Test call with no fixture case{% endif %}</p>
+<h3>Bait script · {{ agencies.get(r.agency, r.agency) }}</h3><p>{{ demands.get(r.demand, r.demand) }} · {% if r.fixture_case %}Demo fixture: {{ r.fixture_case }}{% else %}Test call with no fixture case{% endif %}</p>
 <p>Warning signs: Not collected</p>
 {% if r.report_id %}<a href="/reports/{{ r.report_id }}">{{ "Report reviewed" if r.report_status == "reviewed" else "Report draft" }}</a>{% endif %}
 {% if r.leaks %}<p class="leak">LEAK ({{ r.leaks | length }})</p>{% else %}<p>No leaks</p>{% endif %}

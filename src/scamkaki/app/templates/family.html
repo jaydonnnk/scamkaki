@@ -4,32 +4,52 @@
 <title>Ah Ma Guardian family alerts</title>
 {% include "_theme.html" %}
 <style>
-main{max-width:600px}
-h1{font-size:24px;margin:0 0 4px}
-.alert{border:3px solid var(--danger);background:var(--danger-bg);border-radius:8px;padding:16px;margin:16px 0}
-.alert h2{color:var(--danger);font-size:22px;letter-spacing:0;text-transform:none;margin:0 0 8px}
-.alert h2::before{content:"\25B2  ";content:"\25B2  " / ""}
-.alert p{margin:4px 0}.alert .do{font-weight:700;font-size:17px;margin-top:12px}.alert .meta{color:var(--muted);font-size:13px;margin-top:8px}
-.alert.urgent{border-width:3px;box-shadow:inset 10px 0 0 var(--danger);padding-left:26px}
-.tag{display:inline-block;background:var(--danger);color:#fff;font-weight:800;font-size:13px;letter-spacing:.04em;padding:3px 9px;border-radius:4px;margin:0 0 8px}
+.family main{max-width:760px;padding:32px 24px 48px;overflow-wrap:anywhere}
+.family h1{font-size:34px;letter-spacing:-1px;line-height:1.15;margin:8px 0 16px}
+.family h2{font-size:22px;letter-spacing:-.3px;text-transform:none;color:var(--ink);margin:10px 0 14px}
+.family h3{font-size:16px;letter-spacing:0;text-transform:none;color:var(--ink);margin:0 0 8px}
+.family .bar-inner{max-width:960px;padding:20px 24px}
+.family .brand{display:flex;align-items:center;gap:12px}
+.family .ico{width:30px;height:34px;color:var(--ice-200)}
+.family .fixture{max-width:310px}
+.family .sub{font-size:14px;margin:0 0 16px}
+.alert{background:#fff;border:1px solid var(--ice-200);border-radius:12px;padding:26px;margin:24px 0}
+.alert.urgent{border-left:5px solid var(--danger);background:var(--danger-bg)}
+.alert p{margin:8px 0}
+.tag{display:inline-block;background:var(--danger);color:#fff;font-weight:750;font-size:13px;padding:4px 10px;border-radius:4px}
+.next-steps{padding:18px 0;border-top:1px solid var(--ice-200);margin-top:20px}
+.do{font-weight:700;font-size:19px;max-width:48ch}
+.alert .meta{color:var(--muted);font-size:13px;display:block}
+.family details{border-top:1px solid var(--ice-200);padding:16px 0 0;margin-top:16px}
+.family summary{cursor:pointer;font-weight:650;min-height:44px;padding:10px 0}
+.family summary:focus-visible{outline-offset:3px}
+.family details p{font-size:14px;margin:8px 0}
+.family .history-title{font-size:20px;margin:32px 0 8px}
+.family ul{list-style:none;padding:0;margin:0}
+.family li{padding:14px 0;border-bottom:1px solid var(--ice-200);font-size:14px}
+.family li details{padding:0;margin:0;border:0}
+.time{font-weight:700}
+.status{font-size:14px;color:var(--muted);padding:12px 16px;border-left:3px solid var(--electric);background:var(--ice-100);margin:16px 0}
+.status:empty{display:none}
+button[aria-pressed="true"]{background:var(--midnight);border-color:var(--midnight);color:var(--ice-50)}
 .flash{animation:flash 1s ease-in-out infinite}
 @keyframes flash{50%{background:var(--ice-50)}}
-button[aria-pressed="true"]{background:var(--midnight);border-color:var(--midnight);color:var(--ice-50)}
-h3{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:24px 0 8px}
-ul{list-style:none;padding:0;margin:0}li{padding:10px 0;border-bottom:1px solid var(--ice-200);font-size:14px}
-.time{font-weight:700}
-.status{color:var(--muted);font-size:14px;margin:8px 0 0}.status:empty{display:none}
-</style></head><body>
+@media(max-width:650px){.family main{padding:26px 18px 40px}.family h1{font-size:29px}.family .bar-inner{padding:16px 18px}.family .fixture{margin-left:0;font-size:12px}.alert{padding:20px}.do{font-size:18px}}
+</style></head><body class="family">
+<a class="skip btn" href="#main">Skip to alerts</a>
 <header class="bar"><div class="bar-inner">
-<p class="brand">Ah Ma Guardian<small>Family alerts</small></p>
+<p class="brand"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6z"/><path d="m8 12 3 3 5-6"/></svg><span>Scamkaki<small>Ah Ma Guardian family alerts</small></span></p>
 <p class="fixture">Demo fixtures. Test calls, not real scammers.</p>
-</div></header><main>
+</div></header><main id="main" tabindex="-1">
+<h1>Ah Ma may need your help.</h1>
 <p class="sub">Keep this page open, or rely on the Telegram message.</p>
-<p><button id="sound" class="secondary" aria-pressed="false">Turn on sound</button></p>
-<p class="status" id="status" role="status"></p>
-<div id="latest" aria-live="assertive"><p class="empty">No alerts yet. This page checks every 5 seconds.</p></div>
-<h3>Earlier alerts</h3>
+<p><button id="sound" type="button" class="secondary" aria-pressed="false">Turn on sound</button></p>
+<p class="status" id="status" role="status">Checking for alerts.</p>
+<noscript><p class="status">JavaScript is off, so alerts cannot refresh. Check your Telegram messages.</p></noscript>
+<div id="latest" aria-live="assertive" aria-atomic="true"><p class="empty">Checking for alerts.</p></div>
+<h2 class="history-title">Earlier alerts</h2>
 <ul id="earlier"><li class="empty">None.</li></ul>
+<p class="sub">Keep your family link private. This page does not provide access to the reviewer workspace.</p>
 </main>
 <script>
 const AGENCIES = {{ agencies | tojson }};
@@ -44,6 +64,11 @@ const seen = new Set();
 let firstLoad = true;
 let flashUntil = 0;
 let audio = null;
+let flashTimer = null;
+let renderedAlerts = null;
+let renderedDay = null;
+let checking = false;
+const reasonViews = new Map();
 
 function el(tag, text, cls) {
   const node = document.createElement(tag);
@@ -55,7 +80,9 @@ function el(tag, text, cls) {
 const SGT = {timeZone: "Asia/Singapore"};
 
 function when(iso) {
+  if (!iso) return "Time not recorded";
   const at = new Date(iso);
+  if (Number.isNaN(at.getTime())) return "Time not recorded";
   const time = at.toLocaleTimeString("en-SG", {...SGT, hour: "2-digit", minute: "2-digit", hour12: false});
   const day = (d) => d.toLocaleDateString("en-SG", SGT);
   if (day(at) === day(new Date())) return "Today " + time;
@@ -68,27 +95,52 @@ function labelled(label, value) {
   return p;
 }
 
+function label(map, value) {
+  return Object.hasOwn(map, value) ? map[value] : value || "Not recorded";
+}
+
 function signs(a) {
-  return (a.tactics || []).map((t) => TACTICS[t] || t).join(" · ");
+  return (a.tactics || []).map((t) => label(TACTICS, t)).join(" · ") || "Not recorded";
+}
+
+function reasons(a) {
+  let view = reasonViews.get(a.id);
+  if (!view) {
+    const details = el("details");
+    const recorded = el("div");
+    details.append(el("summary", "Why Guardian raised this alert"), recorded);
+    view = {details, recorded};
+    reasonViews.set(a.id, view);
+  }
+  const {details, recorded} = view;
+  recorded.replaceChildren();
+  const who = labelled("Contacted by", label(CHANNELS, a.channel));
+  who.append(", claiming to be ");
+  who.append(el("strong", label(AGENCIES, a.agency)));
+  recorded.append(who);
+  recorded.append(labelled("Asked for", label(DEMANDS, a.demand)));
+  recorded.append(labelled("Warning signs", signs(a)));
+  recorded.append(labelled("Already acted", label(ACTED, a.acted)));
+  if (a.similar_count > 0) recorded.append(el("p", "Same script heard " + a.similar_count + (a.similar_count === 1 ? " time" : " times") + " this week."));
+  recorded.append(el("p", "These are recorded details and may be wrong.", "meta"));
+  return details;
 }
 
 function renderLatest(a, isNew) {
   const box = el("section", undefined, "alert" + (a.urgent ? " urgent" : "") + (isNew ? " flash" : ""));
   if (a.urgent) box.append(el("p", "Urgent: Ah Ma already acted", "tag"));
   box.append(el("h2", "Likely scam"));
-  if (a.urgent) box.append(labelled("Ah Ma already", ACTED[a.acted] || a.acted));
-  const who = labelled("Contacted by", CHANNELS[a.channel] || a.channel);
-  who.append(", claiming to be ");
-  who.append(el("strong", AGENCIES[a.agency] || a.agency));
-  box.append(who);
-  box.append(labelled("Asked for", DEMANDS[a.demand] || a.demand));
-  if (a.tactics && a.tactics.length) box.append(labelled("Warning signs", signs(a)));
-  box.append(el("p", "Line: " + (LANGUAGES[a.language] || a.language) + " · " + when(a.created_at)));
-  if (a.similar_count > 0) box.append(el("p", "Same script heard " + a.similar_count + (a.similar_count === 1 ? " time" : " times") + " this week."));
-  box.append(el("p", a.urgent
+  if (a.urgent) box.append(labelled("Ah Ma already", label(ACTED, a.acted)));
+  box.append(el("p", "Line: " + label(LANGUAGES, a.language) + " · " + when(a.created_at), "meta"));
+  const steps = el("div", undefined, "next-steps");
+  steps.append(el("h3", "What to do now"));
+  steps.append(el("p", a.urgent
     ? "Call Ah Ma now. Help her call the bank on the number on the back of her card."
     : "Please call Ah Ma now.", "do"));
+  box.append(steps);
+  box.append(reasons(a));
   box.append(el("p", "Telegram: " + (TELEGRAM[a.alert_status] || "unknown"), "meta"));
+  box.append(el("p", "Sent does not confirm that anyone received or read the message.", "meta"));
   document.getElementById("latest").replaceChildren(box);
 }
 
@@ -97,13 +149,16 @@ function renderEarlier(list) {
   if (!list.length) { ul.replaceChildren(el("li", "None.", "empty")); return; }
   ul.replaceChildren(...list.map((a) => {
     const li = el("li");
-    li.append(el("span", when(a.created_at), "time"));
-    if (a.urgent) li.append(" · Urgent");
-    li.append(" · " + (LANGUAGES[a.language] || a.language) + " · "
-      + (CHANNELS[a.channel] || a.channel) + ", "
-      + (AGENCIES[a.agency] || a.agency) + ", " + (DEMANDS[a.demand] || a.demand));
+    li.append(el("p", when(a.created_at) + (a.urgent ? " · Urgent" : "") + " · " + label(LANGUAGES, a.language), "time"));
+    li.append(reasons(a));
     return li;
   }));
+}
+
+function stopFlash() {
+  flashUntil = 0;
+  clearTimeout(flashTimer);
+  document.querySelectorAll(".flash").forEach((node) => node.classList.remove("flash"));
 }
 
 function beep() {
@@ -120,21 +175,46 @@ function beep() {
 }
 
 async function check() {
+  if (checking) return;
+  checking = true;
   try {
     const response = await fetch(alertsUrl, {cache: "no-store"});
     if (!response.ok) throw new Error(response.status);
     const alerts = await response.json();
-    document.getElementById("status").textContent = "";
+    document.getElementById("status").textContent = "Last checked " + when(new Date().toISOString()) + ". Checks every 5 seconds.";
     const fresh = alerts.filter((a) => !seen.has(a.id));
     alerts.forEach((a) => seen.add(a.id));
     const isNew = !firstLoad && fresh.length > 0;
-    if (isNew) flashUntil = Date.now() + 30000;
-    if (alerts.length) renderLatest(alerts[0], Date.now() < flashUntil);
-    renderEarlier(alerts.slice(1));
+    if (isNew) {
+      flashUntil = Date.now() + 30000;
+      clearTimeout(flashTimer);
+      flashTimer = setTimeout(stopFlash, 30000);
+    }
+    const content = JSON.stringify(alerts);
+    const today = new Date().toLocaleDateString("en-SG", SGT);
+    if (content !== renderedAlerts || today !== renderedDay) {
+      const focused = document.activeElement;
+      if (alerts.length) renderLatest(alerts[0], Date.now() < flashUntil);
+      else {
+        stopFlash();
+        document.getElementById("latest").replaceChildren(el("p", "No alerts yet. This page checks every 5 seconds.", "empty"));
+        document.title = "Ah Ma Guardian family alerts";
+      }
+      renderEarlier(alerts.slice(1));
+      renderedAlerts = content;
+      renderedDay = today;
+      const currentIds = new Set(alerts.map((a) => a.id));
+      for (const id of reasonViews.keys()) if (!currentIds.has(id)) reasonViews.delete(id);
+      if (focused?.isConnected && document.activeElement !== focused) focused.focus({preventScroll: true});
+    }
     if (isNew) { beep(); document.title = "Likely scam call - Ah Ma Guardian"; }
     firstLoad = false;
   } catch (error) {
-    document.getElementById("status").textContent = "Cannot reach the server. Trying again.";
+    document.getElementById("status").textContent = firstLoad
+      ? "Cannot reach the server. Alerts are unavailable. Trying again."
+      : "Cannot reach the server. Showing the last received alerts, which may be out of date. Trying again.";
+  } finally {
+    checking = false;
   }
 }
 

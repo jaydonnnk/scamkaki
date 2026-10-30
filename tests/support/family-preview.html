@@ -1,0 +1,60 @@
+<style>
+#family-preview-controls{max-width:760px;margin:24px auto;padding:0 18px;overflow-wrap:anywhere}
+#family-preview-proof{display:block;max-width:100%}
+</style>
+<details id="family-preview-controls"><summary>Controlled polling, synthetic preview only</summary>
+<p>These controls transform responses from the existing local Family endpoint. They simulate UI states, not server or Telegram delivery.</p>
+<div class="voice-actions">
+<button id="preview-family-status" type="button">Status update then recovery</button>
+<button id="preview-family-queued-new" type="button">Queue new alert at next poll</button>
+<button id="preview-family-stored" type="button">Stored alerts</button>
+<button id="preview-family-failed" type="button">Failed refresh</button>
+<button id="preview-family-empty" type="button">Successful empty</button>
+<button id="preview-family-new" type="button">New non-urgent alert</button>
+<button id="preview-family-hostile" type="button">Hostile recorded text</button>
+<button id="preview-family-missing" type="button">Missing recorded fields</button>
+</div>
+<output id="family-preview-proof" class="sub"></output>
+</details>
+<script>
+window.scamkakiFamilyPreview = {
+  mode: "stored", httpRequests: 0, syntheticResponses: 0, audioContexts: 0, tones: 0,
+  record() { document.getElementById("family-preview-proof").textContent = JSON.stringify(this); }
+};
+const familyProof = window.scamkakiFamilyPreview;
+const storedFetch = window.fetch.bind(window);
+const familyEndpoint = location.pathname.replace(/\/$/, "") + "/alerts";
+window.fetch = async (url, options) => {
+  if (url !== familyEndpoint) throw new Error("Safe Family preview refuses other fetch paths");
+  familyProof.httpRequests++; familyProof.record();
+  const response = await storedFetch(url, options);
+  if (!response.ok || familyProof.mode === "stored") return response;
+  const data = await response.json();
+  familyProof.syntheticResponses++; familyProof.record();
+  if (familyProof.mode === "failed") throw new Error("Simulated refresh failure after local HTTP success");
+  let alerts = data;
+  if (familyProof.mode === "status") {
+    alerts = data.map((a) => ({...a, alert_status: "pending"}));
+    familyProof.mode = "stored"; familyProof.record();
+  }
+  if (familyProof.mode === "empty") alerts = [];
+  if (familyProof.mode === "new") alerts = [{...data[0], id: 99001, urgent: false, acted: "none", language: "hi", agency: "bank"}, ...data];
+  if (familyProof.mode === "missing") alerts = [{id: 99002}];
+  if (familyProof.mode === "hostile") {
+    const needle = '<img src=x onerror="syntheticNeedle()">';
+    alerts = [{...data[0], id: 99003, agency: needle, demand: needle, tactics: [needle]}];
+  }
+  return {ok: true, json: async () => alerts};
+};
+class PreviewAudio {
+  constructor() { familyProof.audioContexts++; this.currentTime = 0; this.destination = {}; familyProof.record(); }
+  createOscillator() { return {frequency: {}, connect: (target) => target, start() { familyProof.tones++; familyProof.record(); }, stop() {}}; }
+  createGain() { return {gain: {}, connect: () => this.destination}; }
+}
+window.AudioContext = PreviewAudio;
+["stored", "failed", "empty", "new", "hostile", "missing", "status"].forEach((mode) => {
+  document.getElementById("preview-family-" + mode).onclick = () => { familyProof.mode = mode; familyProof.record(); check(); };
+});
+document.getElementById("preview-family-queued-new").onclick = () => { familyProof.mode = "new"; familyProof.record(); };
+familyProof.record();
+</script>

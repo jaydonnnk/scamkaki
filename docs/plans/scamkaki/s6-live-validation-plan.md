@@ -1,5 +1,11 @@
 # S6 live-validation plan
 
+Historical validation plan and cost estimates. The 2026-10-30 continuation request grants a
+fresh total ceiling of 100 US cents and names the user as English role-play operator, as
+recorded in 00-status.md. Old wallet readings, remaining allowances and option reserves below
+are historical evidence, not current account state or an additional budget. The next S6
+handoff follows S12 publication. No live action is performed while preparing it.
+
 User answers, 2026-10-28: Option A first, then B; total cap 150 cents; operators to be found by the user (Hindi not needed unless D is chosen later); a passing probe counts as `en-ica-video-01` if it passes `check.py`; `call_terminate` unanswered, so not set. Within 150 cents: A (25) plus B's four calls (100) is 125, leaving 25 for one rerun. Calls remain unauthorized until the user says so by name.
 
 Prepared 2026-10-28 after S7's local build. **This is a plan, not authority.** It authorizes no session mint, call, agent update, top-up, deployment or other charge. S6 stays open until its evidence contract is met or the user changes it.

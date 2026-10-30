@@ -31,3 +31,25 @@ def test_preview_refuses_production_endpoint_even_with_different_role(monkeypatc
     )
     with pytest.raises(SystemExit, match="distinct test database endpoint"):
         preview_ui.preview("populated", True)
+
+
+def test_preview_refuses_missing_family_anchor_before_migrations(monkeypatch):
+    from pathlib import Path
+
+    original = Path.read_text
+
+    def missing_anchor(path, *args, **kwargs):
+        text = original(path, *args, **kwargs)
+        return (
+            text.replace("const AGENCIES", "const MISSING_AGENCIES")
+            if path.name == "family.html"
+            else text
+        )
+
+    def forbidden(*args):
+        raise AssertionError("Must refuse Family preview before database access")
+
+    monkeypatch.setattr(Path, "read_text", missing_anchor)
+    monkeypatch.setattr(preview_ui, "_test_database_url", forbidden)
+    with pytest.raises(RuntimeError, match="Family preview replacement"):
+        preview_ui.preview("populated", True)

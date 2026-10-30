@@ -150,3 +150,12 @@ def test_overview_draft_queue_is_bounded_and_excludes_reviewed(client, db):
     queue = page.split('id="draft-queue"')[1].split("</section>")[0]
     assert queue.count('href="/reports/') == 1
     assert 'href="/reports/6"' in queue
+
+
+def test_overview_activity_keeps_unknown_recorded_labels(client, db):
+    from scripts.preview_ui import fixture_rows
+
+    fixture_rows(db)
+    page = client.get("/", auth=("admin", "admin-pass")).text
+    assert "<h3>Bait script · &lt;script&gt;fixture agency&lt;/script&gt;</h3>" in page
+    assert "&lt;img src=x onerror=alert(1)&gt; · Demo fixture: s9-pattern-fixture-7" in page

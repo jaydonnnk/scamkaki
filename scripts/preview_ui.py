@@ -70,6 +70,7 @@ def fixture_rows(url: str) -> None:
                 ("likely_scam", "paid", "failed"),
                 ("unclear", "unsure", None),
                 ("no_scam_signs", "none", None),
+                ("likely_scam", "none", "off"),
             ]
         ):
             report = GuardianReport(
@@ -78,7 +79,7 @@ def fixture_rows(url: str) -> None:
             check_id = store.log_guardian_check(
                 conn,
                 report,
-                "hi" if n % 2 else "en",
+                "hi" if n % 2 or n == 4 else "en",
                 MatchResult(outcome, 2, "fixture", acted == "paid"),
             )
             conn.execute(
@@ -129,6 +130,14 @@ def preview(state: str, reset: bool):
     sdk = '<script src="https://cdn.jsdelivr.net/gh/bolna-ai/web-call@v3.0.1/dist/bolna-web-call.min.js"></script>'
     if template.count(sdk) != 1:
         raise RuntimeError("Voice SDK replacement must match exactly once before a preview reset.")
+    family_template = (ROOT / "src/scamkaki/app/templates/family.html").read_text()
+    family_anchor = "<script>\nconst AGENCIES"
+    if family_template.count(family_anchor) != 1:
+        raise RuntimeError(
+            "Family preview replacement must match exactly once before a preview reset."
+        )
+    family_fake = (ROOT / "tests/support/family-preview.html").read_text()
+    family_template = family_template.replace(family_anchor, family_fake + family_anchor)
     url = _test_database_url()
     if not url:
         raise SystemExit("TEST_DATABASE_URL is required.")
@@ -189,7 +198,10 @@ def preview(state: str, reset: bool):
     fake_sdk = (ROOT / "tests/support/voice-preview.html").read_text()
     template = template.replace("{% endblock %}", fake_sdk + "{% endblock %}", 1)
     main.templates.env.loader = ChoiceLoader(
-        [DictLoader({"voice.html": template}), main.templates.env.loader]
+        [
+            DictLoader({"voice.html": template, "family.html": family_template}),
+            main.templates.env.loader,
+        ]
     )
     if state == "error":
 

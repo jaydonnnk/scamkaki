@@ -1,6 +1,7 @@
 # Progress
 
-Current state: S11 is complete locally and uncommitted on scamkaki/slice-11-voice-room, HEAD/main remain published S10 tip 2a6a21e. Final 331 tests, one existing warning; Ruff/format/offline caller/19 UI checks/diff pass. All 30 named faults caught/restored. Evidence and current session transfer/review are in docs/plans/scamkaki/. Authority remains only in 00-status.md. No listeners on 8783/8784; browser tab closed and viewport reset. S12 is unstarted and requires S11 in main plus its own grant. S6/S7 gaps remain open. Receipts: work/scamkaki-s11/. Earlier snapshots below are historical.
+Current state: S12 local redesign exit complete on scamkaki/slice-12-family-ui from published main b6620b1. Four inherited documentary changes preserved, index empty. Final post-review suite 345 passed, 1 warning in 431.45s (0:07:11), Ruff/format/39 UI/offline caller/diff pass. 54 automated plus one browser CSS faults caught/restored; 125 viewport captures, Overview tasks 1/1/2. Fresh review findings fixed with five red-to-green cases and browser follow-ups. Protected bytes/credential bounds audited. All previews stopped, tab closed, viewport reset. Publication is now requested and in progress; S6/S7 gaps remain open. Authority is only in 00-status.md. Receipts: work/scamkaki-s12/.
+
 Historical research and the superseded build plan below are context only; current authority is in docs/plans/scamkaki/00-status.md.
 
 - [x] Read AGENTS.md and the user-authored Evidence check - Claude.md; preserve the source report.
@@ -11,13 +12,49 @@ Historical research and the superseded build plan below are context only; curren
 
 ## Run log
 
+### S12 publication and S6 handoff, 2026-10-30
+
+- [x] Re-verify exact known working tree, empty index and b6620b1 local/remote main equality.
+- [x] Fresh private admission and 345-test publication suite pass, one existing warning; Ruff/format/39 UI/offline caller/diff pass. Source/evidence/credential audit precedes staging.
+- [ ] Commit explicit S12 package, fast-forward main, push and verify remote equality.
+- [ ] Read-only hosted appearance check; report actual result, never assume auto-deployment.
+- [ ] Prepare S6 eight-section prompt with fresh 100-US-cent total ceiling and user as English operator.
+- [ ] Reconcile status/evidence/progress/current prompt and publication receipts.
+No S6 live calls, wallet read, agent update or S7 recording in this chat. Authority is only
+in 00-status.md. Existing S12 handoff/session documents retain historical boundary snapshots.
+
+
+### S12 execution, 2026-10-30
+
+- [x] Verify Git/main/remote/prerequisites, preserve dirty documents, create/confirm required branch.
+- [x] Privately verify distinct test endpoint, connection and zero other clients before resets.
+- [x] Baseline 331 passed with one existing warning. Family route/controller/preview red checks retained.
+- [x] Standalone Family, stale/empty repair, bounded flash, stable disclosures and controlled preview transitions.
+- [x] All eight screens at 1280/375, verdict/state matrix, keyboard skip/focus and Overview paths 1/1/2 actions.
+- [x] 54 automated faults plus one browser CSS fault caught/restored, post-review full suite and scoped architecture cleanup complete.
+- [x] Evidence/status/transfer consistency and final report prepared. No S13 or Git publication.
+
+Plan follows S12 handoff A-G. Use existing HTML/CSS/system fonts and native disclosures.
+Ruling: reuse the current checkout and required slice branch to preserve inherited docs, as
+specified by the approved handoff. No new worktree or dependency installation is needed.
+Review fix pass: overlap, status/reorder focus and midnight date defects each reproduced in
+five new red checks, then fixed. Ruling: date accuracy is required because false Today misstates
+alert recency. Native details are keyed by ID and focus restored without scroll after movement.
+Browser latest/earlier status updates and reorder focus pass at both widths. The initial
+pre-review green suite was not treated as sufficient after these reproducible findings.
+Interface preflight: rendered Family label dictionaries feed the actual inline-script harness;
+preview poll controls must target only the existing Family JSON path and retain Voice fake SDK.
+Tests and previews never share database ownership. No real microphone, SDK, send or provider.
+
+
 ### S11 publication and S12 handoff preparation, 2026-10-30
 
 - [x] Re-verify branch, 2a6a21e local/remote main, empty index and exact reviewed 37-file package.
 - [x] Privately verify distinct test endpoint; retain refused first preflight and successful read-only ownership follow-up. No concurrent preview/reset.
 - [x] Fresh publication suite 331 passed, one existing warning in 71.45 s. Ruff/format/19 UI checks/offline caller/diff pass.
-- [ ] Explicit package audit/staging, commit, main fast-forward/push and remote verification.
-- [ ] Prepare original eight-section S12 handoff and read-only review prompt from published main; local docs only.
+- [x] Explicit 37-file audit/staging, S11 commit b6620b1, main fast-forward/push and remote equality/0-0/clean state verified.
+- [x] Prepare original eight-section S12 handoff and read-only review prompt from published main; local docs only.
+- [x] Final handoff contract/eight sections/all slices/build plan/authority/state/references/protected bytes/credential bounds/whitespace pass; prompt copy matches.
 Authority is recorded only in 00-status.md. No S12 implementation/test scope follows.
 Receipts: work/scamkaki-s11-publication/. Later publication facts are verified from Git after execution.
 

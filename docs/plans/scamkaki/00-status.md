@@ -22,7 +22,8 @@ S2 was authorized and closed 2026-10-22 (see approval history). S3 authorized 20
 - [x] S3 - Guardian verdict and family alert, branch `scamkaki/slice-3-guardian-verdict`, done 2026-10-24; [evidence](evidence/s3-guardian-verdict.md). Bolna call transfer was blocked on our account, so the app alerts the family by Telegram and a family page (gates re-approved 2026-10-24). Live: English scam and Hindi scam alerted (`sent`), English legit did not; 6 calls (one over plan, a cut-off attempt), 33 cents. Limits: smoke test only, alert seconds not measured, Hindi likely-scam ending awaiting Pravesh's re-check.
 - [x] S4 - Ah Ma Bait with extraction and leak guard, branch `scamkaki/slice-4-bait`, done 2026-10-26; [evidence](evidence/s4-bait.md). Synthetic caller, web calls. English: payees 5 of 5, zero leaks (pass). Hindi: 2 of 4 payees over two runs (first run 0 of 2, retry with Lekha at default speed and reworded payee questions 2 of 2), zero leaks: **flaky**, recorded as such by the user's decision. 9 calls, 74.25 cents. Limits: one scripted call per case; the caller does not react to Ah Ma; Hindi speech-to-text garbles digit words; not real scammers.
 - [x] S5 - Sophisticated verdict behind the tool, no calls, branch `scamkaki/slice-5-guardian-loop`, done 2026-10-28; [evidence](evidence/s5-sophisticated-verdict.md). Unit 138, integration 61 passed; every Guardian fixture 15 of 15 offline and 15 of 15 on Render (`main` at `e172268`, migration 0005 on production); 16 of 16 mutations caught; deployed family page checked at phone and desktop width; the user confirmed the 10 `[Demo fixture]` Telegram alerts arrived, including the urgent courier ones. Amendment at close: urgent alerts go first only for 24 hours (published to `main` at `59b918d` on 2026-10-28; Render ordering not re-probed during S6). Limits: fixture reports, not real conversations; whether Bolna's agent fills the five values is S6's probe; Hindi act-now and call-back sentences await the listener check in S6. Post-slice cleanup: fixed the stale two-modes docstring in `scripts/caller/serve.py`; 33 ignored local clips in `scripts/caller/clips/` belong to removed or reshaped cases (awaiting the user's OK to delete); no orphan tracked files or unused code found. Earlier on this branch: 7-day count, Guardian caller mode, `check.py guardian`; probe call `47a10fcb` showed Bolna did not call the tool with an execution id, so checks link to calls by time.
-- [ ] S6 - Guardian asks the new questions, live, branch `scamkaki/slice-6-guardian-live`; **offline repairs complete 2026-10-28; live probe attempted 2026-10-29, nine invalid calls, Guardian EN prompt fixes and verdict text change applied, latest probe failed check.py, retry pending**, [evidence](evidence/s6-guardian-live.md). Gate 3 fixture corrections applied. Both Guardian agents updated and read back with gpt-5.4-mini, temperature 1, max_tokens 300 and stronger help/confirmation wording. Full suite after the verdict text change: 183 unit and 78 integration tests pass; lint, formatting and offline caller checks pass. The original 135.6-second probe cost 13.75 US cents and made three tool calls; fixture ambiguity and caller timing confound the other failures. The user authorized a live probe with a 150-cent cap on 2026-10-29 and named Mr Tan as the English operator. Nine `en-ica-video-01` live calls were invalid: three ended on the 10-second silence timeout with no user audio, one was echo-corrupted, two showed the model duplicating its own sentences, two more after the first fix still duplicated and failed to call the tool, and the latest after the shortening fix failed `check.py` on tactics, tool_count and spoken_verdict; total 55 cents, wallet 277.25 to 222.25, remaining cap 95. The user authorized two Guardian EN prompt fixes: a no-repetition line and, after the duplication persisted, shorter replies ("Speak short phrases, not full sentences" and a terse repeat-back). Both applied by PATCH with matching read-backs and zero wallet delta. The user then asked for a one-line scam summary; the English `likely_scam` say is now "This is likely a <scam type>. I have alerted your family.", with the type derived from the agency. No agent change was needed. No verdict was issued on any call; `check.py` has not passed. Pravesh's [text review](evidence/s6-hindi-listener.md) is pending. S6's live exit checks remain unmet. A retry is pending; no Option B calls are authorized until Option A passes. The user separately authorized publishing the current working tree to main on 2026-10-28.
+- [ ] S6 - Guardian asks the new questions, live; offline repairs exist, live exit remains unmet. The latest evidence is the 2026-10-29 retry after the prompt fix, not the older nine-call summary. In the scored 71-second call `d9d9a42a`, Guardian called the tool twice without a repeat-back or explicit yes and supplied `urgency_threat` and `knew_details` without transcript support. The updated verdict sentence was spoken correctly, so that earlier wording failure is resolved. Both latest calls and all earlier failures remain in [evidence](evidence/s6-guardian-live.md). Recorded cumulative historical S6 spend is 68.75 US cents, with 81.25 left under the old 150-cent campaign at that time; neither number is a current wallet reading or additional authority. The fresh 100-US-cent continuation ceiling and user as English role-play operator are recorded below. No S6 live action occurs during this publication/handoff task. Hindi listener review and updated Hindi live audio remain unverified. The full target is not waived by a reduced sample.
+
 - [ ] S7 - Dashboard, report review and demo, branch `scamkaki/slice-7-dashboard-demo`, **built and checked locally 2026-10-28; two exit items open**, [evidence](evidence/s7-dashboard-demo.md). Dashboard live feed with a warning-signs column and the urgent result, `GET /reports/{id}`, `POST /reports/{id}/review` (sends nothing), restyled family page, midnight/ice/electric blue with chartreuse only on the fixture label and reviewed check. Fresh: 183 unit and 78 integration tests pass, lint, format and offline caller check pass; 30 of 30 guard mutations caught after two weak tests were fixed (first run missed 2, kept); desktop and 375 px screenshots; 3 UI-only rehearsals 5 of 5 each. **Open:** the backup video is unavailable (no recorder installed, no install authorized), and a full live demo was not run (calls deferred), so neither is claimed. Committed, fast-forwarded into `main` and pushed on the user's instruction (see approval history); remote state verified with `git ls-remote`, not inferred. Whether Render has deployed it is [unknown]. Limits: Tab traversal not verified by the browser tool, no real phone or screen reader, the same-origin check on Mark reviewed was added after the first record. The S6 validation plan follows ([plan](s6-live-validation-plan.md), not execution authority).
 
 ## Notes for a fresh session
@@ -164,15 +165,15 @@ authorized below. Preview verification is in [checks/ui-redesign-preview.md](che
 - [x] S8 - Reviewer workspace, call history and separate call/check details. Done locally 2026-10-30 on `scamkaki/slice-8-reviewer-workspace`; [evidence](evidence/s8-workspace.md). Full suite 290 passed, lint/format and offline caller checks passed. 37 distinct faults caught across a recorded test correction; 1280/375 px populated/empty/error walkthrough passed. Human usability remains unmeasured. Published to main at 87739f0; deployment unverified.
 - [x] S9 - Visual script patterns from stored seven-day Bait counts. Done locally 2026-10-30 on `scamkaki/slice-9-script-patterns`; [evidence](evidence/s9-script-patterns.md). Final suite 303 passed, one existing warning; Ruff lint/format, offline caller and diff checks passed. Final 26/26 independent faults caught with exact source restoration; 1280/375 px populated/empty/503, links, disclosures, escaping and keyboard/overflow checks passed. Thirteen screenshots retain two initial captures with disclosed limits. No in-scope cleanup finding from auxiliary source/screenshot review. Published to main at 6565bc4 after separately authorized commit, fast-forward and push; S6/S7 gaps and human/live/deployment limits persist.
 - [x] S10 - Focused report review and persistent review state. Done locally 2026-10-30 on `scamkaki/slice-10-report-review`; [evidence](evidence/s10-report-review.md). Final suite 316 passed, one existing warning; Ruff/format, offline caller and diff checks pass. Final 35/35 independent faults caught with exact restores. Actual browser POST/303, database persistence/reload, HTTP repeat review and zero fake effects verified at 1280/375 px. Seventeen screenshots retain two initial captures. Scoped architecture/source/screenshot review found no unresolved S10 issue or cleanup deletion. Committed at 729000b and fast-forwarded into main under the publication grant below; human/live/deployment limits persist.
-- [x] S11 - Voice room with explicit start and existing EN/HI lines. Done locally 2026-10-30 on `scamkaki/slice-11-voice-room`; [evidence](evidence/s11-voice-room.md). Full suite 331 passed, one existing warning; Ruff/format, offline caller, 19 actual-script UI checks and diff pass. All 30 independent faults caught/restored. Actual 1280/375 browser checks used seven HTTP fake-session mints, zero microphone/fetch/send effects, locked choices, end/error/late-event recovery and no measured overflow. Seventeen screenshots retain setup failure and disclosed full-page mobile Skip-link artifacts. Auxiliary review found no blocking source issue; its P3 disclosure correction is recorded. Publication authorized below; verify actual main refs after execution. Real audio/human/deployment proof remains unverified.
-- [ ] S12 - Family view and complete redesign verification.
+- [x] S11 - Voice room with explicit start and existing EN/HI lines. Done locally 2026-10-30 on `scamkaki/slice-11-voice-room`; [evidence](evidence/s11-voice-room.md). Full suite 331 passed, one existing warning; Ruff/format, offline caller, 19 actual-script UI checks and diff pass. All 30 independent faults caught/restored. Actual 1280/375 browser checks used seven HTTP fake-session mints, zero microphone/fetch/send effects, locked choices, end/error/late-event recovery and no measured overflow. Seventeen screenshots retain setup failure and disclosed full-page mobile Skip-link artifacts. Auxiliary review found no blocking source issue; its P3 disclosure correction is recorded. Published to main at b6620b1 after separately authorized commit, fast-forward and push. Real audio/human/deployment proof remains unverified.
+- [x] S12 - Family view and complete redesign verification, local go 2026-10-30 on `scamkaki/slice-12-family-ui`; [evidence](evidence/s12-family-ui.md). No publication or human/live efficacy claim.
 
 The full contracts and authority limits are in [04-slices.md](04-slices.md#website-redesign-slices-2026-10-30).
 S9 and S10 local exit decisions: **go**. S10 implementation commit 729000b is now in main.
 S11's S8-S10-in-main prerequisite is met; S11 local implementation/branch is now authorized.
 Named S11 isolated test scope is also authorized below. S11 local exit decision: **go**.
-S11 publication is now authorized below. S12 remains unstarted; its S8-S11-in-main prerequisite
-must be verified from Git after publication, and its local/test grants remain pending.
+S11 is published to main at b6620b1. S12's S8-S11-in-main prerequisite is verified met;
+S12 local implementation/branch and the proposed isolated test scope were authorized below; its local redesign exit is complete and publication is now authorized above.
 No redesign slice replaces the open S6/S7
 evidence obligations. The [S11 session transfer](s11-session-transfer.md) and
 [read-only review prompt](s11-session-review.md) carry the current local boundary.
@@ -245,6 +246,94 @@ Earlier S10/S11 preparation prompts retain explicitly historical snapshots.
   in 71.45 seconds. Ruff lint/format, all 19 offline UI checks, offline caller and diff pass.
   No source/test/screenshot change or new browser/fault run was needed. All 30 prior source
   restoration hashes still match. Full suite used the unchanged existing fake providers.
+
+- [verified] Publication completed at `b6620b1990e58baebdc9d34991d0adf73a7624bd`. Main was fast-forwarded and
+  pushed to origin/main; HEAD/main/origin/main/remote main/retained S11 branch matched, with
+  left/right counts 0/0 and clean tree/index immediately after push. Exactly 37 files were
+  committed. S8-S11 content was verified before the S12 handoff was written.
+
+### S12 publication and S6 continuation request, 2026-10-30
+
+- User: "Can u commit the working tree and push to main first, so that i can see the \"finished product\", then provide me with a copy paste prompt for the next agent to work particularly on S6.(with up to 100 cents of trial and error). Then ill do S7 with the full demonstration and a recorded video."
+- This authorizes the current reviewed S12 working-tree package's commit, fast-forward into
+  main and push to origin/main, followed by an eight-section S6 continuation handoff. Retain
+  the S12 branch. Existing Render automatic deployment may follow the requested main push;
+  manual deployment, provisioning or paid hosting changes are not included.
+- The next S6 agent has a fresh total ceiling of 100 US cents for bounded trial and error.
+  It replaces old remaining-allowance assumptions; it is not added to 81.25 or 95 cents.
+  This chat prepares the handoff and makes no S6 provider call or account change.
+- User separately selected that they will be the English role-play operator. Confirm readiness
+  before any live microphone/session so the budget is not spent on unattended silence.
+  S7's real demonstration and recorded video are reserved for the user afterward.
+- The final S6 prompt must distinguish this budget/operator authority from any missing named
+  destructive test-database, new production-write/notification or gate-change scope. It must
+  preserve failed attempts and targets. No S6 completion is promised within the cap.
+- [verified] Publication begins on scamkaki/slice-12-family-ui, with HEAD/main/origin/main
+  and remote main at b6620b1990e58baebdc9d34991d0adf73a7624bd, empty index and the known
+  142-file package. Fresh test admission and checks precede staging. No source change planned.
+  Commit SHA, push success and hosted appearance are verified after execution, never predicted.
+- [verified] Fresh publication suite: 345 passed, one existing Starlette/httpx warning in
+  148.58 seconds. Ruff lint/format, all 39 owning-script UI checks, offline caller and diff pass.
+  Admission confirmed a distinct private test endpoint and zero other clients. Source/test bytes
+  match the prior reviewed S12 package; no new browser/fault run is substituted or claimed.
+
+### S12 local result, 2026-10-30
+
+- [verified] Local redesign go on `scamkaki/slice-12-family-ui` from published main b6620b1.
+  Family standalone design, exact guidance, safe text, stale/empty/recovery, opt-in sound,
+  bounded flash, poll serialization, keyed disclosure/focus and day rollover are implemented.
+  Narrow Overview escaped-label and count-wrapping repairs came from observed failures.
+- [verified] Eight screen types walked at 1280/375 with appropriate verdict/Hindi/urgent/
+  empty/missing/error/query/paging/focus states. Overview paths were 1/1/2 navigation actions.
+  125 genuine viewport captures retain failed/invalid captures and measured limitations.
+  Existing private links/access/headers/order and fake Voice/session/report behavior persist.
+- [verified] Final post-review suite: 345 passed, 1 warning in 431.45s (0:07:11). Ruff lint/format,
+  offline caller, 39 owning-script UI checks and diff whitespace pass. All 54 automated faults
+  plus one browser CSS fault caught/restored; protected bytes and credential bounds audited.
+- Fresh read-only review found two Important issues and a midnight-date issue. Five new red
+  cases reproduced them, then passed after the single fix pass; browser status/reorder focus
+  followed up. Scoped architect-reviewer cleanup found no justified deletion candidate.
+  Review is auxiliary evidence, not a human or independent runtime oracle.
+- No preview listener remains, browser tab closed and viewport reset. Index empty; no commit,
+  merge, push, deployment, installation, real microphone/provider session, send or spend.
+  S6 efficacy, S7 backup video/full live demo, human comprehension, real devices/AT, receipt,
+  actual reduced-motion preference session, audio, CI and deployed revision remain open.
+- Evidence: [S12](evidence/s12-family-ui.md), [session transfer](s12-session-transfer.md),
+  [read-only review prompt](s12-session-review.md). No S13 is planned. Stop for user instruction.
+
+### S12 execution authority, 2026-10-30
+
+- User, after the background-only handoff and explicit pending scope: "go i authorize".
+  This authorizes S12 local implementation and branch `scamkaki/slice-12-family-ui`, plus
+  the proposed isolated test scope: migrations/truncation and fixture writes on freshly
+  verified distinct TEST_DATABASE_URL, fake Bolna/Telegram, controlled Family polling and
+  fake browser SDK. Never production, real microphone/provider sessions or messages.
+- No installation, recording, spend, Git publication, deployment or S6/S7 completion follows.
+- [verified] HEAD/main/origin/main and remote main match b6620b1990e58baebdc9d34991d0adf73a7624bd.
+  S8-S11 prerequisites are met. Created and confirmed the required S12 branch before edits.
+  Preserved the four inherited documentary changes and empty index.
+- [verified] Private admission checked distinct normalized endpoints, test connectivity and
+  zero other database clients. No production connection, environment print or environment hash.
+  Tests and preview resets will own the test branch sequentially.
+- Local exit is complete as recorded above. Earlier pending/in-progress S12 notes are historical snapshots.
+
+### S12 handoff preparation, 2026-10-30
+
+- The latest user request above asks for a copy-paste S12 handoff after S11 publication, using
+  the original structure. It grants no S12 branch/implementation or named destructive test work.
+- [S12 handoff](s12-handoff.md) includes all S1-S12 statuses, the conditional seven-step build
+  plan, verbatim published S12 contract, protected scope, source traps, authority and final-slice
+  stop. [Read-only review prompt](s12-handoff-review.md) preserves the adversarial review scope.
+- Preparation changes only local 00-status.md/PROGRESS.md and these two new handoff documents.
+  They are uncommitted. Application/tests/screenshots match published main; index is empty, no
+  S12 branch exists and no DB/provider action or runtime check prepared this S12 handoff.
+  S12 local/test authority remains pending. Publication proof remains distinct from deployment.
+
+- [verified] S12 documentary checks pass: verbatim published contract, original eight sections,
+  all S1-S12 statuses, seven conditional build steps, current Git/authority, existing references
+  and planned evidence absence, protected published bytes, bounded credential scan and whitespace.
+  The copyable prompt exactly matches s12-handoff.md. Index empty; only the four documentary
+  files above differ. Receipts: work/scamkaki-s12-handoff/checks.json. No S12 runtime/DB action.
 
 ### S11 local outcome, 2026-10-30
 
