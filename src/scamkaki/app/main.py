@@ -462,6 +462,20 @@ def check_page(
     )
 
 
+@app.get("/reports", dependencies=[AdminDep])
+def reports_entry(request: Request, settings: SettingsDep) -> Response:
+    try:
+        with connect(settings.database_url) as conn:
+            reports = store.recent_reports(conn, limit=1, drafts_only=False)
+    except psycopg.Error:
+        return reviewer_error(request)
+    if reports:
+        return RedirectResponse(
+            f"/reports/{reports[0]['id']}", status_code=303, headers={"Cache-Control": "no-store"}
+        )
+    return reviewer_page(request, "report.html", title="Reports", active="reports", report=None)
+
+
 @app.get("/reports/{report_id}", response_class=HTMLResponse, dependencies=[AdminDep])
 def report_page(report_id: int, request: Request, settings: SettingsDep) -> HTMLResponse:
     try:
@@ -470,8 +484,8 @@ def report_page(report_id: int, request: Request, settings: SettingsDep) -> HTML
     except psycopg.Error:
         return reviewer_error(request)
     if report is None:
-        raise HTTPException(status_code=404)
-    return reviewer_page(request, "report.html", report=report)
+        return reviewer_error(request, missing=True)
+    return reviewer_page(request, "report.html", title="Reports", active="reports", report=report)
 
 
 @app.post("/reports/{report_id}/review", dependencies=[AdminDep])

@@ -1,6 +1,6 @@
 # Progress
 
-Current publication snapshot: S9 fresh checks pass on `scamkaki/slice-9-script-patterns`, based on published main 87739f0. Commit/fast-forward/push follow under the authority in `docs/plans/scamkaki/00-status.md`; verify actual refs afterward. S10 unstarted until S9 reaches main. Publication scratch: `work/scamkaki-s9-publication/`. S6 live proof and S7 video/live demo remain open. Earlier pending-authority notes below are historical.
+Current state: S9 published at 6565bc4. Local/remote main and retained S9 branch verified equal, tree/index clean before creating `scamkaki/slice-10-report-review`. S10 complete locally and uncommitted, local/test only. Authority is in `docs/plans/scamkaki/00-status.md`. Scratch: `work/scamkaki-s10/`; plan/baseline hashes retained there without environment files. S6 live proof and S7 video/live demo remain open. Earlier pending-authority notes below are historical.
 Historical research and the superseded build plan below are context only; current authority is in docs/plans/scamkaki/00-status.md.
 
 - [x] Read AGENTS.md and the user-authored Evidence check - Claude.md; preserve the source report.
@@ -11,18 +11,61 @@ Historical research and the superseded build plan below are context only; curren
 
 ## Run log
 
+### S10 publication checks, 2026-10-30
+
+- [x] Re-verify S10 branch, empty index and S9 main/local/remote equality; preserve all inherited files.
+- [x] Stop verified inspection preview PID 6813 with SIGINT after owned session 81053 proved unavailable.
+- [x] Retain refused first preflight, then verify no other test clients and distinct test endpoint before tests.
+- [x] Fresh suite 316 passed, one existing warning in 62.22 s. Ruff/format/offline caller/diff pass.
+- [x] Source/tests/screenshots unchanged; 17 JPEGs match prior hashes. Guard receipts checked before staging.
+- [ ] Commit explicit S10 package, fast-forward main, push only main and verify remote refs/clean state.
+Authority is recorded only in 00-status.md. No S11 branch/code/test scope follows from publication.
+Receipts: work/scamkaki-s10-publication/ and work/scamkaki-s10/publication-*.log.
+Earlier dirty/unpublished S10 and active-preview notes below are historical snapshots.
+
+### S11 handoff preparation, 2026-10-30
+
+- [x] Re-verify S10 branch, 6565bc4 local/remote main, empty index, dirty S10 and absent S11 branch.
+- [x] Read published S11/S12 contracts, gate decisions, S8 skeleton, current source/session endpoint and fakes.
+- [x] Write s11-handoff.md with S1-S12 order/status, conditional S11 build plan and copied contract; add read-only review prompt.
+- [x] Exact contract/eight sections/S1-S12/build steps/references/authority/protected-source/whitespace checks pass; output copies match.
+S10 is still uncommitted and absent from main. S11 prerequisite and local/test authority are
+pending in 00-status.md. The inspection preview remains active on 8783, session 81053/PID 6813;
+its live ownership must be rechecked before stopping, and no tests/resets can share that DB.
+This preparation changes documentation only. No application suite, DB/provider action, branch,
+installation, staging or publication. Receipts: work/scamkaki-s11-handoff/.
+
+### S10 design inspection, 2026-10-30
+
+User requested to see the design before deciding whether to continue. Started the actual
+synthetic preview on 127.0.0.1:8783 with preview_ui.py --state populated --reset-test-db,
+using the existing S10 isolated test authority and script endpoint guard. Owned terminal
+session 81053, PID 6813; Ctrl-C through that session stops it. This fresh fixture reset is
+separate from the earlier retained proof datasets. No concurrent tests or real providers.
+Opened report 18 in a visible retained browser tab, normal viewport 620x737. CSS is loaded,
+scrollWidth 620 equals viewport, and the responsive layout stacks panels. A normal viewport
+screenshot is saved in the chat workspace outputs. Server/tab remain open for the user.
+No application source/design edits, publication or S11 work. Visual feedback is pending.
+
 ### S9 publication and S10 continuation, 2026-10-30
 
 - [x] Verify S9 branch, HEAD/local/remote main 87739f0, empty index and known dirty package.
 - [x] Privately verify distinct test endpoint and test connection; no production connection or listener on 8783.
 - [x] Fresh 303 tests pass, one existing warning; Ruff lint/format, offline Node caller and diff checks pass.
-- [ ] Finish bounded package scan and final index inspection.
-- [ ] Commit explicit S9 manifest, fast-forward main, push and verify remote equality.
-- [ ] Verify committed prerequisites, create S10 branch and implement its approved report contract.
-- [ ] Prove real review persistence/POST/303 with fake providers, independent guard faults and responsive browser checks.
-- [ ] Full checks, scoped architecture review and evidence/status update; stop before S11.
+- [x] Explicit 34-file package staged; protected snapshots, bounded value/pattern scan and staged diff pass.
+- [x] S9 commit 6565bc4 fast-forwarded/pushed to main; remote equality and 0/0 counts verified. S9 branch retained.
+- [x] Verify committed prerequisites, create S10 branch and implement its approved report contract.
+- [x] Browser native validation, actual POST/303, reload and HTTP repeat preserve DB state/draft; fake effects zero.
+- [x] Final 316 tests, one existing warning, Ruff/format/Node/diff pass; fresh scoped review finds no unresolved issue/cleanup. Evidence/status/transfer updated; stopped before S11.
 Use short pytest tracebacks and redact retained failure receipts. No concurrent database reset
 or preview. Preserve all inherited files and failed evidence. Only status records authority.
+S10 baseline is the fresh 303-test publication run against these exact source bytes. Initial
+focused red: 10 failed/24 passed, including one invalid activity-id assertion. Corrected its
+`activity-h` typo to existing `feed-h`; that preservation check then passed before source edits.
+First implementation: 44 focused passed. Preview additions: 2 expected failures, then 33 passed.
+A patch was rejected for duplicate delete/add targets, with no partial source edits; retained
+the tool receipt. The prior S9 navigation assertion now requires the implemented Reports link
+and still rejects Voice. No behavior assertion was dropped. Browser states pass at both widths, including missing/503 and local Retry. First and final fault runs each caught 35/35 with exact restores. Final full suite: 316 passed, one existing warning in 63.09 s. Ruff/format, offline caller and diff pass. Artifact audit passed: every baseline file outside the explicit 11-file S10 allowlist unchanged, guard hashes match, 17 JPEG screenshots, zero fake effects and empty index. Final review is read-only auxiliary evidence, not a second runtime run. No S10 publication.
 
 ### S10 handoff preparation, 2026-10-30
 

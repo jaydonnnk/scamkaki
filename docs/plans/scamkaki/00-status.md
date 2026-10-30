@@ -162,16 +162,17 @@ authorized below. Preview verification is in [checks/ui-redesign-preview.md](che
 ### Approved website build order, 2026-10-30
 
 - [x] S8 - Reviewer workspace, call history and separate call/check details. Done locally 2026-10-30 on `scamkaki/slice-8-reviewer-workspace`; [evidence](evidence/s8-workspace.md). Full suite 290 passed, lint/format and offline caller checks passed. 37 distinct faults caught across a recorded test correction; 1280/375 px populated/empty/error walkthrough passed. Human usability remains unmeasured. Published to main at 87739f0; deployment unverified.
-- [x] S9 - Visual script patterns from stored seven-day Bait counts. Done locally 2026-10-30 on `scamkaki/slice-9-script-patterns`; [evidence](evidence/s9-script-patterns.md). Final suite 303 passed, one existing warning; Ruff lint/format, offline caller and diff checks passed. Final 26/26 independent faults caught with exact source restoration; 1280/375 px populated/empty/503, links, disclosures, escaping and keyboard/overflow checks passed. Thirteen screenshots retain two initial captures with disclosed limits. No in-scope cleanup finding from auxiliary source/screenshot review. Uncommitted and unpublished; S6/S7 gaps and human/live/deployment limits persist.
-- [ ] S10 - Focused report review and persistent review state.
+- [x] S9 - Visual script patterns from stored seven-day Bait counts. Done locally 2026-10-30 on `scamkaki/slice-9-script-patterns`; [evidence](evidence/s9-script-patterns.md). Final suite 303 passed, one existing warning; Ruff lint/format, offline caller and diff checks passed. Final 26/26 independent faults caught with exact source restoration; 1280/375 px populated/empty/503, links, disclosures, escaping and keyboard/overflow checks passed. Thirteen screenshots retain two initial captures with disclosed limits. No in-scope cleanup finding from auxiliary source/screenshot review. Published to main at 6565bc4 after separately authorized commit, fast-forward and push; S6/S7 gaps and human/live/deployment limits persist.
+- [x] S10 - Focused report review and persistent review state. Done locally 2026-10-30 on `scamkaki/slice-10-report-review`; [evidence](evidence/s10-report-review.md). Final suite 316 passed, one existing warning; Ruff/format, offline caller and diff checks pass. Final 35/35 independent faults caught with exact restores. Actual browser POST/303, database persistence/reload, HTTP repeat review and zero fake effects verified at 1280/375 px. Seventeen screenshots retain two initial captures. Scoped architecture/source/screenshot review found no unresolved S10 issue or cleanup deletion. Uncommitted, absent from main; human/live/deployment limits persist.
 - [ ] S11 - Voice room with explicit start and existing EN/HI lines.
 - [ ] S12 - Family view and complete redesign verification.
 
 The full contracts and authority limits are in [04-slices.md](04-slices.md#website-redesign-slices-2026-10-30).
-S9 local exit decision: **go**. S10-S12 remain unstarted. S9 publication and S10 local/test
-authority are now granted below; S9 must reach main before S10 starts. No redesign slice replaces
-the open S6/S7 evidence obligations. [Session transfer](s9-session-transfer.md) and
-[fresh review prompt](s9-session-review.md) preserve the current boundary.
+S9 and S10 local exit decisions: **go**. S9 is published to main at 6565bc4. S10 is complete
+locally and uncommitted under the authority below; S11-S12 remain unstarted. No redesign slice replaces
+the open S6/S7 evidence obligations. [Session transfer](s10-session-transfer.md) and
+[fresh review prompt](s10-session-review.md) preserve the S10 local boundary; the S11 handoff
+preparation below records the later documentary request.
 
 ### S9 publication and S10 execution authority, 2026-10-30
 
@@ -188,10 +189,96 @@ the open S6/S7 evidence obligations. [Session transfer](s9-session-transfer.md) 
   output/hash. Fresh publication checks pass: 303 tests, one existing warning, Ruff lint/format,
   offline Node caller and diff checks. The exact committed/pushed SHA and remote equality are
   verified after the operations, never predicted inside the commit being published.
+- [verified] Publication completed at `6565bc40ae10c6d8d41a64739251c10e8b63ff8b`.
+  Main was fast-forwarded and pushed; `git ls-remote` matches local main, origin/main and the
+  retained S9 branch, with left/right counts 0/0 and a clean tree/index. The 34-file committed
+  package contains S9 source/tests, 13 screenshots, evidence and dated documentary work.
+  Verified S8/S9 content in main, then created/confirmed `scamkaki/slice-10-report-review`
+  from that tip before its first edit. S10 publication remains unauthorized.
 - This supersedes earlier pending-authority notes for S9 publication and S10 local/test work.
   It does not authorize S10 publication, S11, providers, sessions/calls, spending, production
   writes, installations or manual deployment. Existing Render auto-deployment may follow the
   requested main push; its result is not established by Git publication.
+
+### S10 publication authority, 2026-10-30
+
+- [verified] User: "Please commit slice 10 and push to main so that s11 can start cleanly. I authorize".
+  Authorizes the S10 package commit, fast-forward into main and push to origin/main.
+  The package includes its evidence, screenshots and the previously requested S11 handoff.
+  Retain the S10 branch. S11 implementation/branch and named S11 destructive test checks
+  remain unauthorized. No live/provider action, installation or manual deployment is granted.
+- Earlier S10 publication-pending statements below and in the session prompts are historical
+  snapshots, superseded by this grant. Gate decisions and S6/S7 evidence limits are unchanged.
+- Publication checks use the existing S10 isolated test scope. After re-verifying its command
+  and listener, stopped inspection preview PID 6813 with SIGINT. Session 81053 was unavailable
+  in this chat. The first private preflight found another test client and refused to proceed.
+  Subsequent read-only inspection found no other clients; the unchanged preflight then passed.
+  No reset or test ran before that pass. Failure and final preflight receipts are retained in
+  `work/scamkaki-s10/publication-preflight*.log`. No environment file was printed or hashed.
+- The commit and final push are verified after execution. No future SHA or remote success
+  is predicted inside the commit. Existing Render auto-deployment may follow the main push;
+  its result remains unverified by this publication task.
+- [verified] Fresh publication suite: 316 passed, one existing Starlette/httpx warning in
+  62.22 seconds. Ruff lint passed, 92 files already formatted, offline caller and diff checks
+  passed. Source/test bytes remain unchanged from the reviewed S10 package. All 17 JPEGs and
+  the retained 35 fault restoration receipts are checked against current bytes before staging.
+
+### S11 handoff preparation, 2026-10-30
+
+- [verified] User: "Okay make the copy paste handoff prompt for slice 11. Rememeber to include the slices and the build plan thanks".
+  Requests a documentary S11 handoff containing the full S1-S12 sequence, current status and
+  conditional S11 build plan. This grants no S10 publication, S11 branch/implementation,
+  named S11 destructive test checks, real provider/call/spend, installation or deployment.
+- [verified] Branch remains `scamkaki/slice-10-report-review`; HEAD/local main/origin/main and
+  remote main match `6565bc40ae10c6d8d41a64739251c10e8b63ff8b`. Index empty, S11 branch absent.
+  S10 remains complete locally, uncommitted and absent from main. S11's main prerequisite is
+  unmet. Separate S10 commit/fast-forward authority and S11 local/test authority are pending.
+- [S11 handoff](s11-handoff.md) and [read-only review prompt](s11-handoff-review.md) use the
+  retained S8 eight-section skeleton and published S11 contract. The current synthetic design
+  preview still listens on 127.0.0.1:8783; its ownership/stop receipt and exclusive test-DB rule
+  remain in the handoff. No source/design edit, test, DB/provider action or publication was
+  performed to prepare these documents. Earlier S10 visual-inspection facts remain history;
+  this request does not itself record a formal usability result or approve a design change.
+
+- [verified] Documentary checks pass: exact published S11 contract, eight-section order,
+  all S1-S12 statuses, six conditional build steps, file references/planned absences, authority,
+  protected source/inherited evidence, empty index, absent S11 branch and whitespace.
+  Copyable output files match the repository handoffs. Receipts:
+  `work/scamkaki-s11-handoff/checks.json`. No runtime checks or database/provider actions.
+
+### S10 visual inspection requested, 2026-10-30
+
+- [verified] User: "Let me see the design first then ill give whether to continue or not".
+  The actual synthetic localhost preview is open for inspection. The existing isolated S10
+  test scope covers its fixture reset; no application design/source edit or S11 work follows.
+  Technical local exit evidence remains recorded below. User visual feedback is pending.
+  The owned preview session/port/stop receipt is in PROGRESS.md.
+
+### S10 local outcome, 2026-10-30
+
+- [verified] Reports entry, focused draft/reviewed/empty view, native browser acknowledgment,
+  stored source-call links and existing review protections meet the approved contract.
+  Final full suite 316 passed, one existing warning in 63.09 seconds. Ruff lint/format,
+  offline caller and diff checks pass. Initial and final fault runs each caught 35/35, with
+  exact restores; the final run followed the human-readable leak-label correction.
+- [verified] Real app at 127.0.0.1:8783, authored fixture rows and fake providers only.
+  Unchecked submission blocked at both widths. Checked native forms produced actual POST/303;
+  reloaded DOM review times exactly matched test database values. Repeat HTTP review preserved
+  first times and all drafts. Fetch/session/send counters remained 0/0/0. Draft, reviewed,
+  empty, missing and unavailable states passed at 1280/375 px, including keyboard focus and
+  measured overflow. All four owned previews stopped before final tests; no listener remained.
+- [verified] Seventeen genuine screenshots retain two initial raw-category-label captures.
+  Invalid activity-id and HTTP Basic request-count assumptions, patch rejection and copy/lint
+  corrections remain in the evidence rather than being relabeled clean first-run proof.
+  A fresh read-only reviewer inspected source, seven screenshots and retained receipts/hashes,
+  finding no unresolved S10 defect or in-scope cleanup. It did not rerun runtime checks.
+- S10 remains uncommitted and absent from main. Its Git publication needs separate authority.
+  S11's S8-S10-in-main prerequisite is unmet, and S11 execution is unauthorized. S6/S7 gaps,
+  human comprehension, physical devices, named assistive technology, live providers, Telegram
+  receipt, CI and deployment remain unverified here. Stop before S11.
+- [Session transfer](s10-session-transfer.md) and [fresh review prompt](s10-session-review.md)
+  retain the actual state and the original eight-section structure. All baseline files outside
+  the explicit 11-file S10 tracked-change allowlist are unchanged. No historical cleanup.
 
 ### S10 handoff preparation, 2026-10-30
 

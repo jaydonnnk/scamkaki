@@ -18,7 +18,7 @@ sys.path.insert(0, str(ROOT))
 
 from scamkaki.app import main  # noqa: E402
 from scamkaki.domain import store  # noqa: E402
-from scamkaki.domain.types import Extraction, GuardianReport, MatchResult  # noqa: E402
+from scamkaki.domain.types import Extraction, GuardianReport, Leak, MatchResult  # noqa: E402
 from scamkaki.lib.db import connect, migrate  # noqa: E402
 from scamkaki.lib.env import Settings, get_settings  # noqa: E402
 from tests.conftest import _test_database_url  # noqa: E402
@@ -45,6 +45,9 @@ def fixture_rows(url: str) -> None:
                 if n % 4 != 0
                 else "",
                 extracted={},
+                leaks=[Leak("otp_or_account_digits", 0, "[masked synthetic fixture]")]
+                if n == 54
+                else None,
             )
             if bait:
                 extraction = Extraction(
@@ -57,7 +60,10 @@ def fixture_rows(url: str) -> None:
                     "Synthetic fixture. Courier fee requested.",
                 )
                 store.add_script(conn, call_id, extraction)
-                store.add_report(conn, call_id, "DEMO FIXTURE. Draft only. Human review required.")
+                draft = "DEMO FIXTURE. Draft only. Human review required."
+                if n == 54:
+                    draft += "\nनमस्ते। Synthetic text: <script>fixture draft</script>"
+                store.add_report(conn, call_id, draft)
         for n, (outcome, acted, alert) in enumerate(
             [
                 ("likely_scam", "gave_code_or_card", "sent"),
@@ -149,11 +155,17 @@ def preview(state: str, reset: bool):
     migrate(url)
     with connect(url) as conn:
         conn.execute("truncate calls, guardian_checks, scripts, reports restart identity")
-    if state == "populated":
+    if state in {"populated", "reviewed"}:
         fixture_rows(url)
+    if state == "reviewed":
+        with connect(url) as conn:
+            for row in conn.execute("select id from reports").fetchall():
+                store.mark_reviewed(conn, row["id"])
     main.app.dependency_overrides[get_settings] = lambda: settings
-    main.app.dependency_overrides[main.get_bolna] = lambda: FakeBolnaWithSessions()
-    main.app.dependency_overrides[main.get_telegram] = lambda: FakeTelegram()
+    main.app.state.preview_bolna = FakeBolnaWithSessions()
+    main.app.state.preview_telegram = FakeTelegram()
+    main.app.dependency_overrides[main.get_bolna] = lambda: main.app.state.preview_bolna
+    main.app.dependency_overrides[main.get_telegram] = lambda: main.app.state.preview_telegram
     # The existing S7 call controller stays in production until S11. Preview has no SDK or mic.
     template = (ROOT / "src/scamkaki/app/templates/dashboard.html").read_text()
     template = template.replace(
@@ -190,7 +202,9 @@ def preview(state: str, reset: bool):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--state", choices=["populated", "empty", "error"], default="populated")
+    parser.add_argument(
+        "--state", choices=["populated", "reviewed", "empty", "error"], default="populated"
+    )
     parser.add_argument("--reset-test-db", action="store_true")
     parser.add_argument("--port", type=int, default=8783)
     args = parser.parse_args()

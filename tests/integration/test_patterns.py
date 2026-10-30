@@ -149,7 +149,7 @@ def test_patterns_overview_links_and_counts_share_source(client, pattern_groups)
         page = client.get(url, auth=ADMIN).text
         nav = page.split('<nav aria-label="Reviewer navigation">')[1].split("</nav>")[0]
         assert 'href="/patterns"' in nav
-        assert 'href="/reports"' not in nav and 'href="/voice"' not in nav
+        assert 'href="/reports"' in nav and 'href="/voice"' not in nav
     assert 'href="/patterns" aria-current="page"' in client.get("/patterns", auth=ADMIN).text
 
 
