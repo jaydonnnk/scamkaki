@@ -155,7 +155,7 @@ def scripts_this_week(conn: psycopg.Connection) -> list[dict[str, Any]]:
                array_agg(distinct c.language order by c.language) as languages,
                max(s.created_at) as last_seen
         from scripts s join calls c on c.id = s.call_id
-        where s.created_at > now() - interval '7 days'
+        where c.line = 'bait' and s.created_at > now() - interval '7 days'
         group by s.agency, s.demand
         order by n desc, last_seen desc
         """

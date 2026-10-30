@@ -84,6 +84,36 @@ def fixture_rows(url: str) -> None:
                     "where id = %s",
                     (check_id,),
                 )
+        # S9 fixture counts: courier 19, bank/code 4, bank/transfer 2, hostile text 1.
+        groups = [
+            ("bank", "otp", "en", 0),
+            ("bank", "otp", "en", 0),
+            ("bank", "otp", "en", 0),
+            ("bank", "otp", "hi", 0),
+            ("bank", "transfer", "hi", 0),
+            ("bank", "transfer", "hi", 0),
+            ("spf", "personal_info", "en", 8),
+            ("<script>fixture agency</script>", "नमस्ते <img src=x onerror=alert(1)>", "hi", 0),
+        ]
+        for n, (agency, demand, language, days_ago) in enumerate(groups):
+            call_id = store.upsert_call(
+                conn,
+                execution_id=f"s9-pattern-fixture-{n}",
+                line="bait",
+                language=language,
+                fixture_case=f"s9-pattern-fixture-{n}",
+                status="completed",
+                duration_s=None,
+                transcript="",
+                extracted={},
+            )
+            script_id = store.add_script(
+                conn, call_id, Extraction(agency, demand, None, None, None, None, None)
+            )
+            conn.execute(
+                "update scripts set created_at = now() - make_interval(days => %s) where id=%s",
+                (days_ago, script_id),
+            )
 
 
 def preview(state: str, reset: bool):

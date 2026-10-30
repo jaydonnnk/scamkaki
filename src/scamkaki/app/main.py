@@ -378,6 +378,23 @@ def reviewer_error(request: Request, *, missing: bool = False) -> HTMLResponse:
     )
 
 
+@app.get("/patterns", response_class=HTMLResponse, dependencies=[AdminDep])
+def patterns_page(request: Request, settings: SettingsDep) -> HTMLResponse:
+    try:
+        with connect(settings.database_url) as conn:
+            week = store.scripts_this_week(conn)
+    except psycopg.Error:
+        return reviewer_error(request)
+    return reviewer_page(
+        request,
+        "patterns.html",
+        title="Script patterns",
+        active="patterns",
+        week=week,
+        largest=max((row["n"] for row in week), default=0),
+    )
+
+
 @app.get("/calls", response_class=HTMLResponse, dependencies=[AdminDep])
 def calls_page(
     request: Request,

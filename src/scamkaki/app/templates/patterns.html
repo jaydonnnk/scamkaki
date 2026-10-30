@@ -1,0 +1,22 @@
+{% extends "_reviewer.html" %}
+{% block content %}
+<div class="heading"><div><h1>Script patterns</h1><p>See repeated requests without reading every call.</p></div></div>
+<div class="grid">
+<section class="panel pad" aria-labelledby="patterns-h">
+<div class="sectionhead"><h2 id="patterns-h">Requests Bait heard</h2><span class="sub">Last 7 days</span></div>
+<p class="sub">Grouped by claimed agency and request across English and Hindi. Counts describe Bait records, not unique scammers, confirmed scams or success rates.</p>
+{% for w in week %}
+<article class="pattern">
+<div class="barrow"><span class="pattern-label">{{ agencies.get(w.agency, w.agency) }} · {{ demands.get(w.demand, w.demand) }}</span><strong class="pattern-count">{{ w.n }} record{{ "" if w.n == 1 else "s" }}</strong>
+<div class="bartrack" aria-hidden="true"><div class="barfill" style="width:{{ (w.n * 100 / largest) | round(2) }}%"></div></div></div>
+<details><summary>Recorded group details</summary>
+<dl class="facts"><div><dt>Claimed agency</dt><dd>{{ agencies.get(w.agency, w.agency) }}</dd></div><div><dt>Request</dt><dd>{{ demands.get(w.demand, w.demand) }}</dd></div><div><dt>Languages recorded</dt><dd>{% for language in w.languages %}{{ languages[language] }}{{ ", " if not loop.last else "" }}{% endfor %}</dd></div><div><dt>Last recorded</dt><dd>{{ w.last_seen | sgt }} SGT</dd></div></dl>
+<p class="sub">{{ w.n }} Bait record{{ "" if w.n == 1 else "s" }} share{{ "s" if w.n == 1 else "" }} this claimed agency and request in the last seven days. Matching records does not establish that callers are the same person. Bait does not collect Guardian's warning signs.</p>
+</details>
+</article>
+{% else %}<p class="empty-state">No Bait scripts in the last 7 days.</p>{% endfor %}
+{% if week %}<p class="sub">Bar lengths are relative to the largest group.</p>{% endif %}
+</section>
+{% include "_matching.html" %}
+</div>
+{% endblock %}

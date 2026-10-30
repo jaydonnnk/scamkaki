@@ -28,12 +28,12 @@
 <section class="panel pad" id="draft-queue" aria-labelledby="draft-h"><h2 id="draft-h">Drafts to review</h2><p class="sub">Up to five newest drafts. Human review sends nothing.</p>
 {% for r in drafts %}<a class="listlink" href="/reports/{{ r.id }}">Review draft #{{ r.id }}<span class="sub"> · {{ agencies[r.agency] if r.agency else "Agency not recorded" }} · {{ languages[r.language] }}</span></a>{% else %}<p class="empty">No drafts waiting.</p>{% endfor %}
 </section>
-<section class="panel pad" aria-labelledby="week-h"><h2 id="week-h">Scripts heard this week</h2>
+<section class="panel pad" aria-labelledby="week-h"><div class="sectionhead"><h2 id="week-h">Scripts heard this week</h2><a href="/patterns">Script patterns</a></div>
 <div class="tablewrap"><table class="responsive"><thead><tr><th>Claimed</th><th>Wants</th><th>Seen</th></tr></thead><tbody>
-{% for w in week %}<tr><td data-label="Claimed">{{ agencies[w.agency] }}</td><td data-label="Wants">{{ demands[w.demand] }}</td><td data-label="Seen">{{ w.n }}</td></tr>
+{% for w in week %}<tr><td data-label="Claimed">{{ agencies.get(w.agency, w.agency) }}</td><td data-label="Wants">{{ demands.get(w.demand, w.demand) }}</td><td data-label="Seen">{{ w.n }}</td></tr>
 {% else %}<tr><td colspan="3" class="empty">None in the last 7 days.</td></tr>{% endfor %}
 </tbody></table></div><p class="sub">Bait records only, not unique scammers or success rates.</p></section>
-<section class="panel pad"><h2>How matching works</h2><div class="flow"><div class="node"><strong>Bait records</strong><small>Claimed agency and request.</small></div><span class="arrow" aria-hidden="true">→</span><div class="node"><strong>Seven-day counts</strong><small>Same agency and request.</small></div><span class="arrow" aria-hidden="true">→</span><div class="node"><strong>Guardian check</strong><small>Recorded signs and actions also matter.</small></div></div><p class="sub">This explains the system. It does not link individual calls and checks.</p></section>
+{% include "_matching.html" %}
 </aside></div>
 <section class="panel pad" style="margin-top:22px"><h2>Existing test lines</h2>
 <section aria-labelledby="talk-h"><h2 id="talk-h">Test lines</h2>

@@ -1,6 +1,6 @@
 # Progress
 
-Current goal: publish the completed S8 reviewer workspace from `scamkaki/slice-8-reviewer-workspace`, then prepare the S9 handoff. S6 live proof and S7 video/live demo remain open. Authority is in `docs/plans/scamkaki/00-status.md`. Scratch: `work/scamkaki-s8/`.
+Current publication snapshot: S9 fresh checks pass on `scamkaki/slice-9-script-patterns`, based on published main 87739f0. Commit/fast-forward/push follow under the authority in `docs/plans/scamkaki/00-status.md`; verify actual refs afterward. S10 unstarted until S9 reaches main. Publication scratch: `work/scamkaki-s9-publication/`. S6 live proof and S7 video/live demo remain open. Earlier pending-authority notes below are historical.
 Historical research and the superseded build plan below are context only; current authority is in docs/plans/scamkaki/00-status.md.
 
 - [x] Read AGENTS.md and the user-authored Evidence check - Claude.md; preserve the source report.
@@ -11,12 +11,54 @@ Historical research and the superseded build plan below are context only; curren
 
 ## Run log
 
+### S9 publication and S10 continuation, 2026-10-30
+
+- [x] Verify S9 branch, HEAD/local/remote main 87739f0, empty index and known dirty package.
+- [x] Privately verify distinct test endpoint and test connection; no production connection or listener on 8783.
+- [x] Fresh 303 tests pass, one existing warning; Ruff lint/format, offline Node caller and diff checks pass.
+- [ ] Finish bounded package scan and final index inspection.
+- [ ] Commit explicit S9 manifest, fast-forward main, push and verify remote equality.
+- [ ] Verify committed prerequisites, create S10 branch and implement its approved report contract.
+- [ ] Prove real review persistence/POST/303 with fake providers, independent guard faults and responsive browser checks.
+- [ ] Full checks, scoped architecture review and evidence/status update; stop before S11.
+Use short pytest tracebacks and redact retained failure receipts. No concurrent database reset
+or preview. Preserve all inherited files and failed evidence. Only status records authority.
+
+### S10 handoff preparation, 2026-10-30
+
+- [x] Re-verify S9 branch, HEAD/local/remote main 87739f0, empty index and dirty S9 package.
+- [x] Prepare s10-handoff.md from the published S10 contract and original eight-section/S8 skeleton; add a read-only handoff review prompt.
+- [x] Exact-contract/eight-section/reference/authority/whitespace checks pass. Source/test and protected-file snapshots unchanged; no S10 branch and index empty. Copyable output files match the repository handoffs.
+S10 remains unstarted. S9 is still uncommitted and absent from main, so its main prerequisite
+is unmet. This documentary request creates no publication, S10 branch/code or database scope.
+Source/test/protected-file snapshot is in work/scamkaki-s10-handoff/; no environment file
+was printed or hashed. No application suite, database/provider action or installation ran.
+
+### S9 execution, 2026-10-30
+
+- [x] Re-verify main/local/remote 87739f0 and empty index; preserve the four inherited documentary changes; create/confirm S9 branch.
+- [x] Verify the configured TEST_DATABASE_URL uses a distinct endpoint and connects, privately. Snapshot protected files and inherited documents, excluding environment files.
+- [x] Baseline 290 passed. Initial S9 red run 10 failed/10 passed, then 30 focused passed. Preview fixture red retained, then nine Patterns checks passed.
+- [x] Build Patterns using shared weekly query, existing labels and shell; link Overview/navigation. Unknown labels retain escaped stored text in both weekly views.
+- [x] First faults 24/24; final 26/26 caught with exact source restoration. Initial/final receipts retained. Verbose failure-log URL representations redacted; final runner uses short tracebacks/redaction.
+- [x] Sequential fake-provider previews at 1280/375 px: populated, empty, 503, disclosure, Tab/Enter focus, zero overflow, navigation and HTTP headers. Thirteen screenshots, two initial captures with disclosed limits. All preview processes stopped.
+- [x] Final full suite 303 passed, one existing warning. Ruff lint/format, offline Node caller and diff checks passed. Protected-file audit and auxiliary source/screenshot architecture review found no in-scope cleanup.
+- [x] Evidence/status and eight-section session transfer/review prompt prepared. S10 remains unstarted.
+Plan: native details disclosures and labeled bars in the approved S8 theme. No new dependencies
+or aggregation store. Add an explicit Bait predicate to scripts_this_week, shared by Overview.
+Preview and integration resets run sequentially. No production/provider/publication work.
+Correction receipts: Overview hostile-label regression failed before fallback fix, then 20
+focused checks passed. First diagram was cramped, now vertical. A scrolled screenshot artifact
+and unavailable Control+Home key are disclosed; final main captures start at top. Browser
+tab closed and viewport reset. Fresh auxiliary reviewer found no concrete S9 issue, with no
+independent runtime or human-usability claim. State does not authorize publication or S10.
+
 ### S8 publication and S9 handoff, 2026-10-30
 
 - [x] Re-verify S8 branch, main/remote at 845f288, empty index and known 50-file S8 inventory.
 - [x] Fresh checks: 290 tests passed, one existing warning; Ruff/Node/diff and 50-file bounded scan passed. Explicit manifest prepared for staging.
-- [ ] Commit S8, fast-forward main, push and verify remote SHA. Retain the S8 branch.
-- [ ] Prepare S9 prompt from published main, using the retained S8 skeleton/eight-section order.
+- [x] S8 commit 87739f0 fast-forwarded/pushed to main. Remote/local/S8 branch matched; tree/index clean after push.
+- [x] Prepared s9-handoff.md and s9-handoff-review.md from published main and the retained S8 skeleton. Exact contract/eight-section/skeleton/authority/whitespace checks passed; files/receipts remain local.
 No-mistakes CLI is absent; the existing Ruff/pytest/Node/Git checks are the publication checks.
 Prior S8 non-publication notes below describe the local exit boundary. This run's authority
 is recorded only in 00-status.md. S9 execution and test-database authority remain pending.
@@ -41,7 +83,8 @@ Auxiliary UI review found a false global-empty label on page 2. Route regression
 the fix, then all 11 Calls checks passed. Final suite includes that test. No existing assertion
 was weakened. Gate 3 code fences received whitespace-only Ruff formatting.
 Preview modes reset the test database, so no integration tests ran concurrently with a live
-preview. Final populated preview is on 127.0.0.1:8783; stop/PID are in s8-workspace.md.
+preview. The final local-exit preview on 127.0.0.1:8783 was later stopped for publication checks.
+No listener remained. Earlier PID receipts in s8-workspace.md are historical.
 The initial Overview auto-refresh reached a stopped-server browser error during intentional
 testing downtime; a fresh tab recovered after HTTP 200. No passing screenshot claim uses it.
 Current work is preserved uncommitted. S9-S12 remain unstarted; no Git publication occurred.

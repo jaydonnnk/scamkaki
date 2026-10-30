@@ -161,14 +161,77 @@ authorized below. Preview verification is in [checks/ui-redesign-preview.md](che
 
 ### Approved website build order, 2026-10-30
 
-- [x] S8 - Reviewer workspace, call history and separate call/check details. Done locally 2026-10-30 on `scamkaki/slice-8-reviewer-workspace`; [evidence](evidence/s8-workspace.md). Full suite 290 passed, lint/format and offline caller checks passed. 37 distinct faults caught across a recorded test correction; 1280/375 px populated/empty/error walkthrough passed. Human usability remains unmeasured. Publication subsequently authorized below; S9 unstarted and deployment unverified.
-- [ ] S9 - Visual script patterns from stored seven-day Bait counts.
+- [x] S8 - Reviewer workspace, call history and separate call/check details. Done locally 2026-10-30 on `scamkaki/slice-8-reviewer-workspace`; [evidence](evidence/s8-workspace.md). Full suite 290 passed, lint/format and offline caller checks passed. 37 distinct faults caught across a recorded test correction; 1280/375 px populated/empty/error walkthrough passed. Human usability remains unmeasured. Published to main at 87739f0; deployment unverified.
+- [x] S9 - Visual script patterns from stored seven-day Bait counts. Done locally 2026-10-30 on `scamkaki/slice-9-script-patterns`; [evidence](evidence/s9-script-patterns.md). Final suite 303 passed, one existing warning; Ruff lint/format, offline caller and diff checks passed. Final 26/26 independent faults caught with exact source restoration; 1280/375 px populated/empty/503, links, disclosures, escaping and keyboard/overflow checks passed. Thirteen screenshots retain two initial captures with disclosed limits. No in-scope cleanup finding from auxiliary source/screenshot review. Uncommitted and unpublished; S6/S7 gaps and human/live/deployment limits persist.
 - [ ] S10 - Focused report review and persistent review state.
 - [ ] S11 - Voice room with explicit start and existing EN/HI lines.
 - [ ] S12 - Family view and complete redesign verification.
 
 The full contracts and authority limits are in [04-slices.md](04-slices.md#website-redesign-slices-2026-10-30).
-S9-S12 remain approved plans, not started work. No redesign slice replaces the open S6/S7 evidence obligations.
+S9 local exit decision: **go**. S10-S12 remain unstarted. S9 publication and S10 local/test
+authority are now granted below; S9 must reach main before S10 starts. No redesign slice replaces
+the open S6/S7 evidence obligations. [Session transfer](s9-session-transfer.md) and
+[fresh review prompt](s9-session-review.md) preserve the current boundary.
+
+### S9 publication and S10 execution authority, 2026-10-30
+
+- [verified] User: "Yes please commit s9 and fast forward to main and push. I give authority for this as well".
+  The selected annotation was "Explicit S10 implementation/branch authority and named test-database mutation authority."
+  This authorizes the completed S9 package's commit, fast-forward into main and push to origin/main.
+  It also grants S10 local implementation, branch `scamkaki/slice-10-report-review`, and the
+  proposed migrations/truncation/review fixture writes on the freshly verified `TEST_DATABASE_URL`
+  branch with fake Bolna/Telegram, never production. S10 starts only after S9 is verified in main.
+- [verified] Starting branch `scamkaki/slice-9-script-patterns`; HEAD/local main/remote main
+  match `87739f0716da49641887401071cefae750696c98`, index empty, known dirty S9 package retained.
+  No listener on 8783. Private endpoint comparison, including pooler suffix normalization,
+  and a connection to the test endpoint succeed. No production connection or environment-file
+  output/hash. Fresh publication checks pass: 303 tests, one existing warning, Ruff lint/format,
+  offline Node caller and diff checks. The exact committed/pushed SHA and remote equality are
+  verified after the operations, never predicted inside the commit being published.
+- This supersedes earlier pending-authority notes for S9 publication and S10 local/test work.
+  It does not authorize S10 publication, S11, providers, sessions/calls, spending, production
+  writes, installations or manual deployment. Existing Render auto-deployment may follow the
+  requested main push; its result is not established by Git publication.
+
+### S10 handoff preparation, 2026-10-30
+
+- [verified] User: "REferencing the orginal prompt i gave u, make one for s10 thanks".
+  Requests the S10 handoff using the original eight-section structure and retained S8 skeleton.
+  This is documentary work only, not S9 Git publication or S10 branch/code/database authority.
+- [verified] Current branch remains `scamkaki/slice-9-script-patterns`; HEAD/local main/remote
+  main match `87739f0716da49641887401071cefae750696c98`. Index empty. S9 is still uncommitted
+  and absent from main. The S10 requirement for S8/S9 in main is not met. S9 commit/main
+  integration and any push need separate authority; push is not itself a slice prerequisite.
+- [S10 handoff](s10-handoff.md) and [read-only review prompt](s10-handoff-review.md) preserve
+  the unmet prerequisite, pending S10/test-branch grant and current dirty S9 work. No S10
+  branch, implementation, test-database action, installation or publication was performed.
+- [verified] Documentary checks passed: exact published S10 contract, eight-section order,
+  skeleton reference, source/authority boundaries, existing file references, whitespace and
+  bounded credential patterns. Source/test and protected-file snapshots remain unchanged;
+  index empty and no S10 branch. Receipts: `work/scamkaki-s10-handoff/checks.json`.
+
+### S9 execution authority, 2026-10-30
+
+- [verified] User: "please start", following the S9 background and the response awaiting
+  S9 implementation and named test-branch authorization. This grants the proposed S9 local
+  implementation, required branch and migrations/truncation on the verified `TEST_DATABASE_URL`
+  branch with fake Bolna/Telegram, never production. It grants no later slice or publication.
+- [verified] Before edits, HEAD/local main/remote main matched
+  `87739f0716da49641887401071cefae750696c98`. Index empty; inherited dirty work comprised
+  PROGRESS.md, this status file and s9-handoff.md/s9-handoff-review.md. Preserved all four.
+  Created and confirmed `scamkaki/slice-9-script-patterns` from that main tip.
+- [verified] Private endpoint comparison, including pooler suffix removal, confirms the
+  configured test endpoint differs from production. Only the test endpoint was connected.
+  No credential values or environment-file hashes were displayed or retained.
+- Local code, tests and synthetic preview only. No production write, provider/session/call,
+  Telegram message, spend, installation, commit, integration, push or deployment. S6/S7 gaps persist.
+- [verified] S9 completed locally: assigned count/label/link/auth/error/escape checks and actual
+  browser walkthrough passed. Final 303 tests, one existing warning; 26/26 named faults caught
+  with exact restores. Early red runs, the Overview unknown-label correction, diagram layout
+  correction, capture/key limitations and failure-log URL redaction remain in the evidence.
+  Architect-reviewer found no in-scope orphan/deletion. The fresh read-only source/screenshot
+  review is auxiliary evidence and did not rerun tests or access the database. All three
+  preview processes were stopped; no listener remained before final tests. No S10 work.
 
 ### S8 execution authority, 2026-10-30
 
@@ -205,6 +268,19 @@ S9-S12 remain approved plans, not started work. No redesign slice replaces the o
 - No S9 implementation, S9 branch, S9 destructive test checks, provider action, production
   mutation, installation, call, spend or manual deployment follows from this publication.
   Existing Render auto-deployment may follow a main push; its result is unverified here.
+
+
+- [verified] Publication completed: commit `87739f0716da49641887401071cefae750696c98` (`feat: add reviewer workspace and stored record views`),
+  fast-forwarded main and pushed origin/main. `git ls-remote` matched local main and the
+  retained S8 branch. Tree and index were clean immediately afterward. Fresh checks: 290
+  passed, one existing warning; Ruff/format/Node/diff and the bounded staged scan passed.
+- [verified] S9 [handoff](s9-handoff.md) and [read-only review prompt](s9-handoff-review.md)
+  were then prepared from published main using the retained S8 skeleton. These new files
+  and post-publication status/progress receipts are local, uncommitted documentary work.
+  No S9 source or branch existed at that handoff boundary. Its implementation/test-branch
+  authority was then pending; the subsequent S9 execution grant and outcome are recorded above.
+  Documentary checks passed for the exact copied contract, eight-section order, skeleton
+  reference, source/authority boundaries, whitespace and bounded credential patterns.
 
 
 ### Redesign Gates 2-4 approved and S8 handoff requested
