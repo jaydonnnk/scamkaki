@@ -125,6 +125,10 @@ def fixture_rows(url: str) -> None:
 def preview(state: str, reset: bool):
     if not reset:
         raise SystemExit("Pass --reset-test-db to confirm the destructive test-branch reset.")
+    template = (ROOT / "src/scamkaki/app/templates/voice.html").read_text()
+    sdk = '<script src="https://cdn.jsdelivr.net/gh/bolna-ai/web-call@v3.0.1/dist/bolna-web-call.min.js"></script>'
+    if template.count(sdk) != 1:
+        raise RuntimeError("Voice SDK replacement must match exactly once before a preview reset.")
     url = _test_database_url()
     if not url:
         raise SystemExit("TEST_DATABASE_URL is required.")
@@ -152,6 +156,15 @@ def preview(state: str, reset: bool):
         bolna_bait_agent_id="fake-bait",
         bolna_bait_hi_agent_id="fake-bait-hi",
     )
+    if state == "unconfigured":
+        settings = settings.model_copy(
+            update={
+                "bolna_guardian_agent_id": "",
+                "bolna_guardian_hi_agent_id": "",
+                "bolna_bait_agent_id": "",
+                "bolna_bait_hi_agent_id": "",
+            }
+        )
     migrate(url)
     with connect(url) as conn:
         conn.execute("truncate calls, guardian_checks, scripts, reports restart identity")
@@ -166,28 +179,17 @@ def preview(state: str, reset: bool):
     main.app.state.preview_telegram = FakeTelegram()
     main.app.dependency_overrides[main.get_bolna] = lambda: main.app.state.preview_bolna
     main.app.dependency_overrides[main.get_telegram] = lambda: main.app.state.preview_telegram
-    # The existing S7 call controller stays in production until S11. Preview has no SDK or mic.
-    template = (ROOT / "src/scamkaki/app/templates/dashboard.html").read_text()
     template = template.replace(
         "{% block content %}",
-        '{% block content %}<p class="notice">Safe synthetic preview. Voice controls use a '
-        "fake SDK, with no microphone or provider connection.</p>",
+        '{% block content %}<p class="notice">Safe synthetic preview. The fake SDK never '
+        "uses a real microphone or provider. Start makes a local request to the "
+        "fake session endpoint.</p>",
     )
-    template = template.replace(
-        '<script src="https://cdn.jsdelivr.net/gh/bolna-ai/web-call@v3.0.1/dist/bolna-web-call.min.js"></script>',
-        """<script>
-        class BolnaWebCall {
-          constructor() { this.listeners = {}; }
-          on(name, handler) { this.listeners[name] = handler; }
-          start() {
-            this.listeners.error({message: "Safe preview. No microphone or provider call."});
-          }
-          stop() { this.listeners["call-end"](); }
-        }
-        </script>""",
-    )
+    template = template.replace(sdk, "")
+    fake_sdk = (ROOT / "tests/support/voice-preview.html").read_text()
+    template = template.replace("{% endblock %}", fake_sdk + "{% endblock %}", 1)
     main.templates.env.loader = ChoiceLoader(
-        [DictLoader({"dashboard.html": template}), main.templates.env.loader]
+        [DictLoader({"voice.html": template}), main.templates.env.loader]
     )
     if state == "error":
 
@@ -203,7 +205,9 @@ def preview(state: str, reset: bool):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--state", choices=["populated", "reviewed", "empty", "error"], default="populated"
+        "--state",
+        choices=["populated", "reviewed", "empty", "error", "unconfigured"],
+        default="populated",
     )
     parser.add_argument("--reset-test-db", action="store_true")
     parser.add_argument("--port", type=int, default=8783)

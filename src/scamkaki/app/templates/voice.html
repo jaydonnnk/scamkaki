@@ -1,0 +1,82 @@
+{% extends "_reviewer.html" %}
+{% block content %}
+<div class="heading"><div><h1>Voice room</h1><p>Choose a line and language before starting a conversation.</p></div></div>
+<div class="grid"><section aria-label="Conversation selection">
+<fieldset class="voice-options"><legend>Choose a line</legend>
+<label class="voice-choice" for="guardian"><input id="guardian" type="radio" name="persona" value="guardian" checked data-en="{{ 'true' if availability.guardian.en else 'false' }}" data-hi="{{ 'true' if availability.guardian.hi else 'false' }}"><strong>Talk to Guardian</strong><span class="sub">Describe a call or message and check the warning signs.</span></label>
+<label class="voice-choice" for="bait"><input id="bait" type="radio" name="persona" value="bait" data-en="{{ 'true' if availability.bait.en else 'false' }}" data-hi="{{ 'true' if availability.bait.hi else 'false' }}"><strong>Try Ah Ma Bait</strong><span class="sub">Play a fictional caller and see how Ah Ma responds.</span></label>
+</fieldset>
+<label class="voice-language" for="language">Conversation language<select id="language"><option value="en">English</option><option value="hi" lang="hi">हिंदी / Hindi</option></select></label>
+<p class="notice">Browsing records and changing this selection never starts a call.</p>
+<p id="voice-availability" class="sub" aria-live="polite"></p>
+</section>
+<section class="panel pad" aria-labelledby="voice-name"><h2 id="voice-name">Guardian</h2>
+<svg class="voice-art" aria-hidden="true" viewBox="0 0 320 150"><g fill="currentColor"><rect x="37" y="62" width="10" height="26" rx="5"/><rect x="61" y="48" width="10" height="54" rx="5"/><rect x="85" y="32" width="10" height="86" rx="5"/><rect x="109" y="43" width="10" height="64" rx="5"/><rect x="133" y="13" width="10" height="124" rx="5"/><rect x="157" y="28" width="10" height="94" rx="5"/><rect x="181" y="43" width="10" height="64" rx="5"/><rect x="205" y="23" width="10" height="104" rx="5"/><rect x="229" y="49" width="10" height="52" rx="5"/><rect x="253" y="61" width="10" height="28" rx="5"/></g></svg>
+<p id="voice-disclosure">Starting uses your microphone and Bolna account credit. Use fictional test details, never real passwords, codes or account numbers.</p>
+<div class="voice-actions"><button id="start" type="button" disabled aria-describedby="voice-disclosure voice-availability">Start conversation</button><button id="hang-up" type="button" class="secondary" disabled>Hang up</button></div>
+<p id="voice-status" role="status" aria-live="polite">No conversation started.</p>
+<a id="voice-results" href="/calls" hidden>Open Calls</a>
+<noscript><p class="notice">Voice requires JavaScript. Enable JavaScript to choose and explicitly start a conversation.</p></noscript>
+</section></div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/gh/bolna-ai/web-call@v3.0.1/dist/bolna-web-call.min.js"></script>
+<script>
+const personas = document.querySelectorAll('input[name="persona"]');
+const language = document.getElementById("language"), start = document.getElementById("start"), hangUp = document.getElementById("hang-up");
+const status = document.getElementById("voice-status"), availability = document.getElementById("voice-availability"), results = document.getElementById("voice-results");
+let active = null;
+const selected = () => document.querySelector('input[name="persona"]:checked');
+const controls = () => {
+  const persona = selected(), configured = persona.dataset[language.value] === "true";
+  document.getElementById("voice-name").textContent = persona.value === "bait" ? "Ah Ma Bait" : "Guardian";
+  personas.forEach((radio) => { radio.disabled = Boolean(active); });
+  language.disabled = Boolean(active);
+  start.disabled = Boolean(active) || !configured || typeof BolnaWebCall !== "function";
+  hangUp.disabled = !active || active.ending;
+  availability.textContent = !configured ? "This line and language are not configured. Choose another selection or ask the operator." : typeof BolnaWebCall !== "function" ? "The voice service could not load. Reload this page to try again." : "Ready when you are. Only Start conversation requests a connection.";
+};
+const finish = (attempt) => {
+  if (active !== attempt) return;
+  active = null;
+  controls();
+  status.textContent = attempt.error ? "Could not connect: " + (attempt.error.message || attempt.error.code || "Unknown error") : "Conversation ended. Results may take a few seconds to appear in Calls.";
+  results.hidden = Boolean(attempt.error);
+};
+const end = async (attempt, error = null) => {
+  if (active !== attempt || attempt.ending) return;
+  attempt.ending = true;
+  attempt.error = error;
+  controls();
+  status.textContent = "Ending conversation...";
+  try { await attempt.call?.stop(); }
+  catch {
+    if (active !== attempt) return;
+    attempt.ending = false;
+    controls();
+    status.textContent = "Could not hang up. Try Hang up again or close this page before starting another conversation.";
+    return;
+  }
+  finish(attempt);
+};
+start.onclick = async () => {
+  if (active || start.disabled) return;
+  const attempt = { call: null, ending: false, error: null };
+  active = attempt;
+  controls();
+  results.hidden = true;
+  status.textContent = "Connecting...";
+  try {
+    attempt.call = new BolnaWebCall({ sessionUrl: "/web-call/session?line=" + selected().value + "&language=" + language.value });
+    attempt.call.on("call-start", () => { if (active === attempt && !attempt.ending) status.textContent = "Connected. Speak now."; });
+    attempt.call.on("call-end", () => finish(attempt));
+    attempt.call.on("error", (error) => { end(attempt, error); });
+    await attempt.call.start();
+  } catch (error) { await end(attempt, error); }
+};
+hangUp.onclick = () => active ? end(active) : undefined;
+personas.forEach((radio) => { radio.onchange = controls; });
+language.onchange = controls;
+controls();
+</script>
+{% endblock %}

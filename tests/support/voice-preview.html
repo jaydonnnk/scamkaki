@@ -1,0 +1,77 @@
+<details id="preview-controls"><summary>Fake lifecycle controls, preview only</summary>
+<p>These controls emit simulated SDK events. They never connect audio.</p>
+<label for="fake-message">Simulated error text</label><input id="fake-message" value="Simulated provider failure">
+<p><label><input id="fake-fail-next" type="checkbox">Fail the next fake Start</label></p>
+<p><label><input id="fake-hold-stop" type="checkbox">Delay fake hang-up completion</label></p>
+<div class="voice-actions"><button id="fake-connect" type="button">Simulate connected</button><button id="fake-end" type="button">Simulate call end</button><button id="fake-error" type="button">Simulate SDK error</button><button id="fake-release" type="button">Complete fake hang-up</button></div>
+<div class="voice-actions"><button id="fake-old-start" type="button">Previous call start</button><button id="fake-old-end" type="button">Previous call end</button><button id="fake-old-error" type="button">Previous call error</button></div>
+<output id="preview-proof" class="sub"></output>
+</details>
+<script>
+window.scamkakiVoicePreview = {
+  instances: [], events: [], constructors: 0, starts: 0, stops: 0,
+  sessionRequests: 0, microphoneRequests: 0, holdStop: false, failNext: "",
+  record() {
+    document.getElementById("preview-proof").textContent = JSON.stringify({
+      constructors: this.constructors, starts: this.starts, stops: this.stops,
+      sessionRequests: this.sessionRequests, microphoneRequests: this.microphoneRequests,
+      sessions: this.instances.map((instance) => Boolean(instance.session)),
+      events: this.events
+    });
+  },
+  emit(index, name, payload) { this.instances[index]?.emit(name, payload); }
+};
+if (navigator.mediaDevices) navigator.mediaDevices.getUserMedia = () => {
+  window.scamkakiVoicePreview.microphoneRequests++;
+  window.scamkakiVoicePreview.record();
+  return Promise.reject(new Error("Microphone blocked in safe preview"));
+};
+class BolnaWebCall {
+  constructor(options) {
+    this.options = options; this.listeners = {};
+    const proof = window.scamkakiVoicePreview;
+    proof.constructors++; proof.instances.push(this); proof.record();
+  }
+  on(name, handler) { this.listeners[name] = handler; }
+  emit(name, payload) {
+    const proof = window.scamkakiVoicePreview;
+    proof.events.push({ name, message: payload?.message || null });
+    this.listeners[name]?.(payload);
+    if (name === "call-start" || name === "call-end") this.resolveStart?.();
+    proof.record();
+  }
+  async start() {
+    const proof = window.scamkakiVoicePreview;
+    proof.starts++; proof.sessionRequests++; proof.record();
+    const response = await fetch(this.options.sessionUrl, {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: "{}"
+    });
+    if (!response.ok) throw new Error("Fake session HTTP " + response.status);
+    this.session = await response.json(); proof.record();
+    if (proof.failNext) {
+      const error = new Error(proof.failNext); proof.failNext = "";
+      document.getElementById("fake-fail-next").checked = false;
+      this.emit("error", error); throw error;
+    }
+    await new Promise((resolve) => { this.resolveStart = resolve; });
+  }
+  async stop() {
+    const proof = window.scamkakiVoicePreview; proof.stops++; proof.record();
+    if (proof.holdStop) await new Promise((resolve) => { this.resolveStop = resolve; });
+    this.emit("call-end");
+  }
+}
+const previewProof = window.scamkakiVoicePreview;
+const previewMessage = () => ({ message: document.getElementById("fake-message").value });
+const previewLatest = () => previewProof.instances.at(-1);
+document.getElementById("fake-connect").onclick = () => previewLatest()?.emit("call-start");
+document.getElementById("fake-end").onclick = () => previewLatest()?.emit("call-end");
+document.getElementById("fake-error").onclick = () => previewLatest()?.emit("error", previewMessage());
+document.getElementById("fake-release").onclick = () => previewLatest()?.resolveStop?.();
+document.getElementById("fake-old-start").onclick = () => previewProof.instances.at(-2)?.emit("call-start");
+document.getElementById("fake-old-end").onclick = () => previewProof.instances.at(-2)?.emit("call-end");
+document.getElementById("fake-old-error").onclick = () => previewProof.instances.at(-2)?.emit("error", previewMessage());
+document.getElementById("fake-hold-stop").onchange = (event) => { previewProof.holdStop = event.target.checked; };
+document.getElementById("fake-fail-next").onchange = (event) => { previewProof.failNext = event.target.checked ? previewMessage().message : ""; };
+previewProof.record();
+</script>

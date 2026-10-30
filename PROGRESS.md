@@ -1,6 +1,6 @@
 # Progress
 
-Current state: S10 implementation 729000b is committed and fast-forwarded into main. Fresh publication checks pass. The final documentation follow-up and authorized main push are verified from Git after execution. S11 local/test authority remains pending in docs/plans/scamkaki/00-status.md. No preview listener remains on 8783. Scratch: work/scamkaki-s10-publication/. Earlier dirty/unpublished and preview notes below are historical. S6 live proof and S7 video/live demo remain open.
+Current state: S11 is complete locally and uncommitted on scamkaki/slice-11-voice-room, HEAD/main remain published S10 tip 2a6a21e. Final 331 tests, one existing warning; Ruff/format/offline caller/19 UI checks/diff pass. All 30 named faults caught/restored. Evidence and current session transfer/review are in docs/plans/scamkaki/. Authority remains only in 00-status.md. No listeners on 8783/8784; browser tab closed and viewport reset. S12 is unstarted and requires S11 in main plus its own grant. S6/S7 gaps remain open. Receipts: work/scamkaki-s11/. Earlier snapshots below are historical.
 Historical research and the superseded build plan below are context only; current authority is in docs/plans/scamkaki/00-status.md.
 
 - [x] Read AGENTS.md and the user-authored Evidence check - Claude.md; preserve the source report.
@@ -10,6 +10,34 @@ Historical research and the superseded build plan below are context only; curren
 - [x] Synthesize verified facts, corrections and remaining evidence gates without implementing a product. Saved `outputs/Evidence audit - Codex.md`; preserved the user-authored source.
 
 ## Run log
+
+### S11 publication and S12 handoff preparation, 2026-10-30
+
+- [x] Re-verify branch, 2a6a21e local/remote main, empty index and exact reviewed 37-file package.
+- [x] Privately verify distinct test endpoint; retain refused first preflight and successful read-only ownership follow-up. No concurrent preview/reset.
+- [x] Fresh publication suite 331 passed, one existing warning in 71.45 s. Ruff/format/19 UI checks/offline caller/diff pass.
+- [ ] Explicit package audit/staging, commit, main fast-forward/push and remote verification.
+- [ ] Prepare original eight-section S12 handoff and read-only review prompt from published main; local docs only.
+Authority is recorded only in 00-status.md. No S12 implementation/test scope follows.
+Receipts: work/scamkaki-s11-publication/. Later publication facts are verified from Git after execution.
+
+### S11 execution, 2026-10-30
+
+- [x] Verify clean main/local/remote 2a6a21e, S8-S10 prerequisites and required S11 branch.
+- [x] Inspect approved contract/mockup, session endpoint, old controller and preview ownership trap.
+- [x] Record execution plan and baseline hashes without environment files in work/scamkaki-s11/.
+- [x] Offline baseline 188 unit tests and existing full baseline 316 passed. Initial Voice route red 6 failed/4 passed; route/controller move now passes 60 focused and 19 offline checks.
+- [x] Preview red caught the real SDK on Voice and absent anchor check; corrected owner and fail-closed guard. Final preview checks 3 passed.
+- [x] Browser 1280/375 px: zero load/selection/navigation effects, exactly one fake Start, locked controls, end/error/hang-up/late-event recovery and zero overflow. Seven real HTTP fake-session mints across four line/language combinations; no fetch/send/microphone effects.
+- [x] Missing configuration disables Start at both widths; actual missing-agent HTTP request returns 503 without mint.
+- [x] All 30 independent faults caught with exact source restoration; failure logs inspected for intended assertions, not connection/import errors.
+- [x] Named test grant, distinct private test endpoint and exclusive ownership before resets. Initial preflight refused another client; later read-only inspection showed none.
+- [x] All previews stopped before final tests. Final suite passed 331 tests, one existing warning in 72.50 s; no concurrent DB preview/reset.
+- [x] Final full suite 331 passed, Ruff/format/offline caller/19 Node UI checks/diff pass.
+- [x] Evidence/status/transfer mirrors and scoped architecture review complete. P3 mobile capture-disclosure correction is recorded; no blocking source issue or orphan found.
+- [x] Final 37-file audit: protected bytes/30 restoration hashes/17 JPEGs/credential bounds/contract and eight-section transfer/empty index pass.
+- [x] Focused/full checks, documentary mirrors and scoped cleanup complete. Stop before S12; no publication occurred.
+No S11 publication or real microphone/provider action follows from this work.
 
 ### S10 publication checks, 2026-10-30
 

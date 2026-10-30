@@ -331,6 +331,17 @@ async def web_call_session(
     return await run_in_threadpool(bolna.mint_web_call_session, agent_id, user_data)
 
 
+@app.get("/voice", response_class=HTMLResponse, dependencies=[AdminDep])
+def voice_page(request: Request, settings: SettingsDep) -> HTMLResponse:
+    availability = {
+        line: {language: bool(settings.agent_id(line, language)) for language in ("en", "hi")}
+        for line in ("guardian", "bait")
+    }
+    return reviewer_page(
+        request, "voice.html", title="Voice room", active="voice", availability=availability
+    )
+
+
 @app.get("/", response_class=HTMLResponse, dependencies=[AdminDep])
 def dashboard(request: Request, settings: SettingsDep) -> HTMLResponse:
     try:

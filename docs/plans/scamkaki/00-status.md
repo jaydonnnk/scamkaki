@@ -164,15 +164,19 @@ authorized below. Preview verification is in [checks/ui-redesign-preview.md](che
 - [x] S8 - Reviewer workspace, call history and separate call/check details. Done locally 2026-10-30 on `scamkaki/slice-8-reviewer-workspace`; [evidence](evidence/s8-workspace.md). Full suite 290 passed, lint/format and offline caller checks passed. 37 distinct faults caught across a recorded test correction; 1280/375 px populated/empty/error walkthrough passed. Human usability remains unmeasured. Published to main at 87739f0; deployment unverified.
 - [x] S9 - Visual script patterns from stored seven-day Bait counts. Done locally 2026-10-30 on `scamkaki/slice-9-script-patterns`; [evidence](evidence/s9-script-patterns.md). Final suite 303 passed, one existing warning; Ruff lint/format, offline caller and diff checks passed. Final 26/26 independent faults caught with exact source restoration; 1280/375 px populated/empty/503, links, disclosures, escaping and keyboard/overflow checks passed. Thirteen screenshots retain two initial captures with disclosed limits. No in-scope cleanup finding from auxiliary source/screenshot review. Published to main at 6565bc4 after separately authorized commit, fast-forward and push; S6/S7 gaps and human/live/deployment limits persist.
 - [x] S10 - Focused report review and persistent review state. Done locally 2026-10-30 on `scamkaki/slice-10-report-review`; [evidence](evidence/s10-report-review.md). Final suite 316 passed, one existing warning; Ruff/format, offline caller and diff checks pass. Final 35/35 independent faults caught with exact restores. Actual browser POST/303, database persistence/reload, HTTP repeat review and zero fake effects verified at 1280/375 px. Seventeen screenshots retain two initial captures. Scoped architecture/source/screenshot review found no unresolved S10 issue or cleanup deletion. Committed at 729000b and fast-forwarded into main under the publication grant below; human/live/deployment limits persist.
-- [ ] S11 - Voice room with explicit start and existing EN/HI lines.
+- [x] S11 - Voice room with explicit start and existing EN/HI lines. Done locally 2026-10-30 on `scamkaki/slice-11-voice-room`; [evidence](evidence/s11-voice-room.md). Full suite 331 passed, one existing warning; Ruff/format, offline caller, 19 actual-script UI checks and diff pass. All 30 independent faults caught/restored. Actual 1280/375 browser checks used seven HTTP fake-session mints, zero microphone/fetch/send effects, locked choices, end/error/late-event recovery and no measured overflow. Seventeen screenshots retain setup failure and disclosed full-page mobile Skip-link artifacts. Auxiliary review found no blocking source issue; its P3 disclosure correction is recorded. Publication authorized below; verify actual main refs after execution. Real audio/human/deployment proof remains unverified.
 - [ ] S12 - Family view and complete redesign verification.
 
 The full contracts and authority limits are in [04-slices.md](04-slices.md#website-redesign-slices-2026-10-30).
 S9 and S10 local exit decisions: **go**. S10 implementation commit 729000b is now in main.
-S11's S8-S10-in-main prerequisite is met; S11 implementation/branch and named test scope
-remain unauthorized. S11-S12 remain unstarted. No redesign slice replaces the open S6/S7
-evidence obligations. The [S11 handoff](s11-handoff.md) carries this updated boundary.
-The S10 session prompts retain their explicitly historical local-exit snapshot.
+S11's S8-S10-in-main prerequisite is met; S11 local implementation/branch is now authorized.
+Named S11 isolated test scope is also authorized below. S11 local exit decision: **go**.
+S11 publication is now authorized below. S12 remains unstarted; its S8-S11-in-main prerequisite
+must be verified from Git after publication, and its local/test grants remain pending.
+No redesign slice replaces the open S6/S7
+evidence obligations. The [S11 session transfer](s11-session-transfer.md) and
+[read-only review prompt](s11-session-review.md) carry the current local boundary.
+Earlier S10/S11 preparation prompts retain explicitly historical snapshots.
 
 ### S9 publication and S10 execution authority, 2026-10-30
 
@@ -199,6 +203,80 @@ The S10 session prompts retain their explicitly historical local-exit snapshot.
   It does not authorize S10 publication, S11, providers, sessions/calls, spending, production
   writes, installations or manual deployment. Existing Render auto-deployment may follow the
   requested main push; its result is not established by Git publication.
+
+### S11 execution authority, 2026-10-30
+
+- [verified] User: "Please start s11". Authorizes the approved S11 local implementation and
+  required branch. Verified clean main/local/remote at `2a6a21ed588991d622b86d77de26550487756db2`,
+  including S8-S10, then created and confirmed `scamkaki/slice-11-voice-room` from that tip.
+- [verified] User selected "Authorize this isolated S11 test scope" in response to the exact
+  scope: "S11 migrations, truncation and fixture writes on the freshly verified TEST_DATABASE_URL
+  branch, using fake Bolna/Telegram and a controlled fake browser SDK only". This named scope
+  persists without step-by-step reconfirmation. Privately re-verify the distinct endpoint and
+  exclusive ownership before mutations. No production, real microphone/provider session, call,
+  Telegram message, spending, installation, commit/push, deployment or S12 work is authorized.
+- The approved S11 contract and six-step build sequence remain unchanged. Existing pending
+  execution notes in the preparation snapshots are historical, superseded by this local grant.
+  S10 publication completed at `2a6a21e`; local main/origin/main/remote main and retained S10
+  branch matched with counts 0/0 and a clean tree/index before S11 branch creation.
+
+### S11 publication and S12 handoff authority, 2026-10-30
+
+- [verified] User: "Commit and push to main, then the copy paste prompt for s12. PLease follow the structure of the original prompt i gave u to craft the handoff propmt."
+  Authorizes the completed S11 package commit, fast-forward main and push to origin/main,
+  followed by a documentary S12 handoff using the original eight-section/S8 structure.
+  Retain the S11 branch. S12 local implementation/branch and named destructive test scope
+  remain unauthorized. No real microphone/provider session, production write, spending,
+  installation, manual deployment, S6 rerun or S7 closure follows from this request.
+- [verified] Starting branch scamkaki/slice-11-voice-room, HEAD/local main/origin/main/remote
+  main at 2a6a21ed588991d622b86d77de26550487756db2, empty index and the exact reviewed 37-file
+  package. Source/test/screenshot bytes and all 30 prior fault restoration hashes match.
+- Publication checks use the existing S11 named isolated test scope. Private comparison
+  confirms the distinct test endpoint and test connection. First preflight refused another
+  client before mutations; follow-up read-only inspection found no other clients. No client
+  was terminated, and no preview listener exists on 8783/8784. No environment file was printed
+  or hashed. The other client's source remains unestablished.
+- Earlier local-exit/preparation statements below and in session prompts are historical,
+  superseded by this grant. The exact commit and successful push are verified after execution,
+  never predicted here. Existing Render auto-deployment may follow main push; its result is
+  unverified by Git publication. S12 handoff preparation follows publication and changes docs only.
+
+- [verified] Fresh S11 publication checks: 331 passed, one existing Starlette/httpx warning
+  in 71.45 seconds. Ruff lint/format, all 19 offline UI checks, offline caller and diff pass.
+  No source/test/screenshot change or new browser/fault run was needed. All 30 prior source
+  restoration hashes still match. Full suite used the unchanged existing fake providers.
+
+### S11 local outcome, 2026-10-30
+
+- [verified] Voice route/controller move meets the approved local fake-lifecycle contract.
+  Final suite 331 passed, one existing Starlette/httpx warning in 72.50 s; Ruff lint/format,
+  offline caller, 19 actual-script Node UI checks and diff passed. Initial route/preview red
+  failures and lint corrections remain recorded. No final test was skipped or excluded.
+- [verified] Actual browser at 127.0.0.1:8784 with authored fixtures and fake providers only:
+  zero load/selection/navigation effects; exactly one Start under double-click; EN/HI line
+  mapping, locked choices, natural/hang-up/error/rejected-start recovery and stale-event
+  isolation checked at 1280/375 px. Seven actual HTTP requests reached fake session minting;
+  connected/end/error events were simulated. Microphone/fetch/send counters stayed zero.
+  Missing-agent POST returned 503 with no mint. A single phone connection persisted 37,248 ms
+  without reload. Actual real SDK audio/connection remains unverified.
+- [verified] All 30 independent faults were caught by their assigned check, with exact bytes
+  restored. Logs show intended assertions rather than connection/import failures. The final
+  37-file audit found all 184 protected baseline files outside the explicit 13-file tracked
+  allowlist unchanged, all guard hashes matching, 17 genuine JPEGs and an empty index.
+  Bounded configured-value/credential-pattern scan passed; no environment file was printed/hashed.
+- [verified] Fresh auxiliary review found no blocking source defect or in-scope orphan. It ran
+  19 Node cases, 10 database-free route/session cases and diff check. Its P3 finding broadened
+  the mobile screenshot caveat: several full-page captures show Skip-link overlays/clipping,
+  with exact cause unestablished. Evidence/transfer now disclose that. No CSS repair or stronger
+  normal-viewport proof is claimed. This is auxiliary evidence, not human acceptance.
+- [verified] All owned previews stopped before final tests; no listener on 8783/8784. Browser
+  tab closed and viewport reset. Failed initial credential-in-URL browser setup is retained;
+  the corrected authenticated URL required no source change. Current transfer/review prompts
+  preserve scope, authority and failures. No historical file deletion or broad cleanup.
+- S11 is complete locally, uncommitted and absent from main. Commit/main integration/push
+  remain separately unauthorized. S12 is unstarted, unauthorized and lacks S11 in main.
+  S6/S7 gaps, real providers/audio, human comprehension, devices/assistive technology, Telegram
+  receipt, CI and Render revision remain open/unverified. Stop before S12.
 
 ### S10 publication authority, 2026-10-30
 

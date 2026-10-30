@@ -77,7 +77,7 @@ def test_check_page_preserves_verdict_urgency_and_alert_states(client, db):
 
 
 @pytest.mark.parametrize(
-    "url", ["/", "/calls", "/calls/1", "/checks/1", "/patterns", "/reports", "/reports/1"]
+    "url", ["/", "/calls", "/calls/1", "/checks/1", "/patterns", "/reports", "/reports/1", "/voice"]
 )
 def test_reviewer_routes_require_admin(client, url):
     for auth in (None, ("admin", "wrong")):

@@ -306,7 +306,7 @@ def test_reports_entry_does_not_hide_other_report_links(client, db):
         assert f'href="/reports/{n}"' in activity
         detail = client.get(f"/calls/{n}", auth=ADMIN).text
         assert f'href="/reports/{n}"' in detail
-    assert 'href="/voice"' not in overview
+    assert 'href="/voice"' in overview
 
 
 def test_reports_preview_has_hostile_draft_and_visible_leak_fixture(client, db):
@@ -322,10 +322,11 @@ def test_reports_preview_has_hostile_draft_and_visible_leak_fixture(client, db):
     assert 'href="/calls/55"' in page
 
 
-def test_reports_reviewed_preview_uses_only_fakes_and_reviewed_fallback(client, db):
+def test_reports_reviewed_preview_uses_only_fakes_and_reviewed_fallback(client, db, monkeypatch):
     from scamkaki.app import main
     from scripts.preview_ui import preview
 
+    monkeypatch.setattr(main.templates.env, "loader", main.templates.env.loader)
     preview("reviewed", True)
     response = client.get("/reports", auth=("admin", "preview-only"), follow_redirects=False)
     assert response.status_code == 303 and response.headers["location"] == "/reports/19"

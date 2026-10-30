@@ -35,40 +35,14 @@
 </tbody></table></div><p class="sub">Bait records only, not unique scammers or success rates.</p></section>
 {% include "_matching.html" %}
 </aside></div>
-<section class="panel pad" style="margin-top:22px"><h2>Existing test lines</h2>
-<section aria-labelledby="talk-h"><h2 id="talk-h">Test lines</h2>
-<div class="panel talk">
-<button type="button" data-line="guardian" data-language="en" data-label="Talk to Guardian">Talk to Guardian</button>
-<button type="button" data-line="guardian" data-language="hi" data-label="Guardian से हिंदी में बात करें" lang="hi">Guardian से हिंदी में बात करें</button>
-<button type="button" class="secondary" data-line="bait" data-language="en" data-label="Call Bait as a test scammer">Call Bait as a test scammer</button>
-<button type="button" class="secondary" data-line="bait" data-language="hi" data-label="Bait को हिंदी में कॉल करें" lang="hi">Bait को हिंदी में कॉल करें</button>
-<p class="sub">Each button starts a real Bolna web call and uses account credit.
-<span id="call-state" aria-live="polite"></span></p>
-</div></section>
-
-</section><p id="refresh" class="sub" role="status"></p>
+<p id="refresh" class="sub" role="status"></p>
 {% endblock %}
 {% block scripts %}
-<script src="https://cdn.jsdelivr.net/gh/bolna-ai/web-call@v3.0.1/dist/bolna-web-call.min.js"></script>
 <script>
-const buttons = document.querySelectorAll("button[data-line]"), state = document.getElementById("call-state");
-let inCall = false, call = null;
-// One call at a time: the active button becomes "Hang up", the other is disabled.
-const reset = () => { inCall = false; buttons.forEach((b) => { b.disabled = false; b.textContent = b.dataset.label; }); };
-buttons.forEach((btn) => btn.onclick = () => {
-  if (inCall) { call.stop(); return; }
-  call = new BolnaWebCall({ sessionUrl: "/web-call/session?line=" + btn.dataset.line + "&language=" + btn.dataset.language });
-  call.on("call-start", () => { btn.textContent = "Hang up"; state.textContent = "Connected. Speak now."; });
-  call.on("call-end", () => { reset(); state.textContent = "Call ended. Results appear in a few seconds."; setTimeout(() => location.reload(), 15000); });
-  call.on("error", (e) => { reset(); state.textContent = "Could not connect: " + (e.message || e.code); });
-  inCall = true; state.textContent = "Connecting...";
-  buttons.forEach((b) => { if (b !== btn) b.disabled = true; });
-  call.start();
-});
-// Refresh results every 15 s, but not during a call, and not while a control has focus,
+// Refresh results every 15 s, except while a control has focus,
 // so a reload never drops a keyboard user's place.
 const refresh = document.getElementById("refresh");
-const busy = () => inCall || (document.activeElement && document.activeElement !== document.body);
+const busy = () => document.activeElement && document.activeElement !== document.body;
 const note = () => { refresh.textContent = busy() ? "Auto-refresh paused while a control is in use." : "Refreshes every 15 seconds."; };
 setInterval(() => { if (busy()) note(); else location.reload(); }, 15000);
 document.addEventListener("focusin", note); document.addEventListener("focusout", () => setTimeout(note));

@@ -78,7 +78,10 @@ the latter three together. S8 was subsequently authorized for local implementati
 test-branch checks on 2026-10-30, as recorded in 00-status.md. S9 was subsequently authorized
 for the same isolated local/test scope on 2026-10-30. S10 local implementation/branch and named
 test-branch scope were then authorized on 2026-10-30, conditional on S9 reaching main first.
-S11-S12 still need per-slice authorization. Publication remains separately scoped in 00-status.md.
+S11 local implementation/branch and named isolated test scope were authorized 2026-10-30
+in 00-status.md. S11 local exit is complete; its publication was separately authorized on
+2026-10-30, with resulting refs verified after execution. S12 still needs per-slice authorization
+and verified S11 content in main. Publication remains separately scoped in 00-status.md.
 S1-S7 retain their historical contracts and evidence. S6 remains open for live proof; S7's
 backup video and full live demo remain open. The redesign does not waive or rerun either.
 

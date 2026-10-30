@@ -1,9 +1,18 @@
 # S11 handoff
 
+Historical preparation snapshot. The later S11 local/test grants and implementation are
+recorded in [00-status.md](00-status.md), [current session transfer](s11-session-transfer.md)
+and [S11 evidence](evidence/s11-voice-room.md). Pending-authority and absent-source statements
+below describe the earlier preparation, not the current continuation state.
+
 Updated 2026-10-30, Asia/Singapore, for authorized S10 publication. S10 implementation
 729000b is committed and in main. S11 execution/test authority remains pending. Background only.
 
 ```text
+Historical pre-implementation snapshot. Current S11 local/test grants and built source/proof
+are in 00-status.md, s11-session-transfer.md and evidence/s11-voice-room.md. The old pending-
+authority, missing-source and then-current Git descriptions below are historical.
+
 You are receiving background for Scamkaki S11 in /Users/jayd0/Desktop/bolna on macOS arm64.
 Prepared 2026-10-30, Asia/Singapore, from published main and actual Git/source state.
 This handoff is background only. S10 commit/main integration/push is authorized. Its implementation

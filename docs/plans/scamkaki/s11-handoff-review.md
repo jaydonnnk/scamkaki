@@ -1,5 +1,10 @@
 # S11 handoff review prompt
 
+Historical preparation snapshot. The later S11 local/test grants and implementation are
+recorded in [00-status.md](00-status.md), [current session transfer](s11-session-transfer.md)
+and [S11 evidence](evidence/s11-voice-room.md). Pending-authority and absent-source statements
+below describe the earlier preparation, not the current continuation state.
+
 Prepared 2026-10-30, Asia/Singapore. Review of handoff accuracy, not authorization to build S11.
 
 ```text
