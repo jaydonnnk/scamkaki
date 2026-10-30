@@ -4,20 +4,23 @@ import logging
 import re
 from collections.abc import Callable
 from dataclasses import asdict
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from functools import partial
 from hmac import compare_digest
 from pathlib import Path
-from typing import Annotated, Any
+from typing import Annotated, Any, Literal
 from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo
 
-from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Request, Response
+import psycopg
+from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Query, Request, Response
+from fastapi import Path as PathParam
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.templating import Jinja2Templates
 
+from scamkaki.app.presentation import transcript_turns
 from scamkaki.domain import store, verdict
 from scamkaki.domain.extraction import parse_extraction, parse_guardian_report
 from scamkaki.domain.leaks import agent_turns, find_leaks
@@ -27,6 +30,7 @@ from scamkaki.domain.types import (
     Demand,
     GuardianReport,
     Language,
+    Line,
     as_language,
     as_line,
 )
@@ -72,6 +76,17 @@ LABELS = {
     "tactics": verdict.TACTIC_LABELS,
     "acted": verdict.ACTED_LABELS,
     "languages": verdict.LANGUAGE_LABELS,
+    "verdicts": {
+        "likely_scam": "Likely scam",
+        "unclear": "Unclear, talk to family",
+        "no_scam_signs": "No scam signs found",
+    },
+    "alert_states": {
+        "pending": "Telegram sending",
+        "sent": "Telegram sent",
+        "failed": "Telegram failed",
+        "off": "Telegram not set up",
+    },
 }
 
 SettingsDep = Annotated[Settings, Depends(get_settings)]
@@ -280,6 +295,7 @@ def family_page(request: Request) -> HTMLResponse:
     # Keep the secret link out of Referer headers and search engines.
     response.headers["Referrer-Policy"] = "no-referrer"
     response.headers["X-Robots-Tag"] = "noindex"
+    response.headers["Cache-Control"] = "no-store"
     return response
 
 
@@ -317,22 +333,128 @@ async def web_call_session(
 
 @app.get("/", response_class=HTMLResponse, dependencies=[AdminDep])
 def dashboard(request: Request, settings: SettingsDep) -> HTMLResponse:
-    with connect(settings.database_url) as conn:
-        feed = store.recent_feed(conn)
-        week = store.scripts_this_week(conn)
-        calls = store.recent_calls(conn)
+    try:
+        with connect(settings.database_url) as conn:
+            feed = store.recent_feed(conn)
+            week = store.scripts_this_week(conn)
+            alerts = store.recent_alerts(conn)
+            drafts = store.recent_reports(conn)
+    except psycopg.Error:
+        return reviewer_error(request)
+    cutoff = datetime.now(UTC) - timedelta(hours=24)
+    priority = next((row for row in alerts if row["urgent"] and row["created_at"] > cutoff), None)
+    return reviewer_page(
+        request,
+        "dashboard.html",
+        title="Overview",
+        active="overview",
+        feed=feed,
+        week=week,
+        priority=priority,
+        drafts=drafts,
+    )
+
+
+def reviewer_page(
+    request: Request, template: str, *, status_code: int = 200, **context
+) -> HTMLResponse:
     return templates.TemplateResponse(
-        request, "dashboard.html", {"feed": feed, "week": week, "calls": calls, **LABELS}
+        request,
+        template,
+        {**LABELS, **context},
+        status_code=status_code,
+        headers={"Cache-Control": "no-store"},
+    )
+
+
+def reviewer_error(request: Request, *, missing: bool = False) -> HTMLResponse:
+    return reviewer_page(
+        request,
+        "_error.html",
+        status_code=404 if missing else 503,
+        title="Record not found" if missing else "Records unavailable",
+        missing=missing,
+        retry=request.url.path + ("?" + request.url.query if request.url.query else ""),
+    )
+
+
+@app.get("/calls", response_class=HTMLResponse, dependencies=[AdminDep])
+def calls_page(
+    request: Request,
+    settings: SettingsDep,
+    q: Annotated[str, Query(max_length=100)] = "",
+    line: Line | Literal[""] | None = None,
+    page: Annotated[int, Query(ge=1, le=1000)] = 1,
+) -> HTMLResponse:
+    try:
+        with connect(settings.database_url) as conn:
+            rows = store.recent_calls(conn, 51, query=q, line=line or None, offset=(page - 1) * 50)
+    except psycopg.Error:
+        return reviewer_error(request)
+    return reviewer_page(
+        request,
+        "calls.html",
+        title="Calls",
+        active="calls",
+        calls=rows[:50],
+        q=q,
+        line=line,
+        page=page,
+        has_next=len(rows) > 50 and page < 1000,
+    )
+
+
+@app.get("/calls/{call_id}", response_class=HTMLResponse, dependencies=[AdminDep])
+def call_page(
+    call_id: Annotated[int, PathParam(gt=0)],
+    request: Request,
+    settings: SettingsDep,
+) -> HTMLResponse:
+    try:
+        with connect(settings.database_url) as conn:
+            call = store.get_call(conn, call_id)
+    except psycopg.Error:
+        return reviewer_error(request)
+    if call is None:
+        return reviewer_error(request, missing=True)
+    return reviewer_page(
+        request,
+        "call.html",
+        title="Call details",
+        active="calls",
+        call=call,
+        turns=transcript_turns(call["transcript"]),
+    )
+
+
+@app.get("/checks/{check_id}", response_class=HTMLResponse, dependencies=[AdminDep])
+def check_page(
+    check_id: Annotated[int, PathParam(gt=0)],
+    request: Request,
+    settings: SettingsDep,
+) -> HTMLResponse:
+    try:
+        with connect(settings.database_url) as conn:
+            check = store.get_check(conn, check_id)
+    except psycopg.Error:
+        return reviewer_error(request)
+    if check is None:
+        return reviewer_error(request, missing=True)
+    return reviewer_page(
+        request, "check.html", title="Guardian check", active="overview", check=check
     )
 
 
 @app.get("/reports/{report_id}", response_class=HTMLResponse, dependencies=[AdminDep])
 def report_page(report_id: int, request: Request, settings: SettingsDep) -> HTMLResponse:
-    with connect(settings.database_url) as conn:
-        report = store.get_report(conn, report_id)
+    try:
+        with connect(settings.database_url) as conn:
+            report = store.get_report(conn, report_id)
+    except psycopg.Error:
+        return reviewer_error(request)
     if report is None:
         raise HTTPException(status_code=404)
-    return templates.TemplateResponse(request, "report.html", {"report": report, **LABELS})
+    return reviewer_page(request, "report.html", report=report)
 
 
 @app.post("/reports/{report_id}/review", dependencies=[AdminDep])

@@ -100,7 +100,7 @@ def get_report(conn: psycopg.Connection, report_id: int) -> dict[str, Any] | Non
     """One Bait report with its call and script, for the review page; None if there is none."""
     return conn.execute(
         """
-        select r.id, r.draft, r.status, r.reviewed_at,
+        select r.id, r.call_id, r.draft, r.status, r.reviewed_at,
                c.language, c.fixture_case, c.leaks, c.duration_s, c.created_at as call_at,
                s.agency, s.demand, s.payee_bank, s.payee_account, s.paynow_id, s.url, s.summary
         from reports r join calls c on c.id = r.call_id
@@ -124,7 +124,8 @@ def recent_scripts(conn: psycopg.Connection, limit: int = 50) -> list[dict[str, 
     """Bait scripts with their call and report state, newest first, for the dashboard."""
     return conn.execute(
         """
-        select s.*, c.language, c.fixture_case, c.leaks, r.id as report_id,
+        select s.id, s.call_id, s.agency, s.demand, s.created_at,
+               c.language, c.fixture_case, c.leaks, r.id as report_id,
                r.status as report_status
         from scripts s join calls c on c.id = s.call_id
         left join reports r on r.call_id = s.call_id
@@ -214,9 +215,63 @@ def recent_alerts(conn: psycopg.Connection, limit: int = 20) -> list[dict[str, A
     ).fetchall()
 
 
-def recent_calls(conn: psycopg.Connection, limit: int = 50) -> list[dict[str, Any]]:
+def recent_calls(
+    conn: psycopg.Connection,
+    limit: int = 50,
+    *,
+    query: str = "",
+    line: Line | None = None,
+    offset: int = 0,
+) -> list[dict[str, Any]]:
+    # Use ! as the LIKE escape so typed wildcards are always literal search text.
+    pattern = "%" + query.replace("!", "!!").replace("%", "!%").replace("_", "!_") + "%"
     return conn.execute(
-        "select * from calls order by created_at desc limit %s", (limit,)
+        """
+        select id, line, language, fixture_case, status, duration_s, created_at
+        from calls
+        where (%s::text is null or line = %s)
+          and (coalesce(fixture_case, '') ilike %s escape '!'
+               or status ilike %s escape '!'
+               or (case language when 'en' then 'English' else 'Hindi हिंदी' end)
+                   ilike %s escape '!')
+        order by created_at desc, id desc limit %s offset %s
+        """,
+        (line, line, pattern, pattern, pattern, limit, offset),
+    ).fetchall()
+
+
+def get_call(conn: psycopg.Connection, call_id: int) -> dict[str, Any] | None:
+    return conn.execute(
+        """
+        select c.*, r.id as report_id from calls c
+        left join reports r on r.call_id = c.id and c.line = 'bait'
+        where c.id = %s
+        """,
+        (call_id,),
+    ).fetchone()
+
+
+def get_check(conn: psycopg.Connection, check_id: int) -> dict[str, Any] | None:
+    row = conn.execute("select * from guardian_checks where id = %s", (check_id,)).fetchone()
+    return {**row, "urgent": row["acted"] in HARM_ACTED} if row else None
+
+
+def recent_reports(
+    conn: psycopg.Connection,
+    limit: int = 5,
+    *,
+    drafts_only: bool = True,
+) -> list[dict[str, Any]]:
+    return conn.execute(
+        """
+        select r.id, r.call_id, r.status, r.reviewed_at, r.created_at,
+               c.language, c.fixture_case, s.agency, s.demand
+        from reports r join calls c on c.id = r.call_id
+        left join scripts s on s.call_id = r.call_id
+        where (not %s or r.status = 'draft')
+        order by (r.status = 'draft') desc, r.created_at desc, r.id desc limit %s
+        """,
+        (drafts_only, limit),
     ).fetchall()
 
 

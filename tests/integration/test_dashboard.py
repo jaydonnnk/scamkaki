@@ -80,8 +80,10 @@ def test_dashboard_summarizes_scripts_heard_this_week(client, db):
 
     page = client.get("/", auth=ADMIN).text
 
-    week = page.split("Scripts heard this week")[1].split("Call log")[0]
-    assert "<td>Police (SPF)</td><td>Money transfer</td><td>2</td>" in week
+    week = page.split('aria-labelledby="week-h"')[1].split("</section>")[0]
+    assert 'data-label="Claimed">Police (SPF)</td>' in week
+    assert 'data-label="Wants">Money transfer</td>' in week
+    assert 'data-label="Seen">2</td>' in week
     assert "A bank" not in week  # older than 7 days
 
 
@@ -101,6 +103,50 @@ def test_dashboard_keeps_the_calls_log_with_status_and_case(client, bolna):
     bolna.executions["ex-d4"] = bait_execution("ex-d4", status="completed")
     client.post("/bolna/webhook/hook-token", json={"id": "ex-d4", "status": "completed"})
 
-    page = client.get("/", auth=ADMIN).text
+    page = client.get("/calls", auth=ADMIN).text
 
     assert "Call log" in page and "completed" in page
+
+
+def test_overview_priority_excludes_old_urgent(client, db):
+    from tests.integration.test_checks import saved_check
+
+    old = saved_check(db)
+    with connect(db) as conn:
+        conn.execute("update guardian_checks set created_at = now() - interval '25 hours'")
+    recent_regular = saved_check(db, acted="none")
+    page = client.get("/", auth=ADMIN).text
+    priority = page.split('id="priority"')[1].split("</section>")[0]
+    assert 'href="/checks/' not in priority
+    assert "No urgent alert in the last 24 hours" in priority
+    assert f'href="/checks/{old}"' in page  # preserved in activity
+    recent = saved_check(db, acted="gave_code_or_card")
+    page = client.get("/", auth=ADMIN).text
+    priority = page.split('id="priority"')[1].split("</section>")[0]
+    assert f'href="/checks/{recent}"' in priority
+    assert f'href="/checks/{old}"' not in priority
+    assert f'href="/checks/{recent_regular}"' not in priority
+
+
+def test_overview_draft_queue_is_bounded_and_excludes_reviewed(client, db):
+    from scamkaki.domain import store
+    from tests.integration.test_calls import saved_call
+
+    for n in range(7):
+        call_id = saved_call(db, f"draft-{n}", line="bait")
+        with connect(db) as conn:
+            report_id = store.add_report(conn, call_id, "synthetic draft")
+            if n == 6:
+                store.mark_reviewed(conn, report_id)
+    page = client.get("/", auth=ADMIN).text
+    queue = page.split('id="draft-queue"')[1].split("</section>")[0]
+    assert queue.count('href="/reports/') == 5
+    assert 'href="/reports/7"' not in queue and 'href="/reports/1"' not in queue
+    assert 'href="/reports/6"' in queue
+    with connect(db) as conn:
+        for report_id in range(1, 6):
+            store.mark_reviewed(conn, report_id)
+    page = client.get("/", auth=ADMIN).text
+    queue = page.split('id="draft-queue"')[1].split("</section>")[0]
+    assert queue.count('href="/reports/') == 1
+    assert 'href="/reports/6"' in queue

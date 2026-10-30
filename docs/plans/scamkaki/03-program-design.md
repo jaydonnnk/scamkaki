@@ -391,19 +391,30 @@ class TranscriptTurn:
     speaker: Literal["ah_ma", "caller", "unlabelled"]
     text: str
 
+
 def transcript_turns(transcript: str) -> list[TranscriptTurn]: ...
+
 
 # domain/store.py, additions/extension
 # List projection excludes transcript, extracted payload and raw payee details.
 def recent_calls(
-    conn: psycopg.Connection, limit: int = 50, *,
-    query: str = "", line: Line | None = None, offset: int = 0,
+    conn: psycopg.Connection,
+    limit: int = 50,
+    *,
+    query: str = "",
+    line: Line | None = None,
+    offset: int = 0,
 ) -> list[dict[str, Any]]: ...
 def get_call(conn: psycopg.Connection, call_id: int) -> dict[str, Any] | None: ...
 def get_check(conn: psycopg.Connection, check_id: int) -> dict[str, Any] | None: ...
 def recent_reports(
-    conn: psycopg.Connection, limit: int = 5, *, drafts_only: bool = True,
+    conn: psycopg.Connection,
+    limit: int = 5,
+    *,
+    drafts_only: bool = True,
 ) -> list[dict[str, Any]]: ...
+
+
 # get_call: call row plus optional report_id; never joins a Guardian check.
 # get_check: check row plus urgent = acted in HARM_ACTED; no synthetic call relation.
 # Extend existing get_report projection with call_id for its source-call link.
@@ -411,14 +422,18 @@ def recent_reports(
 # language, fixture_case. Drafts first, then created_at DESC, id DESC.
 # Existing scripts_this_week, recent_feed, recent_alerts and get_report are reused.
 
+
 # app/main.py, all reviewer endpoints have dependencies=[AdminDep]
-def calls_page(request: Request, settings: SettingsDep,
-               q: str = "", line: Line | None = None, page: int = 1) -> HTMLResponse: ...
+def calls_page(
+    request: Request, settings: SettingsDep, q: str = "", line: Line | None = None, page: int = 1
+) -> HTMLResponse: ...
 def call_page(call_id: int, request: Request, settings: SettingsDep) -> HTMLResponse: ...
 def check_page(check_id: int, request: Request, settings: SettingsDep) -> HTMLResponse: ...
 def patterns_page(request: Request, settings: SettingsDep) -> HTMLResponse: ...
 def reports_entry(request: Request, settings: SettingsDep) -> Response: ...
 def voice_page(request: Request, settings: SettingsDep) -> HTMLResponse: ...
+
+
 # Annotate q with max_length=100 and page with ge=1, le=1000 at the request boundary.
 # Positive record IDs; invalid inputs -> 422, missing positive IDs -> 404.
 # Page size is fixed at 50; query 51 rows and expose only the first 50.

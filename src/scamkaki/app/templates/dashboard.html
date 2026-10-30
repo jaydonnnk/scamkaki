@@ -1,36 +1,41 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Scamkaki dashboard</title>
-{% include "_theme.html" %}
-<style>
-.below{display:grid;grid-template-columns:minmax(0,1fr);gap:0 24px;align-items:start}
-@media(min-width:960px){.below{grid-template-columns:minmax(0,2fr) minmax(0,3fr)}}
-.talk{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px}
-.talk p{flex-basis:100%;margin:0}
-#call-state{color:var(--muted)}
-#refresh{margin:8px 0 0;text-align:right}
-.feed td.time{white-space:nowrap}
-.feed tr.urgent{box-shadow:inset 6px 0 0 var(--danger);background:var(--danger-bg)}
-.feed td small{display:block}
-.did{display:block;font-weight:700;margin-top:4px}
-@media(max-width:719px){
-  .feed thead{position:absolute;left:-9999px}
-  .feed,.feed tbody,.feed td{display:block}
-  .feed tr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px 12px;padding:10px 12px;border-bottom:1px solid var(--ice-200)}
-  .feed td{border:0;padding:0;white-space:normal;min-width:0}
-  .feed td.time,.feed td.wide{grid-column:1/-1}
-  .feed td::before{content:attr(data-label);display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
-  .feed td.time::before{display:none}
-  .feed td.time{font-weight:700}
-  .talk button{flex:1 1 100%}
-  .fixture{margin-left:0}
-}
-</style></head><body>
-<header class="bar"><div class="bar-inner">
-<h1 class="brand">Scamkaki<small>Reviewer dashboard</small></h1>
-<p class="fixture">Demo fixtures. Test calls, not real scammers.</p>
-</div></header>
-<main>
+{% extends "_reviewer.html" %}
+{% block content %}
+<div class="heading"><div><h1>A little help from Ah Ma.</h1><p>Review the warnings. Read the conversation. Keep family in the loop.</p></div><a class="btn" href="/calls">Browse calls</a></div>
+<div class="grid"><div class="stack">
+<section class="panel pad{% if priority %} priority{% endif %}" id="priority" aria-labelledby="priority-h"><h2 id="priority-h">Priority alert</h2>
+{% if priority %}<p><strong>Urgent: Ah Ma already {{ acted[priority.acted] | lower }}</strong></p><p>{{ agencies[priority.agency] }} · {{ demands[priority.demand] }}</p><p class="sub">Recorded {{ priority.created_at | sgt }} SGT. Within the last 24 hours.</p><a href="/checks/{{ priority.id }}">Read urgent check</a>
+{% else %}<p class="empty">No urgent alert in the last 24 hours.</p>{% endif %}
+</section>
+<section class="panel pad" aria-labelledby="feed-h"><div class="sectionhead"><h2 id="feed-h">Recent activity</h2><a href="/calls">Calls history</a></div>
+{% for r in feed %}<article class="event">
+{% if r.kind == "guardian" %}
+<h3><a href="/checks/{{ r.id }}">Guardian check #{{ r.id }}</a></h3>
+<div class="meta">{% if r.urgent %}<span class="urgent-tag">URGENT</span>{% endif %}<span class="badge v-{{ r.verdict }}">{{ verdicts[r.verdict] }}</span></div>
+<p>{{ agencies[r.agency] }} · {{ demands[r.demand] }} · {{ channels[r.channel] }}</p>
+<h3>Warning signs</h3>{% if r.tactics %}<ul class="signs">{% for t in r.tactics %}<li>{{ tactics.get(t, t) }}</li>{% endfor %}</ul>{% else %}<p>None recorded</p>{% endif %}
+{% if r.urgent %}<p><strong>Ah Ma already: {{ acted[r.acted] }}</strong></p>{% endif %}
+{% if r.verdict == "likely_scam" %}<p>{{ alert_states.get(r.alert_status, "Alert not recorded") }}. Receipt unknown.</p>{% endif %}
+{% if r.similar_count %}<p>Same script heard {{ r.similar_count }} time{{ "" if r.similar_count == 1 else "s" }} this week</p>{% endif %}
+{% else %}
+<h3>Bait script · {{ agencies[r.agency] }}</h3><p>{{ demands[r.demand] }} · {% if r.fixture_case %}Demo fixture: {{ r.fixture_case }}{% else %}Test call with no fixture case{% endif %}</p>
+<p>Warning signs: Not collected</p>
+{% if r.report_id %}<a href="/reports/{{ r.report_id }}">{{ "Report reviewed" if r.report_status == "reviewed" else "Report draft" }}</a>{% endif %}
+{% if r.leaks %}<p class="leak">LEAK ({{ r.leaks | length }})</p>{% else %}<p>No leaks</p>{% endif %}
+{% endif %}<p>{{ languages[r.language] }} · Recorded {{ r.created_at | sgt }} SGT</p>
+</article>{% else %}<p class="empty">No calls or checks yet.</p>{% endfor %}
+</section></div>
+<aside class="stack">
+<section class="panel pad" id="draft-queue" aria-labelledby="draft-h"><h2 id="draft-h">Drafts to review</h2><p class="sub">Up to five newest drafts. Human review sends nothing.</p>
+{% for r in drafts %}<a class="listlink" href="/reports/{{ r.id }}">Review draft #{{ r.id }}<span class="sub"> · {{ agencies[r.agency] if r.agency else "Agency not recorded" }} · {{ languages[r.language] }}</span></a>{% else %}<p class="empty">No drafts waiting.</p>{% endfor %}
+</section>
+<section class="panel pad" aria-labelledby="week-h"><h2 id="week-h">Scripts heard this week</h2>
+<div class="tablewrap"><table class="responsive"><thead><tr><th>Claimed</th><th>Wants</th><th>Seen</th></tr></thead><tbody>
+{% for w in week %}<tr><td data-label="Claimed">{{ agencies[w.agency] }}</td><td data-label="Wants">{{ demands[w.demand] }}</td><td data-label="Seen">{{ w.n }}</td></tr>
+{% else %}<tr><td colspan="3" class="empty">None in the last 7 days.</td></tr>{% endfor %}
+</tbody></table></div><p class="sub">Bait records only, not unique scammers or success rates.</p></section>
+<section class="panel pad"><h2>How matching works</h2><div class="flow"><div class="node"><strong>Bait records</strong><small>Claimed agency and request.</small></div><span class="arrow" aria-hidden="true">→</span><div class="node"><strong>Seven-day counts</strong><small>Same agency and request.</small></div><span class="arrow" aria-hidden="true">→</span><div class="node"><strong>Guardian check</strong><small>Recorded signs and actions also matter.</small></div></div><p class="sub">This explains the system. It does not link individual calls and checks.</p></section>
+</aside></div>
+<section class="panel pad" style="margin-top:22px"><h2>Existing test lines</h2>
 <section aria-labelledby="talk-h"><h2 id="talk-h">Test lines</h2>
 <div class="panel talk">
 <button type="button" data-line="guardian" data-language="en" data-label="Talk to Guardian">Talk to Guardian</button>
@@ -41,69 +46,9 @@
 <span id="call-state" aria-live="polite"></span></p>
 </div></section>
 
-<section aria-labelledby="feed-h"><h2 id="feed-h">Live feed</h2>
-<div class="panel scroll">
-<table class="feed"><thead><tr><th>Time</th><th>Line</th><th>Lang</th><th>Claimed</th><th>Wants</th><th>Warning signs</th><th>Result</th></tr></thead><tbody>
-{% for r in feed %}
-{% set lang = {"en": "EN", "hi": "हिंदी"}[r.language] %}
-{% if r.kind == "guardian" %}
-<tr{% if r.urgent %} class="urgent"{% endif %}>
-<td class="time" data-label="Time">{{ r.created_at | sgt }}</td>
-<td data-label="Line">Guardian</td>
-<td data-label="Language"><span{% if r.language == "hi" %} lang="hi"{% endif %}>{{ lang }}</span></td>
-<td data-label="Claimed">{{ agencies[r.agency] }}<small class="sub">{{ "Channel not clear" if r.channel == "other" else "via " ~ (channels[r.channel] | lower) }}</small></td>
-<td data-label="Wants">{{ demands[r.demand] }}</td>
-<td class="wide" data-label="Warning signs">{% if r.tactics %}<ul class="signs">{% for t in r.tactics %}<li>{{ tactics[t] }}</li>{% endfor %}</ul>{% else %}<span class="empty">None recorded</span>{% endif %}</td>
-<td class="wide" data-label="Result">
-{% if r.urgent %}<span class="urgent-tag">URGENT</span>{% endif %}<span class="badge v-{{ r.verdict }}">{{ {"likely_scam": "Likely scam", "unclear": "Unclear, talk to family", "no_scam_signs": "No scam signs found"}[r.verdict] }}</span>
-{% if r.urgent %}<span class="did">Ah Ma already: {{ acted[r.acted] }}</span>{% endif %}
-{% if r.verdict == "likely_scam" %}<small class="sub">{{ {"pending": "Telegram sending", "sent": "Telegram sent", "failed": "Telegram failed", "off": "Telegram not set up"}[r.alert_status] or "Alert not recorded" }}</small>{% endif %}
-{% if r.similar_count %}<small class="sub">Same script heard {{ r.similar_count }} time{{ "" if r.similar_count == 1 else "s" }} this week</small>{% endif %}
-</td></tr>
-{% else %}
-<tr>
-<td class="time" data-label="Time">{{ r.created_at | sgt }}</td>
-<td data-label="Line">Bait{% if r.fixture_case %}<small class="mono">{{ r.fixture_case }}</small>{% endif %}</td>
-<td data-label="Language"><span{% if r.language == "hi" %} lang="hi"{% endif %}>{{ lang }}</span></td>
-<td data-label="Claimed">{{ agencies[r.agency] }}</td>
-<td data-label="Wants">{{ demands[r.demand] }}</td>
-<td class="wide" data-label="Warning signs"><span class="empty">Not collected</span></td>
-<td class="wide" data-label="Result">
-{% if r.report_id %}<a href="/reports/{{ r.report_id }}">{{ "Report reviewed" if r.report_status == "reviewed" else "Report draft" }}</a>{% endif %}
-{% if r.leaks %}<small class="leak">LEAK ({{ r.leaks | length }})</small>{% else %}<small class="sub">No leaks</small>{% endif %}
-</td></tr>
-{% endif %}
-{% else %}
-<tr><td colspan="7" class="empty">No calls or checks yet.</td></tr>
-{% endfor %}
-</tbody></table></div></section>
-
-<div class="below">
-<aside aria-labelledby="week-h"><h2 id="week-h">Scripts heard this week</h2>
-<div class="panel scroll">
-<table><thead><tr><th>Claimed</th><th>Wants</th><th>Seen</th></tr></thead><tbody>
-{% for w in week %}
-<tr><td>{{ agencies[w.agency] }}</td><td>{{ demands[w.demand] }}</td><td>{{ w.n }}</td></tr>
-{% else %}
-<tr><td colspan="3" class="empty">None in the last 7 days.</td></tr>
-{% endfor %}
-</tbody></table></div>
-<p class="sub">Bait calls only. Guardian compares what a senior describes with these counts.</p>
-</aside>
-
-<section aria-labelledby="log-h"><h2 id="log-h">Call log</h2>
-<div class="panel scroll">
-<table><thead><tr><th>Time</th><th>Line</th><th>Lang</th><th>Status</th><th>Length</th><th>Case</th></tr></thead><tbody>
-{% for c in calls %}
-<tr><td>{{ c.created_at | sgt }}</td><td>{{ c.line | capitalize }}</td><td>{{ {"en": "EN", "hi": "हिंदी"}[c.language] }}</td><td>{{ c.status }}</td>
-<td>{% if c.duration_s is not none %}{{ c.duration_s }} s{% endif %}</td><td class="mono">{{ c.fixture_case or "" }}</td></tr>
-{% else %}
-<tr><td colspan="6" class="empty">No calls yet.</td></tr>
-{% endfor %}
-</tbody></table></div></section>
-</div>
-<p id="refresh" class="sub" role="status"></p>
-</main>
+</section><p id="refresh" class="sub" role="status"></p>
+{% endblock %}
+{% block scripts %}
 <script src="https://cdn.jsdelivr.net/gh/bolna-ai/web-call@v3.0.1/dist/bolna-web-call.min.js"></script>
 <script>
 const buttons = document.querySelectorAll("button[data-line]"), state = document.getElementById("call-state");
@@ -128,4 +73,5 @@ const note = () => { refresh.textContent = busy() ? "Auto-refresh paused while a
 setInterval(() => { if (busy()) note(); else location.reload(); }, 15000);
 document.addEventListener("focusin", note); document.addEventListener("focusout", () => setTimeout(note));
 note();
-</script></body></html>
+</script>
+{% endblock %}

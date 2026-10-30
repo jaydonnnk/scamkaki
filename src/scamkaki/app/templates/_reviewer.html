@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ title }} | Scamkaki</title>
+{% include "_theme.html" %}
+</head><body class="reviewer">
+<a class="btn skip" href="#main">Skip to content</a>
+<aside class="sidebar">
+<a class="brand" href="/"><svg class="ico" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6z"/><path d="m8 12 3 3 5-6"/></svg>Scamkaki</a>
+<nav aria-label="Reviewer navigation">
+<a href="/"{% if active == "overview" %} aria-current="page"{% endif %}>Overview</a>
+<a href="/calls"{% if active == "calls" %} aria-current="page"{% endif %}>Calls</a>
+</nav>
+<div class="navfoot"><strong>A little help from Ah Ma.</strong>English &amp; Hindi<br><br>Reviewer workspace<br>Family uses a private alert link.</div>
+</aside>
+<div class="workspace"><header class="top"><span>Reviewer workspace / {{ title }}</span><span class="fixture">Demo fixtures. Test calls, not real scammers.</span></header>
+<main id="main" tabindex="-1">
+{% block content %}{% endblock %}
+<p class="bottomnote">Stored test records. Local checks do not establish real-world effectiveness or human usability.</p>
+</main></div>
+{% block scripts %}{% endblock %}
+</body></html>

@@ -1,6 +1,6 @@
 # Progress
 
-Current goal: S7 (dashboard, report review, demo) built and checked locally on `scamkaki/slice-7-dashboard-demo`, uncommitted; open items: backup video unavailable, full live demo not run. S6 live validation plan drafted in docs/plans/scamkaki/s6-live-validation-plan.md (not authority). Evidence: docs/plans/scamkaki/evidence/s7-dashboard-demo.md. Scratch (ignored): work/scamkaki-s7/.
+Current goal: publish the completed S8 reviewer workspace from `scamkaki/slice-8-reviewer-workspace`, then prepare the S9 handoff. S6 live proof and S7 video/live demo remain open. Authority is in `docs/plans/scamkaki/00-status.md`. Scratch: `work/scamkaki-s8/`.
 Historical research and the superseded build plan below are context only; current authority is in docs/plans/scamkaki/00-status.md.
 
 - [x] Read AGENTS.md and the user-authored Evidence check - Claude.md; preserve the source report.
@@ -10,6 +10,41 @@ Historical research and the superseded build plan below are context only; curren
 - [x] Synthesize verified facts, corrections and remaining evidence gates without implementing a product. Saved `outputs/Evidence audit - Codex.md`; preserved the user-authored source.
 
 ## Run log
+
+### S8 publication and S9 handoff, 2026-10-30
+
+- [x] Re-verify S8 branch, main/remote at 845f288, empty index and known 50-file S8 inventory.
+- [x] Fresh checks: 290 tests passed, one existing warning; Ruff/Node/diff and 50-file bounded scan passed. Explicit manifest prepared for staging.
+- [ ] Commit S8, fast-forward main, push and verify remote SHA. Retain the S8 branch.
+- [ ] Prepare S9 prompt from published main, using the retained S8 skeleton/eight-section order.
+No-mistakes CLI is absent; the existing Ruff/pytest/Node/Git checks are the publication checks.
+Prior S8 non-publication notes below describe the local exit boundary. This run's authority
+is recorded only in 00-status.md. S9 execution and test-database authority remain pending.
+
+### S8 execution, 2026-10-30
+
+- [x] Re-verify clean Git, published main and approved redesign documents; create S8 branch.
+- [x] Verify TEST_DATABASE_URL connects to a distinct endpoint from production, without outputting credentials.
+- [x] Baseline 262 passed, one existing Starlette deprecation warning. S8 red run: 24 failed/8 passed.
+- [x] Implement reads/pages. Focused 31 passed/1 markup-dependent old assertion failed; adapted the same count/age assertions. Full suite 286 passed, same warning.
+- [x] Final full suite 290 passed, one existing warning. Ruff lint/format and Node caller checks pass.
+- [x] Faults: initial 34/35, strengthened sparse-queue test catches its missed fault; two further boundary faults caught. Exact restoration after every fault. Total union 37 caught.
+- [x] Preview with explicit test Settings/fake SDK/providers; populated/empty/error at 1280/375 px, real filtering/paging/transcript and 401/404/422/503 checks. Screenshot evidence retained.
+- [x] Post-slice architecture review found no in-scope orphan/deletion. Evidence/status mirrors updated; final documentary/diff inspection recorded in evidence.
+Existing research/progress below is retained history. No inherited dirty work was present.
+Baseline command: `UV_PYTHON_DOWNLOADS=never uv run --offline --no-sync pytest -q`.
+No production/provider action or Git publication is part of this run.
+First independent fault run: 34/35 caught, exact source bytes restored after every fault.
+Miss: reviewed rows could fill a short draft queue without the first test detecting it.
+Strengthened its sparse-queue assertion. First receipts/logs remain in work/scamkaki-s8/.
+Auxiliary UI review found a false global-empty label on page 2. Route regression failed before
+the fix, then all 11 Calls checks passed. Final suite includes that test. No existing assertion
+was weakened. Gate 3 code fences received whitespace-only Ruff formatting.
+Preview modes reset the test database, so no integration tests ran concurrently with a live
+preview. Final populated preview is on 127.0.0.1:8783; stop/PID are in s8-workspace.md.
+The initial Overview auto-refresh reached a stopped-server browser error during intentional
+testing downtime; a fresh tab recovered after HTTP 200. No passing screenshot claim uses it.
+Current work is preserved uncommitted. S9-S12 remain unstarted; no Git publication occurred.
 
 2026-10-18: Research-only review. `git status --short --branch` returned `fatal: not a git repository (or any of the parent directories): .git`. No branch or worktree can be created here; no Git repository initialized. Workers use separate notes files. No code, build system, lint configuration or test suite exists in this research folder, so software checks are not applicable. Verification uses primary regulatory texts, published carrier interfaces and source cross-checks. No live calls, carrier-account actions or messages to others are authorized by this review.
 

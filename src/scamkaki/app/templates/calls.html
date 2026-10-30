@@ -1,0 +1,21 @@
+{% extends "_reviewer.html" %}
+{% block content %}
+<div class="heading"><div><h1>Calls</h1><p>Find a recorded conversation, including failed attempts.</p></div><a class="btn" href="{{ request.url.path }}{{ '?' ~ request.url.query if request.url.query else '' }}">Refresh calls</a></div>
+<section class="panel" aria-labelledby="log-h"><h2 class="pad" id="log-h">Call log</h2>
+<form class="toolbar" method="get" action="/calls">
+<label for="search">Search fixture case, status or language<input id="search" type="search" name="q" value="{{ q }}" maxlength="100" placeholder="Search calls"></label>
+<label for="line-filter">Line<select id="line-filter" name="line"><option value="">All lines</option><option value="bait"{% if line == "bait" %} selected{% endif %}>Bait</option><option value="guardian"{% if line == "guardian" %} selected{% endif %}>Guardian</option></select></label>
+<button type="submit">Apply filters</button><a href="/calls">Clear</a>
+</form>
+{% if calls %}<div class="tablewrap"><table class="responsive"><thead><tr><th>Call</th><th>Recorded (SGT)</th><th>Language</th><th>Status</th><th>Duration</th></tr></thead><tbody>
+{% for c in calls %}<tr>
+<td data-label="Call"><a href="/calls/{{ c.id }}">{{ c.line | capitalize }} call #{{ c.id }}</a><small>{% if c.fixture_case %}Demo fixture: {{ c.fixture_case }}{% else %}Test call with no fixture case{% endif %}</small></td>
+<td data-label="Recorded (SGT)">{{ c.created_at | sgt }}</td><td data-label="Language">{{ languages[c.language] }}</td><td data-label="Status">{{ c.status }}</td><td data-label="Duration">{{ c.duration_s | duration }}</td>
+</tr>{% endfor %}</tbody></table></div>
+{% else %}<div class="empty-state">{% if page > 1 %}<h2>No calls on this page</h2><p>Use Previous to return to earlier pages, or clear the filters to start at page 1.</p>{% else %}<h2>{{ "No matching calls" if q or line else "No calls yet" }}</h2><p>{{ "Try a different search or clear the filters." if q or line else "Recorded calls will appear here, including failed attempts." }}</p>{% endif %}</div>{% endif %}
+<div class="tablefoot"><span>Page {{ page }} · {{ calls | length }} records shown</span>
+{% if page > 1 %}<a rel="prev" href="/calls?q={{ q | urlencode }}{% if line %}&amp;line={{ line }}{% endif %}&amp;page={{ page - 1 }}">Previous</a>{% endif %}
+{% if has_next %}<a rel="next" href="/calls?q={{ q | urlencode }}{% if line %}&amp;line={{ line }}{% endif %}&amp;page={{ page + 1 }}">Next</a>{% endif %}
+</div></section>
+<p class="notice">Completed does not mean a passed check. Guardian checks are separate records. Recorded is when the call was stored, not its start time.</p>
+{% endblock %}

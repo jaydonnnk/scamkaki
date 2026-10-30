@@ -134,15 +134,16 @@ Gate 1 was reopened for this screen/navigation amendment and approved 2026-10-30
 preview is in [mockups/redesign/overview.html](mockups/redesign/overview.html), with the full
 screen contract in [01-product.md](01-product.md#website-redesign-proposal-2026-10-30).
 Gates 2-4 were drafted together and approved 2026-10-30. Their earlier approvals remain
-historical evidence for the existing application. S8 implementation still needs authorization
-by slice ID and named test-branch scope; no slice has started from these approvals.
+historical evidence for the existing application. At the planning boundary, S8 still needed
+per-slice and test-branch authorization. The later S8 execution grant is recorded below.
 The S7 existing implementation and its two open evidence items are unchanged; S6 remains open.
 
 [verified] Started from clean `main` at `154d1d72fc1518b1f5f29ec53024207cdf141a28`.
 Prepared on `scamkaki/gates-ui-redesign`. At the drafting boundary this was local
 documentation and HTML previews only. The later publication authorization is recorded below.
 No application edit, call, session mint, database operation, install or manual deployment.
-All four redesign gates are approved; S8 remains unstarted. Preview verification is in [checks/ui-redesign-preview.md](checks/ui-redesign-preview.md).
+All four redesign gates are approved. S8 was unstarted at the planning boundary and is now
+authorized below. Preview verification is in [checks/ui-redesign-preview.md](checks/ui-redesign-preview.md).
 
 
 ### Redesign approval and bundled drafting authority
@@ -160,14 +161,50 @@ All four redesign gates are approved; S8 remains unstarted. Preview verification
 
 ### Approved website build order, 2026-10-30
 
-- [ ] S8 - Reviewer workspace, call history and separate call/check details.
+- [x] S8 - Reviewer workspace, call history and separate call/check details. Done locally 2026-10-30 on `scamkaki/slice-8-reviewer-workspace`; [evidence](evidence/s8-workspace.md). Full suite 290 passed, lint/format and offline caller checks passed. 37 distinct faults caught across a recorded test correction; 1280/375 px populated/empty/error walkthrough passed. Human usability remains unmeasured. Publication subsequently authorized below; S9 unstarted and deployment unverified.
 - [ ] S9 - Visual script patterns from stored seven-day Bait counts.
 - [ ] S10 - Focused report review and persistent review state.
 - [ ] S11 - Voice room with explicit start and existing EN/HI lines.
 - [ ] S12 - Family view and complete redesign verification.
 
 The full contracts and authority limits are in [04-slices.md](04-slices.md#website-redesign-slices-2026-10-30).
-These are approved plans, not started work or replacements for the open S6/S7 evidence obligations.
+S9-S12 remain approved plans, not started work. No redesign slice replaces the open S6/S7 evidence obligations.
+
+### S8 execution authority, 2026-10-30
+
+- [verified] User: "S8 and test-branch authorization are authroized. Go ahead and start implementation and database actions."
+  Authorizes S8 local implementation, its required branch, and migrations/truncation on the
+  verified `TEST_DATABASE_URL` branch with fake Bolna/Telegram. Never production.
+- [verified] Started from clean published main `845f28892875c07708407947bdb7e7de39c2d6ef`;
+  HEAD, local main and remote main matched. The earlier uncommitted snapshot is historical.
+  Test database connected on a distinct endpoint from production without displaying credentials.
+- No S9, live call/session, provider action, production write, installation, commit, integration,
+  push or deployment is authorized by this scope. S6/S7 evidence gaps remain open.
+- [verified] S8 local exit decision: **go**, after assigned route/SQL/transcript/status checks,
+  actual filter/paging/transcript navigation, 401/404/422/503 checks, desktop/375 px screenshots,
+  independent faults and exact restores. First fault run was 34/35, with a missed sparse-queue
+  case retained and corrected; two further faults covered invalid line and zero duration.
+  A later-page empty-state bug from auxiliary UI review was reproduced and fixed with a
+  failing route regression. Final suite: 290 passed, one existing Starlette deprecation warning.
+  Architect-reviewer found no in-scope cleanup deletion. This does not establish human
+  usability, live calls, Telegram receipt, production runtime or deployment.
+  Stop for S9 authorization and its separately required main-integration prerequisite.
+
+
+### S8 publication and S9 handoff authority, 2026-10-30
+
+- [verified] User: "Commit and push to main then make the copy paste prompt for s9(make sure to reference the skeleton prompt)".
+  Authorizes committing the completed S8 source, tests, preview support, screenshots, evidence
+  and documentary mirrors, fast-forwarding main and pushing origin/main. Keep the S8 branch.
+  Then prepare the S9 handoff using the retained S8 skeleton and the repository's eight-section
+  handoff order. The Envoi S25/S26 reference supplies structure only, never Scamkaki authority.
+- [verified] Before publication: S8 branch at `845f28892875c07708407947bdb7e7de39c2d6ef`,
+  matching local and remote main; empty index; only the known S8 package was dirty.
+  Final commit/push success and remote equality are verified after the operations, not
+  predicted inside the commit being published.
+- No S9 implementation, S9 branch, S9 destructive test checks, provider action, production
+  mutation, installation, call, spend or manual deployment follows from this publication.
+  Existing Render auto-deployment may follow a main push; its result is unverified here.
 
 
 ### Redesign Gates 2-4 approved and S8 handoff requested

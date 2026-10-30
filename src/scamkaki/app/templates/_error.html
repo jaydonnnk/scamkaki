@@ -1,0 +1,8 @@
+{% extends "_reviewer.html" %}
+{% block content %}
+<section class="panel pad" aria-labelledby="error-heading">
+<h1 id="error-heading">{{ title }}</h1>
+{% if missing %}<p>This record does not exist. It may have been removed.</p><a href="/">Back to Overview</a>
+{% else %}<p>The database could not be read. These records are unavailable.</p><p>No empty result is implied.</p><a class="btn" href="{{ retry }}">Retry</a>{% endif %}
+</section>
+{% endblock %}

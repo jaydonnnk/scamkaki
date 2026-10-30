@@ -1,5 +1,8 @@
 # Independent S8 handoff review
 
+Historical review prompt for the pre-execution handoff, not a review of S8 implementation.
+S8 was subsequently authorized. Current execution state is in `00-status.md`.
+
 ```text
 Review the S8 handoff in /Users/jayd0/Desktop/bolna/docs/plans/scamkaki/s8-handoff.md against AGENTS.md, the current local gate documents and actual Git/source state. Be unbiased, thorough and honest. Assume the work may be flawed; look for real problems rather than confirmation. This is a documentation-only review, not permission to implement S8.
 

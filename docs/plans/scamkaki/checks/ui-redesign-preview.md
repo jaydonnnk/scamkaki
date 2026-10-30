@@ -42,9 +42,12 @@ preview is standalone and does not demonstrate private-link authorization. The m
 no network requests, provider SDK, real audio or database. They do not change S6 or S7 evidence.
 The generated sample counts are not measured outcomes. Existing historical mockups are retained.
 
-At preview completion the next step was a Gate 1 decision. Current state, 2026-10-30:
+At preview completion the next step was a Gate 1 decision. At the later handoff boundary, 2026-10-30:
 Gates 1-4 approved; S8 implementation and test-branch authority remain pending. See 00-status.md for authority.
 Application implementation and Git publication remain unstarted.
+
+The above is a historical snapshot. S8 implementation/test-branch authority was subsequently
+granted, and the redesign package was published before S8 began. Current state is in 00-status.md.
 
 ## Gate amendment drafting checks, 2026-10-30
 

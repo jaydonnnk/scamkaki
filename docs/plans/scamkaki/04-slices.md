@@ -74,7 +74,8 @@ Bait extracts warning signs so the 7-day count can match on tactics; Mandarin Gu
 ## Website redesign slices, 2026-10-30
 
 **Gate 4 amendment, APPROVED 2026-10-30.** Gate 1's eight-screen direction and Gates 2-4 are approved; the user requested
-the latter three together. S8-S12 below are planned and still need per-slice authorization.
+the latter three together. S8 was subsequently authorized for local implementation and named
+test-branch checks on 2026-10-30, as recorded in 00-status.md. S9-S12 still need per-slice authorization.
 S1-S7 retain their historical contracts and evidence. S6 remains open for live proof; S7's
 backup video and full live demo remain open. The redesign does not waive or rerun either.
 

@@ -19,6 +19,7 @@ def test_family_page_rejects_wrong_link(client):
     assert page.status_code == 200
     assert "Demo fixtures. Test calls, not real scammers." in page.text
     assert page.headers["referrer-policy"] == "no-referrer"
+    assert page.headers["cache-control"] == "no-store"
 
 
 def test_family_page_is_closed_without_a_link_token(client, test_settings):

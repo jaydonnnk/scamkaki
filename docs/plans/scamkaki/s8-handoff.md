@@ -1,6 +1,8 @@
 # S8 handoff
 
-Prepared 2026-10-30. Background for an unstarted slice; all redesign gates approved.
+Prepared 2026-10-30. Historical start prompt, from before S8 execution authority.
+The user later authorized S8 implementation and named test-branch checks. Current state and
+evidence are in `00-status.md` and `evidence/s8-workspace.md`; the snapshot below is retained.
 
 ```text
 You are receiving background for Scamkaki S8 in /Users/jayd0/Desktop/bolna on macOS arm64. Prepared 2026-10-30 (Asia/Singapore) from the current main-tip gate documents, the approved local redesign amendments and actual Git/source state. The user subsequently authorized committing and pushing this package to main. This handoff is included in that publication; verify current refs and tracked documents rather than reuse the earlier uncommitted snapshot. The user's Envoi S25/S26 attachment supplies structure only; none of its commits, infrastructure state, secrets rules or authorizations applies to Scamkaki.
