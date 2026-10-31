@@ -11,7 +11,7 @@
 <div class="bartrack" aria-hidden="true"><div class="barfill" style="width:{{ (w.n * 100 / largest) | round(2) }}%"></div></div></div>
 <details><summary>Recorded group details</summary>
 <dl class="facts"><div><dt>Claimed agency</dt><dd>{{ agencies.get(w.agency, w.agency) }}</dd></div><div><dt>Request</dt><dd>{{ demands.get(w.demand, w.demand) }}</dd></div><div><dt>Languages recorded</dt><dd>{% for language in w.languages %}{{ languages[language] }}{{ ", " if not loop.last else "" }}{% endfor %}</dd></div><div><dt>Last recorded</dt><dd>{{ w.last_seen | sgt }} SGT</dd></div></dl>
-<p class="sub">{{ w.n }} Bait record{{ "" if w.n == 1 else "s" }} share{{ "s" if w.n == 1 else "" }} this claimed agency and request in the last seven days. Matching records does not establish that callers are the same person. Bait does not collect Guardian's warning signs.</p>
+<p class="sub">{{ w.n }} Bait record{{ "" if w.n == 1 else "s" }} share{{ "s" if w.n == 1 else "" }} this claimed agency and request in the last 7 days.{% if w.n > 1 %} They may not be the same caller.{% endif %}</p>
 </details>
 </article>
 {% else %}<p class="empty-state">No Bait scripts in the last 7 days.</p>{% endfor %}

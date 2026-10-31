@@ -83,6 +83,9 @@ def test_match_script_stores_channel_tactics_and_acted(client, db, telegram):
     assert body["verdict"] == "likely_scam" and body["urgent"] is True
     assert body["say"].startswith("Call your bank now on the number on the back of your card")
     assert telegram.sent[0].splitlines()[1] == "URGENT: Ah Ma already: Gave card details or a code"
+    assert telegram.sent[0].endswith(
+        "\nOpen the alert page: https://scamkaki.test/family/family-link"
+    )
     with connect(db) as conn:
         row = conn.execute("select channel, tactics, acted from guardian_checks").fetchone()
     assert row == {"channel": "sms", "tactics": ["link_fee"], "acted": "gave_code_or_card"}
@@ -176,7 +179,7 @@ def test_match_script_repeat_script_without_hard_demand_is_unclear(client, db, t
     )
 
     assert response.json()["verdict"] == "unclear"
-    assert response.json()["say"].endswith(" Same script heard 1 time this week.")
+    assert response.json()["say"].endswith(" Same script heard once this week.")
     assert telegram.sent == []
 
 

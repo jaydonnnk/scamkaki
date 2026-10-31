@@ -17,5 +17,5 @@
 {% if page > 1 %}<a rel="prev" href="/calls?q={{ q | urlencode }}{% if line %}&amp;line={{ line }}{% endif %}&amp;page={{ page - 1 }}">Previous</a>{% endif %}
 {% if has_next %}<a rel="next" href="/calls?q={{ q | urlencode }}{% if line %}&amp;line={{ line }}{% endif %}&amp;page={{ page + 1 }}">Next</a>{% endif %}
 </div></section>
-<p class="notice">Completed does not mean a passed check. Guardian checks are separate records. Recorded is when the call was stored, not its start time.</p>
+<p class="notice">Completed means the call ended, not that it passed. Recorded is when the call was saved, not when it started.</p>
 {% endblock %}

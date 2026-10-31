@@ -129,9 +129,7 @@ def test_sentence_says_same_script_heard_this_week():
     assert sentence_for("likely_scam", report(), 3, "en").endswith(
         " Same script heard 3 times this week."
     )
-    assert sentence_for("unclear", report(), 1, "en").endswith(
-        " Same script heard 1 time this week."
-    )
+    assert sentence_for("unclear", report(), 1, "en").endswith(" Same script heard once this week.")
     assert sentence_for("unclear", report(), 2, "hi").endswith(" ऐसी ही कॉल इस हफ़्ते 2 बार आई है।")
 
 
@@ -186,7 +184,7 @@ def test_alert_text_is_labeled_fixture_and_names_claim():
     assert "Contacted by: Phone call" in text
     assert "Caller claimed to be: Police (SPF)" in text
     assert "Asked for: Money transfer" in text
-    assert "Line: Hindi, 24 Oct 14:02" in text  # Singapore time
+    assert "Call in Hindi, 24 Oct 14:02" in text  # Singapore time
     assert "Same script" not in text
     assert "URGENT" not in text and "Warning signs" not in text
     assert text.endswith("Please call Ah Ma now.")
@@ -216,4 +214,11 @@ def test_alert_text_mentions_repeat_script_when_seen():
 
     assert "Same script heard 3 times this week." in text
     one = alert_text(report("ica", "otp"), "en", 1, AT)
-    assert "Same script heard 1 time this week." in one
+    assert "Same script heard once this week." in one
+
+
+def test_alert_text_ends_with_family_link_only_when_given():
+    text = alert_text(report("spf", "transfer"), "en", 0, AT, "https://x.test/family/t")
+
+    assert text.endswith("Please call Ah Ma now.\nOpen the alert page: https://x.test/family/t")
+    assert "alert page" not in alert_text(report("spf", "transfer"), "en", 0, AT)

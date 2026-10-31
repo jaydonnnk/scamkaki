@@ -15,14 +15,14 @@
 <div><dt>PayNow ID</dt><dd>{{ report.paynow_id or "not heard" }}</dd></div>
 <div><dt>Link</dt><dd>{{ report.url or "not heard" }}</dd></div>
 <div><dt>Call length</dt><dd>{{ report.duration_s | duration }}</dd></div>
-<div><dt>Line</dt><dd>{{ languages[report.language] }}</dd></div>
+<div><dt>Language</dt><dd>{{ languages[report.language] }}</dd></div>
 <div><dt>Call recorded</dt><dd>{{ report.call_at | sgt }} SGT</dd></div>
 <div><dt>Ah Ma leaks</dt><dd>{% if report.leaks %}<span class="leak">LEAK CHECK FAILED: {{ report.leaks | length }} found</span>{% else %}None found{% endif %}</dd></div>
 </dl>
 {% if report.leaks %}<ul class="leak">{% for finding in report.leaks %}<li>{{ {"nric": "NRIC or FIN", "otp_or_account_digits": "Code or account digits", "card": "Card digits"}.get(finding.kind, finding.kind) }}: {{ finding.excerpt }}</li>{% endfor %}</ul>{% endif %}
 {% if report.summary %}<div class="report-summary"><h3>Summary from the call</h3><p>{{ report.summary }}</p></div>{% endif %}
 <div class="reviewtext"><h3>Draft text</h3><pre class="report-draft">{{ report.draft }}</pre></div>
-<details><summary>Review notes and limits</summary><p class="sub">Stored extraction can be incomplete or wrong. No leak findings does not establish safety or whole-transcript privacy. Recorded is the call's insertion time. Review does not confirm the allegation or validate guidance.</p></details>
+<details><summary>Review notes and limits</summary><p class="sub">These details were pulled from the call automatically and can be wrong or missing. A clean leak check doesn't prove nothing private was said. Recorded is when the call was saved. Marking a draft reviewed doesn't confirm the scam.</p></details>
 </section>
 <aside class="panel pad" aria-labelledby="review-h"><h2 id="review-h">Human review</h2>
 <p>Read the draft, check the source and keep missing details visible.</p>

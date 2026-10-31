@@ -88,7 +88,7 @@ def test_calls_keep_failed_records_and_missing_duration(client, db):
     assert set(call_links(page.text)) == set(ids)
     assert "failed" in page.text and "stopped" in page.text and "balance-low" in page.text
     assert "not recorded" in page.text and "0 s" in page.text and "1 min 2 s" in page.text
-    assert "Completed does not mean a passed check" in page.text
+    assert "Completed means the call ended, not that it passed." in page.text
     assert "raw-secret-synthetic" not in page.text
 
 

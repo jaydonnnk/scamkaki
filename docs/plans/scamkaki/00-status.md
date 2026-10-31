@@ -147,6 +147,20 @@ All four redesign gates are approved. S8 was unstarted at the planning boundary 
 authorized below. Preview verification is in [checks/ui-redesign-preview.md](checks/ui-redesign-preview.md).
 
 
+### Family link in Telegram alerts and copy pass, 2026-10-31
+
+- Change (user: "Yes, add link"): the Telegram alert now ends with
+  `Open the alert page: <APP_BASE_URL>/family/<FAMILY_LINK_TOKEN>` when both are set.
+  This replaces "the family member bookmarks the link" from Gate 1; the private chat now carries the link.
+  The link is omitted when either setting is empty.
+- Copy pass (user asked to remove AI-sounding wording): "1 time" reads "once"; the alert and Family page say
+  "Call in English" instead of "Line: English"; report "Line" reads "Language"; repeated limit
+  disclaimers and the reviewer footer were removed or shortened.
+- [verified] On `scamkaki/copy-pass-family-link` from `main` at `bc5ad15`, without S6 work: unit 385 and integration 209 passed
+  before the link change, unit 385 and integration 209 after it; both new
+  branches mutated and caught. [unknown] Whether `APP_BASE_URL` is set on Render.
+
+
 ### Redesign approval and bundled drafting authority
 
 - [verified] 2026-10-30 user: "Looks good. I approve gate 1. Give the other gates all at once, ill approve them as well".

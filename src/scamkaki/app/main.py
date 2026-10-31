@@ -243,6 +243,7 @@ async def match_script(
             report,
             language,
             result.similar_count,
+            family_url(settings),
         )
     return asdict(result)
 
@@ -263,6 +264,13 @@ def _log_check(database_url: str, report, language, result, execution_id) -> int
         return store.log_guardian_check(conn, report, language, result, execution_id)
 
 
+def family_url(settings: Settings) -> str:
+    """The private Family page link for the alert, or "" until both parts are configured."""
+    if not (settings.app_base_url and settings.family_link_token):
+        return ""
+    return f"{settings.app_base_url.rstrip('/')}/family/{settings.family_link_token}"
+
+
 def _alert_family(
     database_url: str,
     send_alert: SendAlert | None,
@@ -270,11 +278,12 @@ def _alert_family(
     report: GuardianReport,
     language: Language,
     similar_count: int,
+    url: str,
 ) -> None:
     if send_alert is None:
         status = "off"
     else:
-        text = verdict.alert_text(report, language, similar_count, datetime.now(UTC))
+        text = verdict.alert_text(report, language, similar_count, datetime.now(UTC), url)
         status = "sent" if send_alert(text) else "failed"
     if check_id is None:
         return

@@ -131,7 +131,7 @@ function renderLatest(a, isNew) {
   if (a.urgent) box.append(el("p", "Urgent: Ah Ma already acted", "tag"));
   box.append(el("h2", "Likely scam"));
   if (a.urgent) box.append(labelled("Ah Ma already", label(ACTED, a.acted)));
-  box.append(el("p", "Line: " + label(LANGUAGES, a.language) + " · " + when(a.created_at), "meta"));
+  box.append(el("p", "Call in " + label(LANGUAGES, a.language) + " · " + when(a.created_at), "meta"));
   const steps = el("div", undefined, "next-steps");
   steps.append(el("h3", "What to do now"));
   steps.append(el("p", a.urgent

@@ -10,9 +10,8 @@
 <div class="node"><strong>Warning signs</strong>{% if check.tactics %}<ul class="signs">{% for t in check.tactics %}<li>{{ tactics.get(t, t) }}</li>{% endfor %}</ul>{% else %}<small>None recorded</small>{% endif %}</div>
 <span class="arrow" aria-hidden="true">→</span><div class="node"><strong>Already acted</strong><small>{{ acted[check.acted] }}</small></div>
 <span class="arrow" aria-hidden="true">→</span><div class="node"><strong>Saved result</strong><small>{{ verdicts[check.verdict] }}</small></div></div>
-<p class="sub">These are recorded fields. They do not prove that the conversation was understood correctly.</p>
-<p>Same script heard {{ check.similar_count }} time{{ "" if check.similar_count == 1 else "s" }} in the seven-day window at this check.</p>
+<p>Same script heard {{ "once" if check.similar_count == 1 else check.similar_count ~ " times" }} in the 7 days before this check.</p>
 <p class="sub">Counts describe Bait records, not unique scammers or success rates.</p>
-</section><aside class="stack"><section class="panel pad"><h2>Family alert</h2><p><strong>{{ alert_states.get(check.alert_status, "Alert not recorded") }}</strong></p><p>Receipt unknown. Telegram sent does not mean read or acted on.</p></section>
+</section><aside class="stack"><section class="panel pad"><h2>Family alert</h2><p><strong>{{ alert_states.get(check.alert_status, "Alert not recorded") }}</strong></p><p>Receipt unknown. We can't tell if the family has read it yet.</p></section>
 <section class="panel pad"><h2>Connection to a call</h2><p>No verified call link. This check remains a separate record.</p></section></aside></div>
 {% endblock %}

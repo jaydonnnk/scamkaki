@@ -4,7 +4,6 @@
 <div class="heading"><div><h1>{{ call.line | capitalize }} call</h1><p>{% if call.fixture_case %}Demo fixture: {{ call.fixture_case }}{% else %}Test call with no fixture case{% endif %}</p></div></div>
 <div class="grid"><section class="panel pad" aria-labelledby="facts-h"><h2 id="facts-h">Stored call facts</h2>
 <dl class="facts"><div><dt>Status</dt><dd>{{ call.status }}</dd></div><div><dt>Language</dt><dd>{{ languages[call.language] }}</dd></div><div><dt>Recorded</dt><dd>{{ call.created_at | sgt }} SGT</dd></div><div><dt>Duration</dt><dd>{{ call.duration_s | duration }}</dd></div></dl>
-<p class="notice">Recorded is the insertion time. Completed does not mean a passed check.</p>
 <details><summary>Stored transcript</summary>
 {% for turn in turns %}<div class="turn">{% if turn.speaker != "unlabelled" %}<strong>{{ "Ah Ma" if turn.speaker == "ah_ma" else "Caller" }}</strong>{% endif %}<p>{{ turn.text }}</p></div>
 {% else %}<p>Transcript unavailable. No turns have been generated.</p>{% endfor %}
@@ -14,6 +13,6 @@
 {% elif call.report_id %}<p>Read the report stored for this Bait call.</p><a href="/reports/{{ call.report_id }}">Open report</a>
 {% else %}<p>No report recorded for this call.</p>{% endif %}
 </section>
-{% if call.line == "bait" %}<section class="panel pad"><h2>Ah Ma leak check</h2>{% if call.leaks %}<p class="leak">LEAK CHECK FAILED: {{ call.leaks | length }} found</p>{% else %}<p>No leaks found by the stored Ah Ma leak check.</p>{% endif %}<p class="sub">This does not establish that the whole transcript contains no private data.</p></section>{% endif %}
+{% if call.line == "bait" %}<section class="panel pad"><h2>Ah Ma leak check</h2>{% if call.leaks %}<p class="leak">LEAK CHECK FAILED: {{ call.leaks | length }} found</p>{% else %}<p>No leaks found by the stored Ah Ma leak check.</p>{% endif %}</section>{% endif %}
 </aside></div>
 {% endblock %}

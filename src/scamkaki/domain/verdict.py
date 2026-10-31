@@ -81,7 +81,7 @@ _SIMILAR: dict[Language, str] = {
 
 
 def _times(n: int) -> str:
-    return "1 time" if n == 1 else f"{n} times"
+    return "once" if n == 1 else f"{n} times"
 
 
 def _friend_money(report: GuardianReport) -> bool:
@@ -224,7 +224,13 @@ def tactic_labels(tactics: frozenset[Tactic]) -> list[str]:
     return [label for tactic, label in TACTIC_LABELS.items() if tactic in tactics]
 
 
-def alert_text(report: GuardianReport, language: Language, similar_count: int, at: datetime) -> str:
+def alert_text(
+    report: GuardianReport,
+    language: Language,
+    similar_count: int,
+    at: datetime,
+    family_url: str = "",
+) -> str:
     urgent = report.acted in HARM_ACTED
     lines = ["[Demo fixture] Ah Ma Guardian: likely scam call"]
     if urgent:
@@ -236,7 +242,7 @@ def alert_text(report: GuardianReport, language: Language, similar_count: int, a
     ]
     if report.tactics:
         lines.append(f"Warning signs: {', '.join(tactic_labels(report.tactics))}")
-    lines.append(f"Line: {LANGUAGE_LABELS[language]}, {at.astimezone(SGT):%d %b %H:%M}")
+    lines.append(f"Call in {LANGUAGE_LABELS[language]}, {at.astimezone(SGT):%d %b %H:%M}")
     if similar_count >= 1:
         lines.append(f"Same script heard {_times(similar_count)} this week.")
     if urgent:
@@ -245,4 +251,6 @@ def alert_text(report: GuardianReport, language: Language, similar_count: int, a
         )
     else:
         lines.append("Please call Ah Ma now.")
+    if family_url:
+        lines.append(f"Open the alert page: {family_url}")
     return "\n".join(lines)

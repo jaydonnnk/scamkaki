@@ -15,7 +15,7 @@
 <h3>Warning signs</h3>{% if r.tactics %}<ul class="signs">{% for t in r.tactics %}<li>{{ tactics.get(t, t) }}</li>{% endfor %}</ul>{% else %}<p>None recorded</p>{% endif %}
 {% if r.urgent %}<p><strong>Ah Ma already: {{ acted[r.acted] }}</strong></p>{% endif %}
 {% if r.verdict == "likely_scam" %}<p>{{ alert_states.get(r.alert_status, "Alert not recorded") }}. Receipt unknown.</p>{% endif %}
-{% if r.similar_count %}<p>Same script heard {{ r.similar_count }} time{{ "" if r.similar_count == 1 else "s" }} this week</p>{% endif %}
+{% if r.similar_count %}<p>Same script heard {{ "once" if r.similar_count == 1 else r.similar_count ~ " times" }} this week</p>{% endif %}
 {% else %}
 <h3>Bait script · {{ agencies.get(r.agency, r.agency) }}</h3><p>{{ demands.get(r.demand, r.demand) }} · {% if r.fixture_case %}Demo fixture: {{ r.fixture_case }}{% else %}Test call with no fixture case{% endif %}</p>
 <p>Warning signs: Not collected</p>

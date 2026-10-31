@@ -88,7 +88,6 @@ def test_patterns_expand_recorded_labels_languages_and_time(client, pattern_grou
     assert "4 Bait records" in details[0] and "2 Bait records" in details[1]
     assert "1 Bait record" in details[2]
     assert "Last recorded" in details[0] and "SGT" in details[0]
-    assert "This explains the system. It does not link individual calls and checks." in page
     assert "Guardian check" in page and "Recorded signs and actions also matter." in page
 
 

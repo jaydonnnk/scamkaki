@@ -40,4 +40,5 @@ def test_settings() -> Settings:
         database_url=url,
         admin_password="admin-pass",
         family_link_token="family-link",
+        app_base_url="https://scamkaki.test/",
     )
